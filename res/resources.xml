@@ -1,0 +1,4 @@
+<resources>
+  <string id="AppName">OTP Authenticator</string>
+  <bitmap id="LauncherIcon" filename="images/launcher_icon.png" />
+</resources>
