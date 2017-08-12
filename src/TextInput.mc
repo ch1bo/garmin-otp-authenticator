@@ -2,6 +2,13 @@ using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.System;
 
+module TextInput {
+
+const ALPHA = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+               "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+               "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+               "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+
 class TextInputView extends WatchUi.View {
 
   var cursor_;
@@ -17,7 +24,6 @@ class TextInputView extends WatchUi.View {
   }
 
   function onUpdate(dc) {
-    System.println(cursor_);
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var fh = dc.getFontHeight(Graphics.FONT_SMALL);
@@ -74,7 +80,7 @@ class TextInputView extends WatchUi.View {
   }
 
   function backspace() {
-    text_ = text_.substring(0, text_.length()-2);
+    text_ = text_.substring(0, text_.length()-1);
     confirm_ = false;
     WatchUi.requestUpdate();
   }
@@ -83,6 +89,76 @@ class TextInputView extends WatchUi.View {
     confirm_ = confirm;
     WatchUi.requestUpdate();
   }
+}
+
+class TextInputDelegate extends WatchUi.InputDelegate {
+
+  var last_key_ = null;
+  var view_;
+
+  function initialize(view) {
+    InputDelegate.initialize();
+    view_ = view;
+  }
+
+  function onSwipe(evt) {
+    var swipe = evt.getDirection();
+    if (swipe == SWIPE_UP) {
+      view_.onUp();
+    } else if (swipe == SWIPE_RIGHT) {
+      view_.enter();
+    } else if (swipe == SWIPE_DOWN) {
+      view_.onDown();
+    } else if (swipe == SWIPE_LEFT) {
+      view_.backspace();
+    }
+    return true;
+  }
+
+  function onTap(event) {
+    view_.enter();
+    return false;
+  }
+
+  function onKey(event) {
+    var key = event.getKey();
+    switch (key) {
+    case KEY_UP:
+      view_.onUp();
+      break;
+    case KEY_DOWN:
+      view_.onDown();
+      break;
+    case KEY_ENTER:
+      if (last_key_ == KEY_ENTER) {
+        onTextEntered(view_.text_);
+        WatchUi.popView(WatchUi.SLIDE_LEFT);
+      } else {
+        view_.confirm(true);
+      }
+      break;
+    case KEY_ESC:
+      if (last_key_ == KEY_ESC) {
+        onCancel();
+        WatchUi.popView(WatchUi.SLIDE_LEFT);
+      } else {
+        view_.confirm(false);
+      }
+      break;
+    }
+    last_key_ = key;
+    return true;
+  }
+
+  function onTextEntered(text) {
+    System.println("TextInput: " + text);
+  }
+
+  function onCancel() {
+    System.println("TextInput canceled");
+  }
+}
+
 }
 
 function limit(i, max) {
