@@ -3,7 +3,7 @@ using Toybox.WatchUi;
 
 using TextInput;
 
-var providers_ = ["first", "second", "third"];
+var providers_ = ["first", "second", "third", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"];
 var currentIndex_ = 0;
 
 class MainView extends WatchUi.View {
@@ -24,19 +24,13 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     BehaviorDelegate.initialize();
   }
 
-  function onMenu() {
-    var menu = new WatchUi.Menu();
-    menu.setTitle("Settings");
-    menu.addItem("New entry", :new_entry);
-    WatchUi.pushView(menu, new SettingsMenuDelegate(), WatchUi.SLIDE_LEFT);
-  }
-
   function onSelect() {
     var menu = new WatchUi.Menu();
     menu.setTitle("OTP Providers");
     for (var i = 0; i < providers_.size(); i++) {
       menu.addItem(providers_[i], i);
     }
+    menu.addItem("New entry", :new_entry);
     WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
   }
 }
@@ -46,21 +40,12 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
     MenuInputDelegate.initialize();
   }
   function onMenuItem(item) {
-    currentIndex_ = item;
-    WatchUi.requestUpdate();
-  }
-}
-
-class SettingsMenuDelegate extends WatchUi.MenuInputDelegate {
-  function initialize() {
-    MenuInputDelegate.initialize();
-  }
-  function onMenuItem(item) {
-    switch(item) {
-    case :new_entry:
+    if (item == :new_entry) {
       var view = new TextInput.TextInputView(TextInput.ALPHA);
       WatchUi.switchToView(view, new NewEntryTextInputDelegate(view), WatchUi.SLIDE_RIGHT);
-      break;
+    } else {
+      currentIndex_ = item;
+      WatchUi.requestUpdate();
     }
   }
 }

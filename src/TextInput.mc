@@ -166,8 +166,9 @@ function ellipsizeFront(dc, text, font, max_width) {
   var ellipsis = "..";
   if (dc.getTextWidthInPixels(text, font) > max_width) {
     do {
-      text = text.substring(1, text.length);
+      text = text.substring(1, text.length());
     } while (dc.getTextWidthInPixels(ellipsis + text, Graphics.FONT_SMALL) > max_width);
+    return ellipsis + text;
   }
   return text;
 }
