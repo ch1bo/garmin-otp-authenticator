@@ -3,9 +3,6 @@ using Toybox.WatchUi;
 
 using TextInput;
 
-var providers_ = ["first", "second", "third", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"];
-var currentIndex_ = 0;
-
 class MainView extends WatchUi.View {
   function initialize() {
     View.initialize();
@@ -14,8 +11,11 @@ class MainView extends WatchUi.View {
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
-    var provider = providers_[currentIndex_];
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM, provider, Graphics.TEXT_JUSTIFY_CENTER);
+    var text = "Tap to start";
+    if (gProviders.size() != 0) {
+      text = gProviders[gCurrentIndex];
+    }
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 }
 
@@ -25,13 +25,18 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onSelect() {
-    var menu = new WatchUi.Menu();
-    menu.setTitle("OTP Providers");
-    for (var i = 0; i < providers_.size(); i++) {
-      menu.addItem(providers_[i], i);
+    if (gProviders.size() == 0) {
+      var view = new TextInput.TextInputView(TextInput.ALPHA);
+      WatchUi.pushView(view, new NewEntryTextInputDelegate(view), WatchUi.SLIDE_RIGHT);
+    } else {
+      var menu = new WatchUi.Menu();
+      menu.setTitle("OTP Providers");
+      for (var i = 0; i < gProviders.size(); i++) {
+        menu.addItem(gProviders[i], i);
+      }
+      menu.addItem("New entry", :new_entry);
+      WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
-    menu.addItem("New entry", :new_entry);
-    WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
   }
 }
 
@@ -43,10 +48,10 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
     if (item == :new_entry) {
       var view = new TextInput.TextInputView(TextInput.ALPHA);
       WatchUi.switchToView(view, new NewEntryTextInputDelegate(view), WatchUi.SLIDE_RIGHT);
-    } else {
-      currentIndex_ = item;
-      WatchUi.requestUpdate();
+      return;
     }
+    gCurrentIndex = item;
+    WatchUi.requestUpdate();
   }
 }
 
@@ -55,8 +60,8 @@ class NewEntryTextInputDelegate extends TextInput.TextInputDelegate {
     TextInputDelegate.initialize(view);
   }
   function onTextEntered(text) {
-    providers_.add(text);
-    currentIndex_ = providers_.size() - 1;
+    gProviders.add(text);
+    gCurrentIndex = gProviders.size() - 1;
     WatchUi.requestUpdate();
   }
 }

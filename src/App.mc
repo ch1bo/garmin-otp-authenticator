@@ -1,21 +1,31 @@
 using Toybox.Application;
 
+var gProviders = [];
+var gCurrentIndex = 0;
+
 class App extends Application.AppBase {
 
-    function initialize() {
-        AppBase.initialize();
-    }
+  function initialize() {
+    AppBase.initialize();
+  }
 
-    // onStart() is called on application start up
-    function onStart(state) {
+  function onStart(state) {
+    var providers = getProperty("gProviders");
+    if (providers != null) {
+      gProviders = providers;
     }
+    var currentIndex = getProperty("gCurrentIndex");
+    if (currentIndex != null) {
+      gCurrentIndex = currentIndex;
+    }
+  }
 
-    // onStop() is called when your application is exiting
-    function onStop(state) {
-    }
+  function onStop(state) {
+    setProperty("gProviders", gProviders);
+    setProperty("gCurrentIndex", gCurrentIndex);
+  }
 
-    // Return the initial view of your application here
-    function getInitialView() {
-        return [new MainView(), new MainViewDelegate()];
-    }
+  function getInitialView() {
+    return [new MainView(), new MainViewDelegate()];
+  }
 }
