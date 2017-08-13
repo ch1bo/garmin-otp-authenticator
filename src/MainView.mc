@@ -24,31 +24,11 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     BehaviorDelegate.initialize();
   }
 
-  function onBack() {
-    System.println("BACK");
-  }
-
   function onMenu() {
     var menu = new WatchUi.Menu();
     menu.setTitle("Settings");
     menu.addItem("New entry", :new_entry);
     WatchUi.pushView(menu, new SettingsMenuDelegate(), WatchUi.SLIDE_LEFT);
-  }
-
-  function onNextMode() {
-    System.println("NEXT MODE");
-  }
-
-  function onNextPage() {
-    System.println("NEXT PAGE");
-  }
-
-  function onPreviousMode() {
-    System.println("PREVIOUS MODE");
-  }
-
-  function onPreviousPage() {
-    System.println("PREVIOUS PAGE");
   }
 
   function onSelect() {

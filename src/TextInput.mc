@@ -26,13 +26,13 @@ class TextInputView extends WatchUi.View {
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
-    var fh = dc.getFontHeight(Graphics.FONT_SMALL);
-    dc.drawText(5, dc.getHeight()/2 - fh/2, Graphics.FONT_SMALL, text_, Graphics.TEXT_JUSTIFY_LEFT);
-    var tw = dc.getTextWidthInPixels(text_, Graphics.FONT_SMALL);
-    var fw = dc.getTextWidthInPixels("M", Graphics.FONT_SMALL);
-    var max = dc.getWidth() - fw - 10;
-    var x = tw + 15;
-    drawAlphabet(dc, x > max ? max : x);
+    var font = Graphics.FONT_SMALL;
+    // min width required for alphabet is widest char (M) + margins
+    var max = dc.getWidth() - (dc.getTextWidthInPixels("M", font) + 15);
+    var text = ellipsizeFront(dc, text_, font, max);
+    var fh = dc.getFontHeight(font);
+    dc.drawText(5, dc.getHeight()/2 - fh/2, font, text, Graphics.TEXT_JUSTIFY_LEFT);
+    drawAlphabet(dc, dc.getTextWidthInPixels(text, font) + 15);
   }
 
   function drawAlphabet(dc, x) {
@@ -159,6 +159,17 @@ class TextInputDelegate extends WatchUi.InputDelegate {
   }
 }
 
+}
+
+// Drop characters from front until fitting
+function ellipsizeFront(dc, text, font, max_width) {
+  var ellipsis = "..";
+  if (dc.getTextWidthInPixels(text, font) > max_width) {
+    do {
+      text = text.substring(1, text.length);
+    } while (dc.getTextWidthInPixels(ellipsis + text, Graphics.FONT_SMALL) > max_width);
+  }
+  return text;
 }
 
 function limit(i, max) {
