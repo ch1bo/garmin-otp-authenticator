@@ -16,9 +16,8 @@ test: build/authenticator_test.prg
 	connectiq &
 	monkeydo build/authenticator_test.prg vivoactive_hr -t
 
-%.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES)
-ifeq (,$(findstring test,$@))
+%_test.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES) $(TESTS)
 	monkeyc -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) --unit-test $(SOURCES) $(TESTS)
-else
+
+%.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES)
 	monkeyc -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) $(SOURCES)
-endif
