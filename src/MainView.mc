@@ -26,8 +26,8 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (gProviders.size() == 0) {
-      var view = new TextInput.TextInputView(TextInput.ALPHA);
-      WatchUi.pushView(view, new NewEntryTextInputDelegate(view), WatchUi.SLIDE_RIGHT);
+      var view = new TextInput.TextInputView("Provider name", TextInput.ALPHA);
+      WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new WatchUi.Menu();
       menu.setTitle("OTP Providers");
@@ -46,8 +46,8 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
   }
   function onMenuItem(item) {
     if (item == :new_entry) {
-      var view = new TextInput.TextInputView(TextInput.ALPHA);
-      WatchUi.switchToView(view, new NewEntryTextInputDelegate(view), WatchUi.SLIDE_RIGHT);
+      var view = new TextInput.TextInputView("Name", TextInput.ALPHA);
+      WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
       return;
     }
     gCurrentIndex = item;

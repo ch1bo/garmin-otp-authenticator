@@ -11,13 +11,15 @@ const ALPHA = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 
 class TextInputView extends WatchUi.View {
 
-  var cursor_;
   var alphabet_;
-  var text_;
   var confirm_ = false;
+  var cursor_;
+  var text_;
+  var title_;
 
-  function initialize(alphabet) {
+  function initialize(title, alphabet) {
     View.initialize();
+    title_ = title;
     alphabet_ = alphabet;
     cursor_ = 0;
     text_ = "";
@@ -27,12 +29,18 @@ class TextInputView extends WatchUi.View {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var font = Graphics.FONT_SMALL;
-    // min width required for alphabet is widest char (M) + margins
-    var max = dc.getWidth() - (dc.getTextWidthInPixels("M", font) + 15);
-    var text = ellipsizeFront(dc, text_, font, max);
     var fh = dc.getFontHeight(font);
-    dc.drawText(5, dc.getHeight()/2 - fh/2, font, text, Graphics.TEXT_JUSTIFY_LEFT);
-    drawAlphabet(dc, dc.getTextWidthInPixels(text, font) + 15);
+    dc.drawText(5, 0, font, title_, Graphics.TEXT_JUSTIFY_LEFT);
+    var textWidth = dc.getTextWidthInPixels(text_, font);
+    // min width required for alphabet is widest char (M) + margins
+    var alphabetWidth = dc.getTextWidthInPixels("M", font) + 15;
+    var x = 5;
+    if (textWidth + alphabetWidth >= dc.getWidth()) {
+      x = dc.getWidth() - alphabetWidth - textWidth;
+    }
+    var y = (dc.getHeight() - fh)/2 + fh/2;
+    dc.drawText(x, y, font, text_, Graphics.TEXT_JUSTIFY_LEFT);
+    drawAlphabet(dc, x + textWidth + 15);
   }
 
   function drawAlphabet(dc, x) {
@@ -53,7 +61,7 @@ class TextInputView extends WatchUi.View {
 
   function drawLetter(dc, x, pos) {
     var fh = dc.getFontHeight(Graphics.FONT_SMALL);
-    var y = (dc.getHeight() / 2 - fh / 2) + pos * (fh + 5);
+    var y = (dc.getHeight() - fh) / 2 - fh / 2 + pos * (fh + 3) + fh;
     var c = alphabet_[limit(cursor_ + pos, alphabet_.size())];
     dc.drawText(x, y, Graphics.FONT_SMALL, c, Graphics.TEXT_JUSTIFY_CENTER);
   }
