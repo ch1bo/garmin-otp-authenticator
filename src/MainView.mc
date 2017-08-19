@@ -12,8 +12,8 @@ class MainView extends WatchUi.View {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var text = "Tap to start";
-    if (gProviders.size() != 0) {
-      text = gProviders[gCurrentIndex];
+    if (_providers.size() != 0) {
+      text = _providers[_currentIndex].name_;
     }
     dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
@@ -25,14 +25,14 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onSelect() {
-    if (gProviders.size() == 0) {
-      var view = new TextInput.TextInputView("Provider name", TextInput.ALPHA);
+    if (_providers.size() == 0) {
+      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new WatchUi.Menu();
       menu.setTitle("OTP Providers");
-      for (var i = 0; i < gProviders.size(); i++) {
-        menu.addItem(gProviders[i], i);
+      for (var i = 0; i < _providers.size(); i++) {
+        menu.addItem(_providers[i].name_, i);
       }
       menu.addItem("New entry", :new_entry);
       WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
@@ -46,22 +46,39 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
   }
   function onMenuItem(item) {
     if (item == :new_entry) {
-      var view = new TextInput.TextInputView("Name", TextInput.ALPHA);
+      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
       return;
     }
-    gCurrentIndex = item;
+    _currentIndex = item;
     WatchUi.requestUpdate();
   }
 }
 
-class NewEntryTextInputDelegate extends TextInput.TextInputDelegate {
+var _enteredName = "";
+
+class NameInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) {
     TextInputDelegate.initialize(view);
   }
   function onTextEntered(text) {
-    gProviders.add(text);
-    gCurrentIndex = gProviders.size() - 1;
+    System.print("name: ");
+    System.println(text);
+    _enteredName = text;
+    var view = new TextInput.TextInputView("Enter key", TextInput.ALPHA);
+    WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_RIGHT);
+  }
+}
+
+class KeyInputDelegate extends TextInput.TextInputDelegate {
+  function initialize(view) {
+    TextInputDelegate.initialize(view);
+  }
+  function onTextEntered(text) {
+    System.print("key: ");
+    System.println(text);
+    _providers.add(new Provider(_enteredName, text));
+    _currentIndex = _providers.size() - 1;
     WatchUi.requestUpdate();
   }
 }

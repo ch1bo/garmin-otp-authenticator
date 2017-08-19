@@ -1,7 +1,7 @@
 using Toybox.Application;
 
-var gProviders = [];
-var gCurrentIndex = 0;
+var _providers = [];
+var _currentIndex = 0;
 
 class App extends Application.AppBase {
 
@@ -10,19 +10,19 @@ class App extends Application.AppBase {
   }
 
   function onStart(state) {
-    var providers = getProperty("gProviders");
+    var providers = getProperty("_providers");
     if (providers != null) {
-      gProviders = providers;
+      _providers = providers;
     }
-    var currentIndex = getProperty("gCurrentIndex");
+    var currentIndex = getProperty("_currentIndex");
     if (currentIndex != null) {
-      gCurrentIndex = currentIndex;
+      _currentIndex = currentIndex;
     }
   }
 
   function onStop(state) {
-    setProperty("gProviders", gProviders);
-    setProperty("gCurrentIndex", gCurrentIndex);
+    setProperty("_providers", _providers);
+    setProperty("_currentIndex", _currentIndex);
   }
 
   function getInitialView() {

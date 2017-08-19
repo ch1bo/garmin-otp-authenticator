@@ -139,16 +139,16 @@ class TextInputDelegate extends WatchUi.InputDelegate {
       break;
     case KEY_ENTER:
       if (last_key_ == KEY_ENTER) {
-        onTextEntered(view_.text_);
         WatchUi.popView(WatchUi.SLIDE_LEFT);
+        onTextEntered(view_.text_);
       } else {
         view_.confirm(true);
       }
       break;
     case KEY_ESC:
       if (last_key_ == KEY_ESC) {
-        onCancel();
         WatchUi.popView(WatchUi.SLIDE_LEFT);
+        onCancel();
       } else {
         view_.confirm(false);
       }
