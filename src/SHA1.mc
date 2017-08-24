@@ -1,4 +1,4 @@
-// Implementation of the Secure Hasihing Algorithm 1 (SHA-1)
+// Implementation of the Secure Hashing Algorithm 1 (SHA-1)
 // rfc3174 https://tools.ietf.org/html/rfc3174
 // loosely ported from the reference implementation and a version by
 // Uwe Hollerbach, which is based on Peter C. Gutmann's implementation
@@ -12,6 +12,7 @@
 
 using Toybox.System;
 
+// TODO(SN): optimize: operates on 8bit values, stored as 32bit numbers
 function hashSHA1(data) {
   var sha1 = new SHA1();
   sha1.input(data);

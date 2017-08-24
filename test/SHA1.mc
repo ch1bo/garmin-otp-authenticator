@@ -18,7 +18,6 @@ function r32_test2(logger) {
 (:test)
 function hashSHA1_test1(logger) {
   var message = "abc".toUtf8Array();
-  // TODO(SN): 8bit values, stored as 32bit numbers
   var expected = [0xA9, 0x99, 0x3E, 0x36,
                   0x47, 0x06, 0x81, 0x6A,
                   0xBA, 0x3E, 0x25, 0x71,
@@ -74,16 +73,4 @@ function hashSHA1_test3(logger) {
     sha1.input(message);
   }
   return arrayEqual(expected, sha1.result());
-}
-
-function arrayEqual(a, b) {
-  if (a.size() != b.size()) {
-    return false;
-  }
-  for(var i = 0; i < a.size(); i++) {
-    if (a[i] != b[i]) {
-      return false;
-    }
-  }
-  return true;
 }
