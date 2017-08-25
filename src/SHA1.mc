@@ -61,26 +61,26 @@ class SHA1 {
       computed = true;
     }
     var digest = new [20];
-    digest[ 0] = t8(H0 >> 24);
-    digest[ 1] = t8(H0 >> 16);
-    digest[ 2] = t8(H0 >> 8);
-    digest[ 3] = t8(H0);
-    digest[ 4] = t8(H1 >> 24);
-    digest[ 5] = t8(H1 >> 16);
-    digest[ 6] = t8(H1 >> 8);
-    digest[ 7] = t8(H1);
-    digest[ 8] = t8(H2 >> 24);
-    digest[ 9] = t8(H2 >> 16);
-    digest[10] = t8(H2 >> 8);
-    digest[11] = t8(H2);
-    digest[12] = t8(H3 >> 24);
-    digest[13] = t8(H3 >> 16);
-    digest[14] = t8(H3 >> 8);
-    digest[15] = t8(H3);
-    digest[16] = t8(H4 >> 24);
-    digest[17] = t8(H4 >> 16);
-    digest[18] = t8(H4 >> 8);
-    digest[19] = t8(H4);
+    digest[ 0] = t8(H0 >> 24).toNumber();
+    digest[ 1] = t8(H0 >> 16).toNumber();
+    digest[ 2] = t8(H0 >> 8).toNumber();
+    digest[ 3] = t8(H0).toNumber();
+    digest[ 4] = t8(H1 >> 24).toNumber();
+    digest[ 5] = t8(H1 >> 16).toNumber();
+    digest[ 6] = t8(H1 >> 8).toNumber();
+    digest[ 7] = t8(H1).toNumber();
+    digest[ 8] = t8(H2 >> 24).toNumber();
+    digest[ 9] = t8(H2 >> 16).toNumber();
+    digest[10] = t8(H2 >> 8).toNumber();
+    digest[11] = t8(H2).toNumber();
+    digest[12] = t8(H3 >> 24).toNumber();
+    digest[13] = t8(H3 >> 16).toNumber();
+    digest[14] = t8(H3 >> 8).toNumber();
+    digest[15] = t8(H3).toNumber();
+    digest[16] = t8(H4 >> 24).toNumber();
+    digest[17] = t8(H4 >> 16).toNumber();
+    digest[18] = t8(H4 >> 8).toNumber();
+    digest[19] = t8(H4).toNumber();
     return digest;
   }
 

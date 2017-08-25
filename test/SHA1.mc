@@ -1,4 +1,5 @@
 using Toybox.System;
+using Toybox.Test;
 
 (:test)
   function t32_test(logger) {
@@ -24,6 +25,8 @@ function hashSHA1_test1(logger) {
                   0x78, 0x50, 0xC2, 0x6C,
                   0x9C, 0xD0, 0xD8, 0x9D];
   var digest = hashSHA1(message);
+  Test.assertEqual(digest.size(), 20);
+  assertAllNumber(digest);
   return arrayEqual(expected, digest);
 }
 
@@ -37,6 +40,8 @@ function hashSHA1_test2(logger) {
                   0xF9, 0x51, 0x29, 0xE5,
                   0xE5, 0x46, 0x70, 0xF1];
   var digest = hashSHA1(message);
+  Test.assertEqual(digest.size(), 20);
+  assertAllNumber(digest);
   return arrayEqual(expected, digest);
 }
 
@@ -56,7 +61,10 @@ function hashSHA1_test3(logger) {
       System.println("%");
     }
   }
-  return arrayEqual(expected, sha1.result());
+  var digest = hashSHA1(message);
+  Test.assertEqual(digest.size(), 20);
+  assertAllNumber(digest);
+  return arrayEqual(expected, digest);
 }
 
 (:test)
@@ -72,5 +80,8 @@ function hashSHA1_test3(logger) {
   for (var i = 0; i < 10; i++) {
     sha1.input(message);
   }
-  return arrayEqual(expected, sha1.result());
+  var digest = sha1.result();
+  Test.assertEqual(digest.size(), 20);
+  assertAllNumber(digest);
+  return arrayEqual(expected, digest);
 }

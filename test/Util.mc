@@ -1,4 +1,21 @@
+using Toybox.Lang;
 using Toybox.Math;
+using Toybox.Test;
+using Toybox.System;
+
+function assertNumber(v) {
+  switch(v) {
+  case instanceof Lang.Number:
+    return;
+  }
+  Test.assert(false);
+}
+
+function assertAllNumber(values) {
+  for (var i = 0; i < values.size(); i++) {
+    assertNumber(values[i]);
+  }
+}
 
 function arrayEqual(a, b) {
   if (a.size() != b.size()) {
@@ -15,13 +32,13 @@ function arrayEqual(a, b) {
 function hex2bytes(string) {
   var cs = string.toCharArray();
   var bs = new [cs.size()/2 + cs.size()%2];
-  for (var i = 0; i < cs.size(); i++) {
+  for (var i = cs.size() - 1; i >= 0; i--) {
     var j = i / 2;
     var b = h2b(cs[i]);
     if (i % 2 == 0) {
-      bs[j] = b;
+      bs[j] = bs[j] | (b << 4);
     } else {
-      bs[j] = bs[j] << 4 | b;
+      bs[j] = b;
     }
   }
   return bs;
@@ -53,6 +70,9 @@ function bytes2hex(bytes) {
   var str = "";
   for (var i = 0; i < bytes.size(); i++) {
     if (bytes[i] != null) {
+      if (bytes[i] < 0x10) {
+        str += "0";
+      }
       str += bytes[i].format("%X");
     } else {
       str += "-";
