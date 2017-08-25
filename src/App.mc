@@ -3,6 +3,13 @@ using Toybox.Application;
 var _providers = [];
 var _currentIndex = 0;
 
+function currentProvider() {
+  if (_currentIndex >= 0 && _currentIndex < _providers.size()) {
+    return _providers[_currentIndex];
+  }
+  return null;
+}
+
 class App extends Application.AppBase {
 
   function initialize() {

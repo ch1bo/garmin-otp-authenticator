@@ -11,11 +11,15 @@ class MainView extends WatchUi.View {
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
-    var text = "Tap to start";
-    if (_providers.size() != 0) {
-      text = _providers[_currentIndex].name_;
+    var provider = currentProvider();
+    var font = Graphics.FONT_MEDIUM;
+    var fh = dc.getFontHeight(font);
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - fh, font,
+                provider ? provider.name_ : "Tap to start", Graphics.TEXT_JUSTIFY_CENTER);
+    if (provider) {
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + fh, font,
+                  provider.code_, Graphics.TEXT_JUSTIFY_CENTER);
     }
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 }
 
@@ -25,6 +29,16 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onSelect() {
+    var provider = currentProvider();
+    if (provider) {
+      provider.updateCode();
+      WatchUi.requestUpdate();
+    } else {
+      onMenu();
+    }
+  }
+
+  function onMenu() {
     if (_providers.size() == 0) {
       var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
