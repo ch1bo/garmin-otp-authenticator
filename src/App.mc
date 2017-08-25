@@ -17,19 +17,29 @@ class App extends Application.AppBase {
   }
 
   function onStart(state) {
-    var providers = getProperty("_providers");
-    if (providers != null) {
-      _providers = providers;
+    var providersCount = getProperty("providers");
+    if (providersCount) {
+      for (var i = 0; i < providersCount; i++) {
+        var name = getProperty("providers_" + i.toString() + "_name");
+        var key = getProperty("providers_" + i.toString() + "_key");
+        var counter = getProperty("providers_" + i.toString() + "_counter");
+        _providers.add(new Provider(name, key, counter));
+      }
     }
-    var currentIndex = getProperty("_currentIndex");
+    var currentIndex = getProperty("currentIndex");
     if (currentIndex != null) {
       _currentIndex = currentIndex;
     }
   }
 
   function onStop(state) {
-    setProperty("_providers", _providers);
-    setProperty("_currentIndex", _currentIndex);
+    setProperty("providers", _providers.size());
+    for (var i = 0; i < _providers.size(); i++) {
+      setProperty("providers_" + i.toString() + "_name", _providers[i].name_);
+      setProperty("providers_" + i.toString() + "_key", _providers[i].key_);
+      setProperty("providers_" + i.toString() + "_counter", _providers[i].counter_);
+    }
+    setProperty("currentIndex", _currentIndex);
   }
 
   function getInitialView() {

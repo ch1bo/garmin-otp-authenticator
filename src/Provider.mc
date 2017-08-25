@@ -1,19 +1,18 @@
 class Provider {
   var name_;
   var key_;
+  var counter_;
   var code_ = "______";
-  var counter_ = 0l;
 
-  function initialize(name, key) {
+  function initialize(name, key, counter) {
     name_ = name;
-    key_ = key.toUtf8Array();
+    key_ = key;
+    counter_ = counter;
+    code_ = hotp(key_.toUtf8Array(), counter_, 6);
   }
 
   function updateCode() {
-    code_ = hotp(key_, counter_, 6).toString();
-    while (code_.length() < 6) {
-      code_ = "0" + code_;
-    }
+    code_ = hotp(key_.toUtf8Array(), counter_, 6);
     counter_++;
   }
 }

@@ -17,7 +17,12 @@ function hotp(key, counter, digit) {
     data[i] = counter & 0xff;
     counter = counter >> 8;
   }
-  return truncate(hmacSHA1(key, data)) % DIGITS[digit];
+  var n = truncate(hmacSHA1(key, data)) % DIGITS[digit];
+  var code = n.toString();
+  while (code.length() < 6) {
+    code = "0" + code;
+  }
+  return code;
 }
 
 const DIGITS = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];

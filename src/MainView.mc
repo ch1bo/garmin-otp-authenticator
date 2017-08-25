@@ -91,7 +91,7 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function onTextEntered(text) {
     System.print("key: ");
     System.println(text);
-    _providers.add(new Provider(_enteredName, text));
+    _providers.add(new Provider(_enteredName, text, 0l));
     _currentIndex = _providers.size() - 1;
     WatchUi.requestUpdate();
   }
