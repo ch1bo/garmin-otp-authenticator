@@ -1,12 +1,24 @@
+using Toybox.Lang;
+using Toybox.Math;
+using Toybox.System;
+using Toybox.Time;
+
+// Implementation of TOTP: Time-Based One-Time Password Algorithm
+// rfc6238 https://tools.ietf.org/html/rfc6238
+
+// Notes:
+//  * T0 is defaulted to Unix Epoch
+
+function totp(key, x, digit) {
+  var t = Time.now().value() / x;
+  return hotp(key, t, digit);
+}
+
 // Implementation of HOTP: An HMAC-Based One-Time Password Algorithm
 // rfc2104 https://tools.ietf.org/html/rfc4226
 
 // Notes:
 // * Max digit is 9 to stay in range of signed 32bit Number where 6 digits is common.
-
-using Toybox.Lang;
-using Toybox.Math;
-using Toybox.System;
 
 function hotp(key, counter, digit) {
   if (digit > 9) {
