@@ -4,8 +4,29 @@ using Toybox.WatchUi;
 using TextInput;
 
 class MainView extends WatchUi.View {
+  var timer;
+
   function initialize() {
     View.initialize();
+    timer = new Timer.Timer();
+  }
+
+  function onShow() {
+    timer.start(method(:update), 100, true);
+  }
+
+  function onHide() {
+    timer.stop();
+  }
+
+  function update() {
+    var provider = currentProvider();
+    switch (provider) {
+    case instanceof TimeBasedProvider:
+      provider.update();
+      break;
+    }
+    WatchUi.requestUpdate();
   }
 
   function onUpdate(dc) {
@@ -32,8 +53,9 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     var key = event.getKey();
     if (key == KEY_ENTER) {
       var provider = currentProvider();
-      if (provider) {
-        provider.updateCode();
+      switch (provider) {
+      case instanceof CounterBasedProvider:
+        provider.update();
         WatchUi.requestUpdate();
         return;
       }
@@ -94,7 +116,7 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function onTextEntered(text) {
     System.print("key: ");
     System.println(text);
-    _providers.add(new Provider(_enteredName, text, 0l));
+    _providers.add(new TimeBasedProvider(_enteredName, text, 30));
     _currentIndex = _providers.size() - 1;
     WatchUi.requestUpdate();
   }

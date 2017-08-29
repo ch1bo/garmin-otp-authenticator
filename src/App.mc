@@ -22,9 +22,15 @@ class App extends Application.AppBase {
       for (var i = 0; i < providersCount; i++) {
         var name = getProperty("providers_" + i.toString() + "_name");
         var key = getProperty("providers_" + i.toString() + "_key");
-        var counter = getProperty("providers_" + i.toString() + "_counter");
         var code = getProperty("providers_" + i.toString() + "_code");
-        var p = new Provider(name, key, counter);
+        var counter = getProperty("providers_" + i.toString() + "_counter");
+        var interval = getProperty("providers_" + i.toString() + "_interval");
+        var p;
+        if (counter != null) {
+          p = new CounterBasedProvider(name, key, counter);
+        } else {
+          p = new TimeBasedProvider(name, key, interval);
+        }
         p.code_ = code;
         _providers.add(p);
       }
@@ -38,10 +44,18 @@ class App extends Application.AppBase {
   function onStop(state) {
     setProperty("providers", _providers.size());
     for (var i = 0; i < _providers.size(); i++) {
-      setProperty("providers_" + i.toString() + "_name", _providers[i].name_);
-      setProperty("providers_" + i.toString() + "_key", _providers[i].key_);
-      setProperty("providers_" + i.toString() + "_counter", _providers[i].counter_);
-      setProperty("providers_" + i.toString() + "_code", _providers[i].code_);
+      var p = _providers[i];
+      setProperty("providers_" + i.toString() + "_name", p.name_);
+      setProperty("providers_" + i.toString() + "_key", p.key_);
+      setProperty("providers_" + i.toString() + "_code", p.code_);
+      switch (p) {
+      case instanceof CounterBasedProvider:
+        setProperty("providers_" + i.toString() + "_counter", p.counter_);
+        break;
+      case instanceof TimeBasedProvider:
+        setProperty("providers_" + i.toString() + "_interval", p.interval_);
+        break;
+      }
     }
     setProperty("currentIndex", _currentIndex);
   }
