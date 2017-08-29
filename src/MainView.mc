@@ -28,17 +28,20 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     BehaviorDelegate.initialize();
   }
 
-  function onSelect() {
-    var provider = currentProvider();
-    if (provider) {
-      provider.updateCode();
-      WatchUi.requestUpdate();
-    } else {
-      onMenu();
+  function onKey(event) {
+    var key = event.getKey();
+    if (key == KEY_ENTER) {
+      var provider = currentProvider();
+      if (provider) {
+        provider.updateCode();
+        WatchUi.requestUpdate();
+        return;
+      }
     }
+    BehaviorDelegate.onKey(event);
   }
 
-  function onMenu() {
+  function onSelect() {
     if (_providers.size() == 0) {
       var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
@@ -61,7 +64,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
   function onMenuItem(item) {
     if (item == :new_entry) {
       var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
-      WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
       return;
     }
     _currentIndex = item;
@@ -80,7 +83,7 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
     System.println(text);
     _enteredName = text;
     var view = new TextInput.TextInputView("Enter key", TextInput.ALPHA);
-    WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_RIGHT);
+    WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_LEFT);
   }
 }
 

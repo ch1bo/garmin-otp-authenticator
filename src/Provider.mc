@@ -8,7 +8,6 @@ class Provider {
     name_ = name;
     key_ = key;
     counter_ = counter;
-    code_ = hotp(key_.toUtf8Array(), counter_, 6);
   }
 
   function updateCode() {

@@ -23,7 +23,10 @@ class App extends Application.AppBase {
         var name = getProperty("providers_" + i.toString() + "_name");
         var key = getProperty("providers_" + i.toString() + "_key");
         var counter = getProperty("providers_" + i.toString() + "_counter");
-        _providers.add(new Provider(name, key, counter));
+        var code = getProperty("providers_" + i.toString() + "_code");
+        var p = new Provider(name, key, counter);
+        p.code_ = code;
+        _providers.add(p);
       }
     }
     var currentIndex = getProperty("currentIndex");
@@ -38,6 +41,7 @@ class App extends Application.AppBase {
       setProperty("providers_" + i.toString() + "_name", _providers[i].name_);
       setProperty("providers_" + i.toString() + "_key", _providers[i].key_);
       setProperty("providers_" + i.toString() + "_counter", _providers[i].counter_);
+      setProperty("providers_" + i.toString() + "_code", _providers[i].code_);
     }
     setProperty("currentIndex", _currentIndex);
   }

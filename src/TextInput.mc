@@ -39,8 +39,11 @@ class TextInputView extends WatchUi.View {
       x = dc.getWidth() - alphabetWidth - textWidth;
     }
     var y = (dc.getHeight() - fh)/2 + fh/2;
-    dc.drawText(x, y, font, text_, Graphics.TEXT_JUSTIFY_LEFT);
     drawAlphabet(dc, x + textWidth + 15);
+    if (confirm_) {
+      dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
+    }
+    dc.drawText(x, y, font, text_, Graphics.TEXT_JUSTIFY_LEFT);
   }
 
   function drawAlphabet(dc, x) {
