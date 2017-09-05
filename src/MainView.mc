@@ -65,7 +65,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (_providers.size() == 0) {
-      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
+      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new WatchUi.Menu();
@@ -85,7 +85,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
   }
   function onMenuItem(item) {
     if (item == :new_entry) {
-      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHA);
+      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
       return;
     }
@@ -100,11 +100,14 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) {
     TextInputDelegate.initialize(view);
   }
+  function onCancel() {
+    WatchUi.popView(WatchUi.SLIDE_LEFT);
+  }
   function onTextEntered(text) {
     System.print("name: ");
     System.println(text);
     _enteredName = text;
-    var view = new TextInput.TextInputView("Enter key", TextInput.ALPHA);
+    var view = new TextInput.TextInputView("Enter key", TextInput.ALPHANUM);
     WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_LEFT);
   }
 }
@@ -113,11 +116,16 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) {
     TextInputDelegate.initialize(view);
   }
+  function onCancel() {
+    WatchUi.popView(WatchUi.SLIDE_LEFT);
+  }
   function onTextEntered(text) {
     System.print("key: ");
     System.println(text);
     _providers.add(new TimeBasedProvider(_enteredName, text, 30));
     _currentIndex = _providers.size() - 1;
+    WatchUi.popView(WatchUi.SLIDE_LEFT);
+    WatchUi.popView(WatchUi.SLIDE_LEFT);
     WatchUi.requestUpdate();
   }
 }

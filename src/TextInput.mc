@@ -4,10 +4,9 @@ using Toybox.System;
 
 module TextInput {
 
-const ALPHA = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-               "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-               "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-               "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+const ALPHANUM = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                  "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 class TextInputView extends WatchUi.View {
 
@@ -104,24 +103,22 @@ class TextInputView extends WatchUi.View {
 
 class TextInputDelegate extends WatchUi.InputDelegate {
 
-  var last_key_ = null;
+  var pressed_key_;
+  var long_press_timer_;
   var view_;
 
   function initialize(view) {
     InputDelegate.initialize();
     view_ = view;
+    long_press_timer_ = new Timer.Timer();
   }
 
   function onSwipe(evt) {
     var swipe = evt.getDirection();
     if (swipe == SWIPE_UP) {
       view_.onUp();
-    } else if (swipe == SWIPE_RIGHT) {
-      view_.enter();
     } else if (swipe == SWIPE_DOWN) {
       view_.onDown();
-    } else if (swipe == SWIPE_LEFT) {
-      view_.backspace();
     }
     return true;
   }
@@ -141,23 +138,38 @@ class TextInputDelegate extends WatchUi.InputDelegate {
       view_.onDown();
       break;
     case KEY_ENTER:
-      if (last_key_ == KEY_ENTER) {
-        WatchUi.popView(WatchUi.SLIDE_LEFT);
-        onTextEntered(view_.text_);
-      } else {
-        view_.confirm(true);
-      }
+      view_.enter();
       break;
     case KEY_ESC:
-      if (last_key_ == KEY_ESC) {
-        WatchUi.popView(WatchUi.SLIDE_LEFT);
-        onCancel();
-      } else {
-        view_.confirm(false);
-      }
+      view_.backspace();
       break;
     }
-    last_key_ = key;
+    return true;
+  }
+
+  function onLongPress() {
+    switch (pressed_key_) {
+    case KEY_ENTER:
+      onTextEntered(view_.text_);
+      break;
+    case KEY_ESC:
+      onCancel();
+      break;
+    }
+    pressed_key_ = -1;
+  }
+
+  function onKeyPressed(event) {
+    pressed_key_ = event.getKey();
+    long_press_timer_.start(method(:onLongPress), 300, false);
+    return InputDelegate.onKeyPressed(event);
+  }
+
+  function onKeyReleased(event) {
+    if (pressed_key_ == event.getKey()) {
+      long_press_timer_.stop();
+      return InputDelegate.onKeyReleased(event);
+    }
     return true;
   }
 
