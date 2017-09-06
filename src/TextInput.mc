@@ -101,84 +101,76 @@ class TextInputView extends WatchUi.View {
   }
 }
 
-class TextInputDelegate extends WatchUi.InputDelegate {
+class TextInputDelegate extends WatchUi.BehaviorDelegate {
 
-  var pressed_key_;
-  var long_press_timer_;
   var view_;
 
   function initialize(view) {
-    InputDelegate.initialize();
+    BehaviorDelegate.initialize();
     view_ = view;
-    long_press_timer_ = new Timer.Timer();
+  }
+
+  function onNextPage() {
+    view_.onUp();
+    return true;
+  }
+
+  function onPreviousPage() {
+    view_.onDown();
+    return true;
   }
 
   function onSwipe(evt) {
     var swipe = evt.getDirection();
     if (swipe == SWIPE_UP) {
       view_.onUp();
-    } else if (swipe == SWIPE_DOWN) {
-      view_.onDown();
+      return true;
     }
-    return true;
-  }
-
-  function onTap(event) {
-    view_.enter();
+    if (swipe == SWIPE_DOWN) {
+      view_.onDown();
+      return true;
+    }
     return false;
   }
 
-  function onKey(event) {
-    var key = event.getKey();
-    switch (key) {
-    case KEY_UP:
-      view_.onUp();
-      break;
-    case KEY_DOWN:
-      view_.onDown();
-      break;
-    case KEY_ENTER:
-      view_.enter();
-      break;
-    case KEY_ESC:
-      view_.backspace();
-      break;
-    }
-    return true;
-  }
-
-  function onLongPress() {
-    switch (pressed_key_) {
-    case KEY_ENTER:
+  function onSelect() {
+    // TODO(SN): smelly access on view state
+    if (view_.confirm_) {
+      view_.confirm_ = false;
       onTextEntered(view_.text_);
-      break;
-    case KEY_ESC:
-      onCancel();
-      break;
-    }
-    pressed_key_ = -1;
-  }
-
-  function onKeyPressed(event) {
-    pressed_key_ = event.getKey();
-    long_press_timer_.start(method(:onLongPress), 300, false);
-    return InputDelegate.onKeyPressed(event);
-  }
-
-  function onKeyReleased(event) {
-    if (pressed_key_ == event.getKey()) {
-      long_press_timer_.stop();
-      return InputDelegate.onKeyReleased(event);
+    } else {
+      view_.enter();
     }
     return true;
+  }
+
+  function onBack() {
+    // TODO(SN): hold state here or in view?
+    if (view_.text_.length() > 0) {
+      view_.backspace();
+    } else {
+      onCancel();
+    }
+    return true;
+  }
+
+  function onMenu() {
+    // TODO(SN): another hack
+    if (view_.confirm_) {
+      onTextEntered(view_.text_);
+    } else {
+      view_.confirm(true);
+    }
   }
 
   function onTextEntered(text) {
     System.println("TextInput: " + text);
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 
   function onCancel() {
-    System.println("TextInput canceled");
+    System.println("TextInput: canceled");
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
 

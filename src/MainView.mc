@@ -74,6 +74,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
         menu.addItem(_providers[i].name_, i);
       }
       menu.addItem("New entry", :new_entry);
+      menu.addItem("Delete entry", :delete_entry);
       WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
   }
@@ -84,13 +85,32 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
     MenuInputDelegate.initialize();
   }
   function onMenuItem(item) {
-    if (item == :new_entry) {
+    switch(item) {
+    case :new_entry:
       var view = new TextInput.TextInputView("Enter name", TextInput.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
       return;
+    case :delete_entry:
+      var menu = new WatchUi.Menu();
+      menu.setTitle("Delete provider");
+      for (var i = 0; i < _providers.size(); i++) {
+        menu.addItem(_providers[i].name_, _providers[i]);
+      }
+      WatchUi.pushView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return;
+    default:
+      _currentIndex = item;
+      WatchUi.requestUpdate();
     }
-    _currentIndex = item;
-    WatchUi.requestUpdate();
+  }
+}
+
+class DeleteMenuDelegate extends WatchUi.MenuInputDelegate {
+  function initialize() {
+    MenuInputDelegate.initialize();
+  }
+  function onMenuItem(item) {
+    _providers.remove(item);
   }
 }
 
@@ -99,9 +119,6 @@ var _enteredName = "";
 class NameInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) {
     TextInputDelegate.initialize(view);
-  }
-  function onCancel() {
-    WatchUi.popView(WatchUi.SLIDE_LEFT);
   }
   function onTextEntered(text) {
     System.print("name: ");
@@ -116,16 +133,12 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) {
     TextInputDelegate.initialize(view);
   }
-  function onCancel() {
-    WatchUi.popView(WatchUi.SLIDE_LEFT);
-  }
   function onTextEntered(text) {
     System.print("key: ");
     System.println(text);
     _providers.add(new TimeBasedProvider(_enteredName, text, 30));
     _currentIndex = _providers.size() - 1;
-    WatchUi.popView(WatchUi.SLIDE_LEFT);
-    WatchUi.popView(WatchUi.SLIDE_LEFT);
-    WatchUi.requestUpdate();
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
