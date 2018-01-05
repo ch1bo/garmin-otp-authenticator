@@ -45,30 +45,37 @@ class MainView extends WatchUi.View {
       return;
     }
     var codeFont = Graphics.FONT_NUMBER_HOT;
-    var textFont = Graphics.FONT_MEDIUM;
-    var countdownFont = Graphics.FONT_NUMBER_MILD;
-    var errorFont = Graphics.FONT_SMALL;
+    var codeHeight = dc.getFontHeight(codeFont);
+    var codeColor = Graphics.COLOR_WHITE;
     // Provider text
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - dc.getFontHeight(codeFont), textFont,
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight, Graphics.FONT_MEDIUM,
                 provider.name_, Graphics.TEXT_JUSTIFY_CENTER);
     switch (provider) {
     case instanceof TimeBasedProvider:
       // Countdown text
       var delta = provider.next_ - Time.now().value();
       dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + dc.getFontHeight(codeFont)/2, countdownFont,
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + codeHeight/2, Graphics.FONT_NUMBER_MILD,
                   delta, Graphics.TEXT_JUSTIFY_CENTER);
+      // Colored OTP code depending on countdown
+      if (delta > 15) {
+        codeColor = Graphics.COLOR_GREEN;
+      } else if (delta > 5) {
+        codeColor = Graphics.COLOR_ORANGE;
+      } else {
+        codeColor = Graphics.COLOR_RED;
+      }
     case instanceof CounterBasedProvider:
       // OTP text
-      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - dc.getFontHeight(codeFont)/2, codeFont,
+      dc.setColor(codeColor, Graphics.COLOR_BLACK);
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2, codeFont,
                   provider.code_, Graphics.TEXT_JUSTIFY_CENTER);
     }
     if (_error.length() > 0) {
       dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
       drawTextBox(dc, 0, dc.getHeight()/2 + dc.getFontHeight(codeFont),
-                  dc.getWidth(), errorFont, _error);
+                  dc.getWidth(), Graphics.FONT_SMALL, _error);
     }
   }
 
