@@ -21,3 +21,6 @@ test: build/authenticator_test.prg
 
 %.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES)
 	monkeyc -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) $(SOURCES)
+
+clean:
+	rm -rf build/

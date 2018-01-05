@@ -1,9 +1,10 @@
 using Toybox.Lang;
 using Toybox.System;
+using Toybox.Test;
 
 (:test)
 function truncate_test(logger) {
-  var bytes = hex2bytes("cc93cf18508d94934c64b65d8ba7667fb7cde4b0");
+  var bytes = base16ToBytes("cc93cf18508d94934c64b65d8ba7667fb7cde4b0");
   var result = truncate(bytes);
   assertNumber(result);
   return result == 0x4c93cf18;
@@ -12,5 +13,6 @@ function truncate_test(logger) {
 (:test)
 function hotp_test(logger) {
   var key = "12345678901234567890".toUtf8Array();
-  return hotp(key, 0, 6) == 755224;
+  Test.assertEqual("755224", hotp(key, 0, 6));
+  return true;
 }
