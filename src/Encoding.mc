@@ -63,7 +63,7 @@ function base32ToBytes(str) {
   }
   var bs = new [cs.size() / 8 * 5];
   for (var i = 0; i < cs.size(); i += 8) {
-    var j = i / 8;
+    var j = i / 8 * 5;
     bs[j] = b32toi(cs[i]) & 0x1F << 3 | b32toi(cs[i+1]) & 0x1C >> 2; // 5 + 3
     bs[j+1] = b32toi(cs[i+1]) & 0x03 << 6 | b32toi(cs[i+2]) & 0x1F << 1 | b32toi(cs[i+3]) & 0x10 >> 4; // 2 + 5 + 1
     bs[j+2] = b32toi(cs[i+3]) & 0x0F << 4 | b32toi(cs[i+4]) & 0x1E >> 1; // 4 + 4
@@ -90,7 +90,6 @@ function bytesToBase32(bytes) {
   }
   return str;
 }
-
 
 function b32toi(c) {
   switch(c.toUpper()) {
@@ -166,7 +165,6 @@ function itob32(i) {
   case 30: return '6';
   case 31: return '7';
   default:
-    System.println(i);
     throw new UnexpectedSymbolException(i.toString());
   }
 }
@@ -179,7 +177,7 @@ class UnexpectedSymbolException extends Lang.Exception {
     symbol_ = symbol;
   }
 
-  function getErroMessage() {
+  function getErrorMessage() {
     return "Unexpected symbol: " + symbol_;
   }
 }
@@ -192,7 +190,7 @@ class InvalidValueException extends Lang.Exception {
     value_ = value;
   }
 
-  function getErroMessage() {
+  function getErrorMessage() {
     return "Invalid value: " + value_;
   }
 }

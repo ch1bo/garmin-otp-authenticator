@@ -23,7 +23,7 @@ function assertEqual(message, expected, actual) {
 
 function assertArrayEqual(message, expected, actual) {
   var equal = arrayEqual(expected, actual);
-  Test.assertMessage(equal, message + " not equal\nexpected: " + arrayToString(expected) + "\n but got: " + arrayToString(actual));
+  Test.assertMessage(equal, message + " not equal\nexpected: " + expected + "\n but got: " + actual);
 }
 
 function arrayToString(xs) {

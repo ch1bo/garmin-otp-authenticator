@@ -29,9 +29,11 @@ function hotp(key, counter, digit) {
     data[i] = counter & 0xff;
     counter = counter >> 8;
   }
-  var n = truncate(hmacSHA1(key, data)) % DIGITS[digit];
+  var h = hmacSHA1(key, data);
+  var t = truncate(h);
+  var n = t % DIGITS[digit];
   var code = n.toString();
-  while (code.length() < 6) {
+  while (code.length() < digit) {
     code = "0" + code;
   }
   return code;

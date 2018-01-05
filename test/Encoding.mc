@@ -40,8 +40,8 @@ function base32_test(logger) {
 
 (:test)
   function base32_test2(logger) {
-  // assertArrayEqual("base32 bytes", "fooba".toUtf8Array(),
-  //                  base32ToBytes("MZXW6YTB"));
+  assertArrayEqual("base32 bytes", "foobafooba".toUtf8Array(),
+                   base32ToBytes("MZXW6YTBMZXW6YTB"));
   assertEqual("encoded string", "MZXW6YTBMZXW6YTB",
               bytesToBase32("foobafooba".toUtf8Array()));
   return true;

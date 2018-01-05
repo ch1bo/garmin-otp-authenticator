@@ -34,8 +34,8 @@ class TimeBasedProvider extends Provider {
 
   function update() {
     var now = Time.now().value();
-    if (now > next_) {
-      code_ = totp(key_.toUtf8Array(), interval_, 6);
+    if (now >= next_) {
+      code_ = totp(base32ToBytes(key_), interval_, 6);
       next_ = now + now % interval_;
     }
   }

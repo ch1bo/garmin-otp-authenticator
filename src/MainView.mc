@@ -35,10 +35,15 @@ class MainView extends WatchUi.View {
     var provider = currentProvider();
     var font = Graphics.FONT_MEDIUM;
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - fh, font,
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - 2*fh, font,
                 provider ? provider.name_ : "Tap to start", Graphics.TEXT_JUSTIFY_CENTER);
-    if (provider) {
+    switch (provider) {
+    case instanceof TimeBasedProvider:
+      var delta = provider.next_ - Time.now().value();
       dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + fh, font,
+                  delta, Graphics.TEXT_JUSTIFY_CENTER);
+    case instanceof CounterBasedProvider:
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, font,
                   provider.code_, Graphics.TEXT_JUSTIFY_CENTER);
     }
   }
@@ -121,10 +126,8 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
     TextInputDelegate.initialize(view);
   }
   function onTextEntered(text) {
-    System.print("name: ");
-    System.println(text);
     _enteredName = text;
-    var view = new TextInput.TextInputView("Enter key", TextInput.ALPHANUM);
+    var view = new TextInput.TextInputView("Enter key (Base32)", TextInput.BASE32);
     WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_LEFT);
   }
 }
@@ -134,8 +137,6 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
     TextInputDelegate.initialize(view);
   }
   function onTextEntered(text) {
-    System.print("key: ");
-    System.println(text);
     _providers.add(new TimeBasedProvider(_enteredName, text, 30));
     _currentIndex = _providers.size() - 1;
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
