@@ -16,11 +16,16 @@ test: build/authenticator_test.prg
 	connectiq &
 	monkeydo build/authenticator_test.prg vivoactive_hr -t $(TEST_ARGS)
 
+release: build/authenticator.iq
+
 %_test.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES) $(TESTS)
 	monkeyc -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) --unit-test $(SOURCES) $(TESTS)
 
 %.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES)
 	monkeyc -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) $(SOURCES)
+
+%.iq: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES)
+	monkeyc -e -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) $(SOURCES)
 
 clean:
 	rm -rf build/
