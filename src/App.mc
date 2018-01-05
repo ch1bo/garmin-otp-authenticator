@@ -11,6 +11,32 @@ function currentProvider() {
   return null;
 }
 
+function loadProviders() {
+  var ps = Application.Storage.getValue("providers");
+  if (ps) {
+    for (var i = 0; i < ps.size(); i++) {
+      try {
+        _providers.add(providerFromDict(ps[i]));
+      } catch (exception) {
+        _error = exception.getErrorMessage();
+      }
+    }
+  }
+  var ci = Application.Storage.getValue("currentIndex");
+  if (ci != null) {
+    _currentIndex = ci;
+  }
+}
+
+function saveProviders() {
+  var ps = new [_providers.size()];
+  for (var i = 0; i < _providers.size(); i++) {
+    ps[i] = providerToDict(_providers[i]);
+  }
+  Application.Storage.setValue("providers", ps);
+  Application.Storage.setValue("currentIndex", _currentIndex);
+}
+
 class App extends Application.AppBase {
 
   function initialize() {
@@ -18,47 +44,11 @@ class App extends Application.AppBase {
   }
 
   function onStart(state) {
-    var providersCount = getProperty("providers");
-    if (providersCount) {
-      for (var i = 0; i < providersCount; i++) {
-        var name = getProperty("providers_" + i.toString() + "_name");
-        var key = getProperty("providers_" + i.toString() + "_key");
-        var code = getProperty("providers_" + i.toString() + "_code");
-        var counter = getProperty("providers_" + i.toString() + "_counter");
-        var interval = getProperty("providers_" + i.toString() + "_interval");
-        var p;
-        if (counter != null) {
-          p = new CounterBasedProvider(name, key, counter);
-        } else {
-          p = new TimeBasedProvider(name, key, interval);
-        }
-        p.code_ = code;
-        _providers.add(p);
-      }
-    }
-    var currentIndex = getProperty("currentIndex");
-    if (currentIndex != null) {
-      _currentIndex = currentIndex;
-    }
+    loadProviders();
   }
 
   function onStop(state) {
-    setProperty("providers", _providers.size());
-    for (var i = 0; i < _providers.size(); i++) {
-      var p = _providers[i];
-      setProperty("providers_" + i.toString() + "_name", p.name_);
-      setProperty("providers_" + i.toString() + "_key", p.key_);
-      setProperty("providers_" + i.toString() + "_code", p.code_);
-      switch (p) {
-      case instanceof CounterBasedProvider:
-        setProperty("providers_" + i.toString() + "_counter", p.counter_);
-        break;
-      case instanceof TimeBasedProvider:
-        setProperty("providers_" + i.toString() + "_interval", p.interval_);
-        break;
-      }
-    }
-    setProperty("currentIndex", _currentIndex);
+    saveProviders();
   }
 
   function getInitialView() {

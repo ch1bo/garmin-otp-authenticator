@@ -196,6 +196,7 @@ class DeleteMenuDelegate extends WatchUi.MenuInputDelegate {
       _currentIndex = 0;
     }
     _providers.remove(item);
+    saveProviders();
   }
 }
 
@@ -220,6 +221,7 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
     _providers.add(new TimeBasedProvider(_enteredName, text, 30));
     _currentIndex = _providers.size() - 1;
     _error = "";
+    saveProviders();
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }

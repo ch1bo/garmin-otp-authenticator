@@ -26,6 +26,11 @@ function assertArrayEqual(message, expected, actual) {
   Test.assertMessage(equal, message + " not equal\nexpected: " + expected + "\n but got: " + actual);
 }
 
+function assertDictEqual(message, expected, actual) {
+  var equal = dictEqual(expected, actual);
+  Test.assertMessage(equal, message + " not equal\nexpected: " + expected + "\n but got: " + actual);
+}
+
 function arrayToString(xs) {
   var str = "[";
   for(var i = 0; i < xs.size(); i++) {
@@ -43,6 +48,19 @@ function arrayEqual(a, b) {
   }
   for(var i = 0; i < a.size(); i++) {
     if (a[i] != b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function dictEqual(a, b) {
+  if (a.size() != b.size()) {
+    return false;
+  }
+  var ks = a.keys();
+  for (var i = 0; i < a.size(); i++) {
+    if (!a.get(ks[i]).equals(b.get(ks[i]))) {
       return false;
     }
   }
