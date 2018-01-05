@@ -4,26 +4,32 @@ using Toybox.WatchUi;
 using TextInput;
 
 class MainView extends WatchUi.View {
-  var timer;
+  var timer_;
 
   function initialize() {
     View.initialize();
-    timer = new Timer.Timer();
+    timer_ = new Timer.Timer();
   }
 
   function onShow() {
-    timer.start(method(:update), 100, true);
+    timer_.start(method(:update), 100, true);
   }
 
   function onHide() {
-    timer.stop();
+    timer_.stop();
   }
 
   function update() {
     var provider = currentProvider();
     switch (provider) {
     case instanceof TimeBasedProvider:
-      provider.update();
+      try {
+        if (provider.update()) {
+          _error = "";
+        }
+      } catch (exception) {
+        _error = exception.getErrorMessage();
+      }
       break;
     }
     WatchUi.requestUpdate();
@@ -33,20 +39,82 @@ class MainView extends WatchUi.View {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var provider = currentProvider();
-    var font = Graphics.FONT_MEDIUM;
-    var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - 2*fh, font,
-                provider ? provider.name_ : "Tap to start", Graphics.TEXT_JUSTIFY_CENTER);
+    if (provider == null) {
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM,
+                  "Tap to start", Graphics.TEXT_JUSTIFY_CENTER);
+      return;
+    }
+    var codeFont = Graphics.FONT_NUMBER_HOT;
+    var textFont = Graphics.FONT_MEDIUM;
+    var countdownFont = Graphics.FONT_NUMBER_MILD;
+    var errorFont = Graphics.FONT_SMALL;
+    // Provider text
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - dc.getFontHeight(codeFont), textFont,
+                provider.name_, Graphics.TEXT_JUSTIFY_CENTER);
     switch (provider) {
     case instanceof TimeBasedProvider:
+      // Countdown text
       var delta = provider.next_ - Time.now().value();
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + fh, font,
+      dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + dc.getFontHeight(codeFont)/2, countdownFont,
                   delta, Graphics.TEXT_JUSTIFY_CENTER);
     case instanceof CounterBasedProvider:
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, font,
+      // OTP text
+      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - dc.getFontHeight(codeFont)/2, codeFont,
                   provider.code_, Graphics.TEXT_JUSTIFY_CENTER);
     }
+    if (_error.length() > 0) {
+      dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
+      drawTextBox(dc, 0, dc.getHeight()/2 + dc.getFontHeight(codeFont),
+                  dc.getWidth(), errorFont, _error);
+    }
   }
+
+  function drawTextBox(dc, x, y, width, font, text) {
+    var ts = wrapText(dc, width, font, text);
+    for (var i = 0; i < ts.size(); i++) {
+      dc.drawText(x, y + dc.getFontHeight(font)*i, font,
+                  ts[i], Graphics.TEXT_JUSTIFY_LEFT);
+    }
+  }
+}
+
+function wrapText(dc, width, font, text) {
+  var lines = [];
+  var w = dc.getWidth();
+  var cs = text.toCharArray();
+  while (dc.getTextWidthInPixels(text, font) > w) {
+    // white space wrap
+    while (cs.size() > 0) {
+      System.print("index of ' ': ");
+      var lastWS = lastIndexOf(cs, ' ');
+      System.println(lastWS);
+      if (lastWS == -1) {
+        break;
+      }
+      var t = text.substring(0, lastWS);
+      if (dc.getTextWidthInPixels(t, font) < w) {
+        lines.add(t);
+        System.println("fits: " + t);
+        text = text.substring(lastWS + 1, text.length());
+        break;
+      }
+      cs = cs.slice(0, lastWS);
+    }
+  }
+  lines.add(text);
+  return lines;
+}
+
+function lastIndexOf(array, elem) {
+  for (var i = array.size() - 1; i >= 0; i--) {
+    if (array[i] == elem) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 class MainViewDelegate extends WatchUi.BehaviorDelegate {
@@ -105,6 +173,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       return;
     default:
       _currentIndex = item;
+      _error = "";
       WatchUi.requestUpdate();
     }
   }
@@ -115,6 +184,10 @@ class DeleteMenuDelegate extends WatchUi.MenuInputDelegate {
     MenuInputDelegate.initialize();
   }
   function onMenuItem(item) {
+    var provider = currentProvider();
+    if (provider != null && provider == item) {
+      _currentIndex = 0;
+    }
     _providers.remove(item);
   }
 }
@@ -139,6 +212,7 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function onTextEntered(text) {
     _providers.add(new TimeBasedProvider(_enteredName, text, 30));
     _currentIndex = _providers.size() - 1;
+    _error = "";
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }

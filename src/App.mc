@@ -2,6 +2,7 @@ using Toybox.Application;
 
 var _providers = [];
 var _currentIndex = 0;
+var _error = "";
 
 function currentProvider() {
   if (_currentIndex >= 0 && _currentIndex < _providers.size()) {

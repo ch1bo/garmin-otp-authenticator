@@ -18,7 +18,7 @@ class CounterBasedProvider extends Provider {
   }
 
   function update() {
-    code_ = hotp(key_.toUtf8Array(), counter_, 6);
+    code_ = hotp(base32ToBytes(key_), counter_, 6);
     counter_++;
   }
 }
@@ -34,9 +34,18 @@ class TimeBasedProvider extends Provider {
 
   function update() {
     var now = Time.now().value();
-    if (now >= next_) {
-      code_ = totp(base32ToBytes(key_), interval_, 6);
-      next_ = now + now % interval_;
+    if (now < next_) {
+      return false;
     }
+    next_ = now + 10; // on errors retry in 10
+    var k;
+    try {
+      k = base32ToBytes(key_);
+    } catch (exception instanceof InvalidValueException) {
+      throw new InvalidValueException("key not base32");
+    }
+    code_ = totp(k, interval_, 6);
+    next_ = (now / interval_ + 1) * interval_;
+    return true;
   }
 }
