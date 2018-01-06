@@ -16,7 +16,8 @@ test: build/authenticator_test.prg
 	connectiq &
 	monkeydo build/authenticator_test.prg vivoactive_hr -t $(TEST_ARGS)
 
-release: build/authenticator.iq build/authenticator_release.prg
+GIT_VERSION=$(shell git describe HEAD --always)
+release: build/authenticator-$(GIT_VERSION).iq build/authenticator_release.prg
 
 %_test.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES) $(TESTS)
 	monkeyc -o $@ -y $(KEY) -m $(MANIFEST) -z $(RESOURCES) --unit-test $(SOURCES) $(TESTS)
