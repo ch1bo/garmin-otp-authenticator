@@ -24,7 +24,13 @@ class CounterBasedProvider extends Provider {
   }
 
   function update() {
-    code_ = hotp(base32ToBytes(key_), counter_, 6);
+    var k;
+    try {
+      k = base32ToBytes(key_); // TODO(Sbase32ToBytes(keyN): profile how expensive this is
+    } catch (exception instanceof InvalidValueException) {
+      throw new InvalidValueException("key not base32");
+    }
+    code_ = toDigits(hotp(k, counter_), 6);
     counter_++;
   }
 
@@ -56,7 +62,7 @@ class TimeBasedProvider extends Provider {
     } catch (exception instanceof InvalidValueException) {
       throw new InvalidValueException("key not base32");
     }
-    code_ = totp(k, interval_, 6);
+    code_ = toDigits(totp(k, interval_), 6);
     next_ = (now / interval_ + 1) * interval_;
     return true;
   }
@@ -68,6 +74,37 @@ class TimeBasedProvider extends Provider {
   }
 }
 
+// TODO(SN): dry key handling
+class SteamGuardProvider extends TimeBasedProvider {
+  var next_ = 0;
+
+  function initialize(name, key, interval) {
+    TimeBasedProvider.initialize(name, key, interval);
+  }
+
+  function update() {
+    var now = Time.now().value();
+    if (now < next_) {
+      return false;
+    }
+    next_ = now + 10; // on errors retry in 10
+    var k;
+    try {
+      k = base32ToBytes(key_); // TODO(SN): check on tetx input (validate function)
+    } catch (exception instanceof InvalidValueException) {
+      throw new InvalidValueException("key not base32");
+    }
+    code_ = toSteam(totp(k, interval_), 6);
+    next_ = (now / interval_ + 1) * interval_;
+    return true;
+  }
+
+  function equals(other) {
+    return TimeBasedProvider.equals(other) &&
+      other instanceof SteamGuardProvider;
+  }
+}
+
 function providerToDict(p) {
   var d = {
     "name" => p.name_,
@@ -76,26 +113,41 @@ function providerToDict(p) {
   };
   switch (p) {
   case instanceof CounterBasedProvider:
+    d.put("type", "CounterBasedProvider");
     d.put("counter", p.counter_);
     break;
+  case instanceof SteamGuardProvider:
+    d.put("type", "SteamGuardProvider");
+    d.put("interval", p.interval_);
+    d.put("next", p.next_);
   case instanceof TimeBasedProvider:
+    d.put("type", "TimeBasedProvider");
     d.put("interval", p.interval_);
     d.put("next", p.next_);
     break;
   }
+  System.println(d);
   return d;
 }
 
 function providerFromDict(d) {
   var p = null;
-  if (d.hasKey("counter")) {
+  switch (d.get("type")) {
+  case "CounterBasedProvider":
     p = new CounterBasedProvider(d.get("name"), d.get("key"),
                                  d.get("counter"));
-  } else if (d.hasKey("interval")) {
+    break;
+  case "TimeBasedProvider":
     p = new TimeBasedProvider(d.get("name"), d.get("key"),
                               d.get("interval"));
     p.next_ = d.get("next");
-  } else {
+    break;
+  case "SteamGuardProvider":
+    p = new SteamGuardProvider(d.get("name"), d.get("key"),
+                               d.get("interval"));
+    p.next_ = d.get("next");
+    break;
+  default:
     throw new InvalidValueException("not a provider dict");
   }
   p.code_ = d.get("code");

@@ -3,43 +3,61 @@ using Toybox.Math;
 using Toybox.System;
 using Toybox.Time;
 
+// Convert an OTP code to a digit string (arfc6238/rfc4226)
+// Note: Max number of digits is 9 to stay in range of signed 32bit
+//       Number where 6 digits is commonly used.
+function toDigits(code, digits) {
+  if (digits > 9) {
+    digits = 9;
+  }
+  var n = code % DIGITS[digits];
+  var code = n.toString();
+  while (code.length() < digits) {
+    code = "0" + code;
+  }
+}
+
+const DIGITS = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
+
+// Convert an OTP number to a steam guard compatible string.
+function toSteam(code) {
+  var code = [];
+  var length = STEAMCHARS.size();
+  for (var i = 0; i < 5; i++) {
+    System.print("Code: ");
+    System.println(code);
+    System.println(STEAMCHARS[code % length]);
+    code.add(STEAMCHARS[code % length]);
+    code /= length;
+  }
+  return charArrayToString(code);
+}
+
+const STEAMCHARS = ["2", "3", "4", "5", "6", "7", "8", "9", "B", "C",
+                    "D", "F", "G", "H", "J", "K", "M", "N", "P", "Q",
+                    "R", "T", "V", "W", "X", "Y"];
+
 // Implementation of TOTP: Time-Based One-Time Password Algorithm
 // rfc6238 https://tools.ietf.org/html/rfc6238
 
 // Notes:
 //  * T0 is defaulted to Unix Epoch
 
-function totp(key, x, digit) {
-  var t = Time.now().value() / x;
-  return hotp(key, t, digit);
+function totp(key, period) {
+  return hotp(key, Time.now().value() / period);
 }
 
 // Implementation of HOTP: An HMAC-Based One-Time Password Algorithm
-// rfc2104 https://tools.ietf.org/html/rfc4226
+// rfc4226 https://tools.ietf.org/html/rfc4226
 
-// Notes:
-// * Max digit is 9 to stay in range of signed 32bit Number where 6 digits is common.
-
-function hotp(key, counter, digit) {
-  if (digit > 9) {
-    digit = 9;
-  }
+function hotp(key, counter) {
   var data = new [8];
   for (var i = data.size() - 1; i >= 0; i--) {
     data[i] = counter & 0xff;
     counter = counter >> 8;
   }
-  var h = hmacSHA1(key, data);
-  var t = truncate(h);
-  var n = t % DIGITS[digit];
-  var code = n.toString();
-  while (code.length() < digit) {
-    code = "0" + code;
-  }
-  return code;
+  return truncate(hmacSHA1(key, data));
 }
-
-const DIGITS = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
 
 function truncate(bytes) {
   if (bytes.size() != 20) {

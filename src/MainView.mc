@@ -213,15 +213,50 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
   }
 }
 
+var _enteredKey = "";
+
 class KeyInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) {
     TextInputDelegate.initialize(view);
   }
   function onTextEntered(text) {
-    _providers.add(new TimeBasedProvider(_enteredName, text, 30));
-    _currentIndex = _providers.size() - 1;
-    _error = "";
-    saveProviders();
+    _enteredKey = text;
+    var menu = new WatchUi.Menu();
+    menu.setTitle("Select type");
+    menu.addItem("Time based", :time);
+    menu.addItem("Counter based", :counter);
+    menu.addItem("Steam guard", :steam);
+    WatchUi.pushView(menu, new TypeMenuDelegate(), WatchUi.SLIDE_LEFT);
+  }
+}
+
+class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
+  function initialize() {
+    MenuInputDelegate.initialize();
+  }
+
+  function onMenuItem(item) {
+    var provider;
+    switch(item) {
+    case :time:
+      provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
+      break;
+    case :counter:
+      provider = new CounterBasedProvider(_enteredName, _enteredKey);
+      return;
+    case :steam:
+      provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
+      System.println("new steam guard provider");
+      break;
+    }
+    if (provider != null) {
+      System.println(provider);
+      _providers.add(provider);
+      _currentIndex = _providers.size() - 1;
+      _error = "";
+      saveProviders();
+    }
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
