@@ -1,26 +1,46 @@
 <resources>
-  <string id="appName">OTP Authenticator</string>
-  <string id="appVersionTitle">Version</string>
-  <string id="secret">Secret key</string>
-  <string id="data">Encrypted data for backup/restore</string>
+  <string id="appName">OTP Authenticator Dev</string>
+  <string id="appVersion">Version</string>
+  <string id="addType">Add provider: type</string>
+  <string id="addName">Add provider: name</string>
+  <string id="addKey">Add provider: key</string>
+  <string id="TimeBasedProvider">TimeBasedProvider</string>
+  <string id="CounterBasedProvider">CounterBasedProvider</string>
+  <string id="SteamGuardProvider">SteamGuardProvider</string>
+  <string id="exportData">Exported data</string>
 
   <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
   <bitmap id="LauncherIcon" filename="images/launcher_icon.png" />
 
   <properties>
     <property id="appVersion" type="string">2.0.0</property>
-    <property id="secret" type="string"></property>
-    <property id="data" type="string"></property>
+    <property id="addType" type="number">1</property>
+    <property id="addName" type="string"></property>
+    <property id="addKey" type="string"></property>
+    <property id="exportData" type="string"></property>
   </properties>
 
   <settings>
-    <setting propertyKey="@Properties.appVersion" title="@Strings.appVersionTitle">
+    <setting propertyKey="@Properties.appVersion" title="@Strings.appVersion">
       <settingConfig type="alphaNumeric" readonly="true" />
+    </setting>
+    <setting propertyKey="@Properties.addType" title="@Strings.addType">
+      <settingConfig type="list">
+        <listEntry value="0">@Strings.CounterBasedProvider</listEntry>
+        <listEntry value="1">@Strings.TimeBasedProvider</listEntry>
+        <listEntry value="2">@Strings.SteamGuardProvider</listEntry>
+      </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.addName" title="@Strings.addName">
+      <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.addKey" title="@Strings.addKey">
+      <settingConfig type="alphaNumeric" />
     </setting>
     <setting propertyKey="@Properties.secret" title="@Strings.secret">
       <settingConfig type="alphaNumeric" />
     </setting>
-    <setting propertyKey="@Properties.data" title="@Strings.data">
+    <setting propertyKey="@Properties.exportData" title="@Strings.exportData">
       <settingConfig type="alphaNumeric" />
     </setting>
   </settings>

@@ -22,7 +22,8 @@ class MainView extends WatchUi.View {
   function update() {
     var provider = currentProvider();
     try {
-      if (provider != null && provider has :update) {
+      if (provider != null && provider has :update &&
+          !(provider instanceof CounterBasedProvider)) {
         provider.update();
       }
       _error = "";
@@ -154,6 +155,9 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       }
       menu.addItem("New entry", :new_entry);
       menu.addItem("Delete entry", :delete_entry);
+      menu.addItem("Delete ALL", :delete_all);
+      menu.addItem("Export", :export_providers);
+      menu.addItem("Import", :import_providers);
       WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
   }
@@ -175,7 +179,21 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       for (var i = 0; i < _providers.size(); i++) {
         menu.addItem(_providers[i].name_, _providers[i]);
       }
-      WatchUi.switchToView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      WatchUi.pushView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return;
+    case :delete_all:
+      System.println("TODO: Ask for confirmation");
+      _providers = [];
+      _currentIndex = 0;
+      return;
+    case :export_providers:
+      exportToSettings();
+      System.println("TODO: Show instructions");
+      return;
+    case :import_providers:
+      importFromSettings();
+      saveProviders();
+      System.println("TODO: Show instructions");
       return;
     default:
       _currentIndex = item;
@@ -243,7 +261,7 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
       provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
       break;
     case :counter:
-      provider = new CounterBasedProvider(_enteredName, _enteredKey);
+      provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
       return;
     case :steam:
       provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
@@ -253,8 +271,6 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
       _providers.add(provider);
       _currentIndex = _providers.size() - 1;
       _error = "";
-      System.println("new providers list");
-      System.println(_providers);
       saveProviders();
     }
     WatchUi.popView(WatchUi.SLIDE_RIGHT);

@@ -26,7 +26,7 @@ class CounterBasedProvider extends Provider {
   function update() {
     var k;
     try {
-      k = base32ToBytes(key_); // TODO(Sbase32ToBytes(keyN): profile how expensive this is
+      k = base32ToBytes(key_); // TODO(SN): profile how expensive this is
     } catch (exception instanceof InvalidValueException) {
       throw new InvalidValueException("key not base32");
     }
@@ -105,6 +105,8 @@ class SteamGuardProvider extends TimeBasedProvider {
   }
 }
 
+const PROVIDERS = ["CounterBasedProvider", "TimeBasedProvider", "SteamGuardProvider"];
+
 function providerToDict(p) {
   var d = {
     "name" => p.name_,
@@ -132,18 +134,23 @@ function providerToDict(p) {
 
 function providerFromDict(d) {
   var p = null;
+  var counter = d.get("counter");
+  if (counter == null) {
+    counter = 0;
+  }
+  var interval = d.get("interval");
+  if (interval == null) {
+    interval = 30;
+  }
   switch (d.get("type")) {
   case "CounterBasedProvider":
-    p = new CounterBasedProvider(d.get("name"), d.get("key"),
-                                 d.get("counter"));
+    p = new CounterBasedProvider(d.get("name"), d.get("key"), counter);
     break;
   case "SteamGuardProvider":
-    p = new SteamGuardProvider(d.get("name"), d.get("key"),
-                               d.get("interval"));
+    p = new SteamGuardProvider(d.get("name"), d.get("key"), interval);
     break;
   case "TimeBasedProvider":
-    p = new TimeBasedProvider(d.get("name"), d.get("key"),
-                              d.get("interval"));
+    p = new TimeBasedProvider(d.get("name"), d.get("key"), 30);
     break;
   default:
     throw new InvalidValueException("not a provider dict");
@@ -235,10 +242,10 @@ function parseProvider(s) {
 // Parse a key=value string from str
 function parseString(str, key) {
   var parts = split(str, "=");
-  if (parts.size() != 2 || !parts[0].equals(key)) {
+  if (parts.size() < 1 || !parts[0].equals(key)) {
     throw new InvalidValueException("no parse of key '" + key + "'");
   }
-  return parts[1];
+  return parts.size() == 1 ? "" : parts[1];
 }
 
 // Parse a key=value number from str

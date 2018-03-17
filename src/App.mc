@@ -1,4 +1,6 @@
 using Toybox.Application;
+using Toybox.WatchUi;
+using Toybox.System;
 
 var _providers = [];
 var _currentIndex = 0;
@@ -37,6 +39,57 @@ function saveProviders() {
   Application.Storage.setValue("currentIndex", _currentIndex);
 }
 
+function exportToSettings() {
+  // Due to lack of a unique device id, the key key is a hash over available otp secrets
+  var plain = "";
+  for (var i = 0; i < _providers.size(); i++) {
+    plain += _providers[i].key_;
+  }
+  // TODO(SN): encrypt with AES
+  Application.Properties.setValue("secret", plain.hashCode().toString());
+  Application.Properties.setValue("exportData", serializeProviders(_providers));
+  System.println("exported");
+}
+
+function importFromSettings() {
+  var addType = Application.Properties.getValue("addType");
+  var addName = Application.Properties.getValue("addName");
+  var addKey = Application.Properties.getValue("addKey");
+  if (addType != null &&
+      addName != null && !addName.equals("") &&
+      addKey != null && !addKey.equals("")) {
+    var type = PROVIDERS[addType];
+    try {
+      var p = providerFromDict({
+        "type" => type,
+        "name" => addName,
+        "key" => addKey
+      });
+      p.update();
+      _providers.add(p);
+      System.println("added: " + type + "/" + addName);
+      Application.Properties.setValue("addName", "");
+      Application.Properties.setValue("addKey", "");
+    } catch (exception instanceof InvalidValueException) {
+      System.println("error adding: " + type + "/" + addName);
+      Application.Properties.setValue("addKey", "error: " + exception.getErrorMessage());
+    }
+  }
+
+  // TODO(SN): decrypt with AES
+  var exportData = Application.Properties.getValue("exportData");
+  if (exportData != null && !exportData.equals("")) {
+    var ps = parseProviders(exportData);
+    for (var i = 0; i < ps.size(); i++) {
+      if(_providers.indexOf(ps[i]) < 0) {
+        _providers.add(ps[i]);
+        System.println("imported: " + ps[i].name_);
+      }
+    }
+    Application.Properties.setValue("exportData", "");
+  }
+}
+
 class App extends Application.AppBase {
 
   function initialize() {
@@ -45,6 +98,8 @@ class App extends Application.AppBase {
 
   function onStart(state) {
     loadProviders();
+    importFromSettings();
+    saveProviders();
   }
 
   function onStop(state) {
@@ -53,5 +108,12 @@ class App extends Application.AppBase {
 
   function getInitialView() {
     return [new MainView(), new MainViewDelegate()];
+  }
+
+  function onSettingsChanged() {
+    System.println("settings changed");
+    importFromSettings();
+    saveProviders();
+    WatchUi.requestUpdate();
   }
 }
