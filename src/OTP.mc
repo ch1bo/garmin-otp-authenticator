@@ -1,41 +1,34 @@
 using Toybox.Lang;
 using Toybox.Math;
-using Toybox.System;
+using Toybox.StringUtil;
 using Toybox.Time;
 
 // Convert an OTP code to a digit string (arfc6238/rfc4226)
 // Note: Max number of digits is 9 to stay in range of signed 32bit
 //       Number where 6 digits is commonly used.
-function toDigits(code, digits) {
+function toDigits(n, digits) {
   if (digits > 9) {
     digits = 9;
   }
-  var n = code % DIGITS[digits];
-  var code = n.toString();
+  var code = (n % DIGITS[digits]).toString();
   while (code.length() < digits) {
     code = "0" + code;
   }
+  return code;
 }
 
 const DIGITS = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
 
 // Convert an OTP number to a steam guard compatible string.
-function toSteam(code) {
+function toSteam(n) {
   var code = [];
-  var length = STEAMCHARS.size();
+  var length = Alphabet.STEAM.size();
   for (var i = 0; i < 5; i++) {
-    System.print("Code: ");
-    System.println(code);
-    System.println(STEAMCHARS[code % length]);
-    code.add(STEAMCHARS[code % length]);
-    code /= length;
+    code.add(Alphabet.STEAM[n % length]);
+    n /= length;
   }
-  return charArrayToString(code);
+  return StringUtil.charArrayToString(code);
 }
-
-const STEAMCHARS = ["2", "3", "4", "5", "6", "7", "8", "9", "B", "C",
-                    "D", "F", "G", "H", "J", "K", "M", "N", "P", "Q",
-                    "R", "T", "V", "W", "X", "Y"];
 
 // Implementation of TOTP: Time-Based One-Time Password Algorithm
 // rfc6238 https://tools.ietf.org/html/rfc6238

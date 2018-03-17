@@ -94,7 +94,7 @@ class SteamGuardProvider extends TimeBasedProvider {
     } catch (exception instanceof InvalidValueException) {
       throw new InvalidValueException("key not base32");
     }
-    code_ = toSteam(totp(k, interval_), 6);
+    code_ = toSteam(totp(k, interval_));
     next_ = (now / interval_ + 1) * interval_;
     return true;
   }
@@ -126,7 +126,6 @@ function providerToDict(p) {
     d.put("next", p.next_);
     break;
   }
-  System.println(d);
   return d;
 }
 

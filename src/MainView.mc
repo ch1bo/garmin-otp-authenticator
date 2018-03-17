@@ -21,16 +21,13 @@ class MainView extends WatchUi.View {
 
   function update() {
     var provider = currentProvider();
-    switch (provider) {
-    case instanceof TimeBasedProvider:
-      try {
-        if (provider.update()) {
-          _error = "";
-        }
-      } catch (exception) {
-        _error = exception.getErrorMessage();
+    try {
+      if (provider has :update) {
+        provider.update();
       }
-      break;
+      _error = "";
+    } catch (exception) {
+      _error = exception.getErrorMessage();
     }
     WatchUi.requestUpdate();
   }
@@ -44,14 +41,15 @@ class MainView extends WatchUi.View {
                   "Tap to start", Graphics.TEXT_JUSTIFY_CENTER);
       return;
     }
+    // Use number font if possible
+    var codeColor = Graphics.COLOR_WHITE;
     var codeFont = Graphics.FONT_NUMBER_HOT;
     var codeHeight = dc.getFontHeight(codeFont);
-    var codeColor = Graphics.COLOR_WHITE;
-    // Provider text
-    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight, Graphics.FONT_MEDIUM,
-                provider.name_, Graphics.TEXT_JUSTIFY_CENTER);
+    // Note: This switch deliberately falls-through
     switch (provider) {
+    case instanceof SteamGuardProvider:
+      codeFont = Graphics.FONT_LARGE;
+      codeHeight = dc.getFontHeight(codeFont);
     case instanceof TimeBasedProvider:
       // Countdown text
       var delta = provider.next_ - Time.now().value();
@@ -67,6 +65,10 @@ class MainView extends WatchUi.View {
         codeColor = Graphics.COLOR_RED;
       }
     case instanceof CounterBasedProvider:
+      // Provider text
+      dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2 - dc.getFontHeight(Graphics.FONT_MEDIUM),
+                  Graphics.FONT_MEDIUM, provider.name_, Graphics.TEXT_JUSTIFY_CENTER);
       // OTP text
       dc.setColor(codeColor, Graphics.COLOR_BLACK);
       dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2, codeFont,
@@ -145,7 +147,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (_providers.size() == 0) {
-      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHANUM);
+      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new WatchUi.Menu();
@@ -167,7 +169,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
   function onMenuItem(item) {
     switch(item) {
     case :new_entry:
-      var view = new TextInput.TextInputView("Enter name", TextInput.ALPHANUM);
+      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
       return;
     case :delete_entry:
@@ -208,7 +210,7 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
   }
   function onTextEntered(text) {
     _enteredName = text;
-    var view = new TextInput.TextInputView("Enter key (Base32)", TextInput.BASE32);
+    var view = new TextInput.TextInputView("Enter key (Base32)", Alphabet.BASE32);
     WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_LEFT);
   }
 }
