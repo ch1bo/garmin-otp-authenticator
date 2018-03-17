@@ -1,3 +1,5 @@
+using Toybox.System;
+
 class Provider {
   var name_;
   var key_;
@@ -136,19 +138,138 @@ function providerFromDict(d) {
     p = new CounterBasedProvider(d.get("name"), d.get("key"),
                                  d.get("counter"));
     break;
-  case "TimeBasedProvider":
-    p = new TimeBasedProvider(d.get("name"), d.get("key"),
-                              d.get("interval"));
-    p.next_ = d.get("next");
-    break;
   case "SteamGuardProvider":
     p = new SteamGuardProvider(d.get("name"), d.get("key"),
                                d.get("interval"));
-    p.next_ = d.get("next");
+    break;
+  case "TimeBasedProvider":
+    p = new TimeBasedProvider(d.get("name"), d.get("key"),
+                              d.get("interval"));
     break;
   default:
     throw new InvalidValueException("not a provider dict");
   }
   p.code_ = d.get("code");
   return p;
+}
+
+// Pretty unsafe but simple serialization. Unsafe because strings are not
+// escaped and '=' would not be parsable.
+// TODO(SN): use Dictonary.toString() and make this parsable?
+
+function serializeProviders(ps) {
+  var s = "";
+  for (var i = 0; i < ps.size(); i++) {
+    s += serializeProvider(ps[i]) + ";";
+  }
+  return s;
+}
+
+function serializeProvider(p) {
+  var s = "";
+  switch (p) {
+  case instanceof CounterBasedProvider:
+    s += "CounterBasedProvider:";
+    s += "counter=" + p.counter_.toString() + ",";
+    break;
+  case instanceof SteamGuardProvider:
+    s += "SteamGuardProvider:";
+    s += "interval=" + p.interval_.toString() + ",";
+    break;
+  case instanceof TimeBasedProvider:
+    s += "TimeBasedProvider:";
+    s += "interval=" + p.interval_.toString() + ",";
+    break;
+  }
+  s += "name=" + p.name_ + ",";
+  s += "key=" + p.key_;
+  return s;
+}
+
+function parseProviders(s) {
+  var ps = [];
+  var parts = split(s, ";");
+  System.println(parts);
+  for (var i = 0; i < parts.size(); i++) {
+    ps.add(parseProvider(parts[i]));
+  }
+  return ps;
+}
+
+function parseProvider(s) {
+  var i = s.find(":");
+  if (i == null) {
+    throw new InvalidValueException("no serialized provider: " + s);
+  }
+  var type = s.substring(0, i);
+  var rest = s.substring(i+1, s.length());
+  var tokens = split(rest, ",");
+  if (type.equals("CounterBasedProvider")) {
+    if (tokens.size() != 3) {
+      throw new InvalidValueException("input mismatch: " + rest);
+    }
+    var counter = parseNumber(tokens[0], "counter");
+    var name = parseString(tokens[1], "name");
+    var key = parseString(tokens[2], "key");
+    return new CounterBasedProvider(name, key, counter);
+  }
+  if (type.equals("SteamGuardProvider")) {
+    if (tokens.size() != 3) {
+      throw new InvalidValueException("input mismatch: " + rest);
+    }
+    var interval = parseNumber(tokens[0], "interval");
+    var name = parseString(tokens[1], "name");
+    var key = parseString(tokens[2], "key");
+    return new SteamGuardProvider(name, key, interval);
+  }
+  if (type.equals("TimeBasedProvider")) {
+    if (tokens.size() != 3) {
+      throw new InvalidValueException("input mismatch: " + rest);
+    }
+    var interval = parseNumber(tokens[0], "interval");
+    var name = parseString(tokens[1], "name");
+    var key = parseString(tokens[2], "key");
+    return new TimeBasedProvider(name, key, interval);
+  }
+  throw new InvalidValueException("not a provider dict");
+}
+
+// Parse a key=value string from str
+function parseString(str, key) {
+  var parts = split(str, "=");
+  if (parts.size() != 2 || !parts[0].equals(key)) {
+    throw new InvalidValueException("no parse of key '" + key + "'");
+  }
+  return parts[1];
+}
+
+// Parse a key=value number from str
+function parseNumber(str, key) {
+  var parts = split(str, "=");
+  if (parts.size() != 2 || !parts[0].equals(key)) {
+    throw new InvalidValueException("no parse of key '" + key + "'");
+  }
+  return parts[1].toNumber();
+}
+
+// Split a string into an array of strings at del
+function split(str, del) {
+  var parts = [];
+  var last = 0;
+  var next = findNext(str, del, 0);
+  while (next != null) {
+    parts.add(str.substring(last, next));
+    last = next+1;
+    next = findNext(str, del, last);
+  }
+  if (last != str.length()) {
+    parts.add(str.substring(last, str.length()));
+  }
+  return parts;
+}
+
+// Like String.find(q) but starting from index i
+function findNext(str, q, i) {
+  var x = str.substring(i, str.length()).find(q);
+  return x != null ? x + i : null;
 }

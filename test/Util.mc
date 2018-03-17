@@ -47,7 +47,7 @@ function arrayEqual(a, b) {
     return false;
   }
   for(var i = 0; i < a.size(); i++) {
-    if (a[i] != b[i]) {
+    if (!a[i].equals(b[i])) {
       return false;
     }
   }
