@@ -13,9 +13,8 @@ Garmin ConnectIQ App for Timed One-Time Passwords (TOTP) Second Factor Authentic
 
 ## Planned features
 
-* Steam authenticator style codes (different truncation)
-* Choosable interval and code length
-* Counter based One-Time Passwords (HOTP)
+* Edit name, key and code type
+* Choosable interval and code length for Time-based
 * Better touch UX on text input - scroll momentum
 * Other UI/UX improvements - feedback welcome!
 * Other device support - low priority / on demand
