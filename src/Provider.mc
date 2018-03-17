@@ -1,5 +1,3 @@
-using Toybox.System;
-
 class Provider {
   var name_;
   var key_;
@@ -189,7 +187,6 @@ function serializeProvider(p) {
 function parseProviders(s) {
   var ps = [];
   var parts = split(s, ";");
-  System.println(parts);
   for (var i = 0; i < parts.size(); i++) {
     ps.add(parseProvider(parts[i]));
   }

@@ -1,5 +1,0 @@
-<resources>
-  <string id="AppName">OTP Authenticator</string>
-  <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
-  <bitmap id="LauncherIcon" filename="images/launcher_icon.png" />
-</resources>
