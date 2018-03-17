@@ -160,12 +160,10 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onTextEntered(text) {
-    System.println("TextInput: " + text);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 
   function onCancel() {
-    System.println("TextInput: canceled");
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }

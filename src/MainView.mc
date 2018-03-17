@@ -22,7 +22,7 @@ class MainView extends WatchUi.View {
   function update() {
     var provider = currentProvider();
     try {
-      if (provider has :update) {
+      if (provider != null && provider has :update) {
         provider.update();
       }
       _error = "";
@@ -97,16 +97,13 @@ function wrapText(dc, width, font, text) {
   while (dc.getTextWidthInPixels(text, font) > w) {
     // white space wrap
     while (cs.size() > 0) {
-      System.print("index of ' ': ");
       var lastWS = lastIndexOf(cs, ' ');
-      System.println(lastWS);
       if (lastWS == -1) {
         break;
       }
       var t = text.substring(0, lastWS);
       if (dc.getTextWidthInPixels(t, font) < w) {
         lines.add(t);
-        System.println("fits: " + t);
         text = text.substring(lastWS + 1, text.length());
         break;
       }
@@ -170,7 +167,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
     switch(item) {
     case :new_entry:
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
-      WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
+      WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
       return;
     case :delete_entry:
       var menu = new WatchUi.Menu();
@@ -178,7 +175,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       for (var i = 0; i < _providers.size(); i++) {
         menu.addItem(_providers[i].name_, _providers[i]);
       }
-      WatchUi.pushView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      WatchUi.switchToView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
     default:
       _currentIndex = item;
@@ -201,6 +198,8 @@ class DeleteMenuDelegate extends WatchUi.MenuInputDelegate {
     saveProviders();
   }
 }
+
+// Name, key and type input view stack
 
 var _enteredName = "";
 
@@ -248,17 +247,16 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
       return;
     case :steam:
       provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
-      System.println("new steam guard provider");
       break;
     }
     if (provider != null) {
-      System.println(provider);
       _providers.add(provider);
       _currentIndex = _providers.size() - 1;
       _error = "";
+      System.println("new providers list");
+      System.println(_providers);
       saveProviders();
     }
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }

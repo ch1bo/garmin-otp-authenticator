@@ -120,6 +120,7 @@ function providerToDict(p) {
     d.put("type", "SteamGuardProvider");
     d.put("interval", p.interval_);
     d.put("next", p.next_);
+    break;
   case instanceof TimeBasedProvider:
     d.put("type", "TimeBasedProvider");
     d.put("interval", p.interval_);
