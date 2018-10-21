@@ -38,7 +38,7 @@ function hex(char) {
   case 'E': return 0xE;
   case 'F': return 0xF;
   default:
-    throw new UnexpectedSymbolException(c);
+    throw new UnexpectedSymbolException(char);
   }
 }
 

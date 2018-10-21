@@ -1,4 +1,5 @@
 using Toybox.System;
+using Toybox.Timer;
 using Toybox.WatchUi;
 
 using TextInput;
