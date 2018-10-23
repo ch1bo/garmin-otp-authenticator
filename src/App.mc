@@ -40,13 +40,7 @@ function saveProviders() {
 }
 
 function exportToSettings() {
-  // Due to lack of a unique device id, the key key is a hash over available otp secrets
-  var plain = "";
-  for (var i = 0; i < _providers.size(); i++) {
-    plain += _providers[i].key_;
-  }
   // TODO(SN): encrypt with AES
-  Application.Properties.setValue("secret", plain.hashCode().toString());
   Application.Properties.setValue("exportData", serializeProviders(_providers));
   System.println("exported");
 }

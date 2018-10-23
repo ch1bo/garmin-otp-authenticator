@@ -37,9 +37,6 @@
     <setting propertyKey="@Properties.addKey" title="@Strings.addKey">
       <settingConfig type="alphaNumeric" />
     </setting>
-    <setting propertyKey="@Properties.secret" title="@Strings.secret">
-      <settingConfig type="alphaNumeric" />
-    </setting>
     <setting propertyKey="@Properties.exportData" title="@Strings.exportData">
       <settingConfig type="alphaNumeric" />
     </setting>
