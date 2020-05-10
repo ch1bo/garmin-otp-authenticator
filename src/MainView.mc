@@ -4,6 +4,17 @@ using Toybox.WatchUi;
 
 using TextInput;
 
+var _error = "";
+
+function displayError(str) {
+  log(ERROR, str);
+  _error = str;
+}
+
+function clearError() {
+  _error = "";
+}
+
 class MainView extends WatchUi.View {
   var timer_;
 
@@ -27,9 +38,9 @@ class MainView extends WatchUi.View {
           !(provider instanceof CounterBasedProvider)) {
         provider.update();
       }
-      _error = "";
+      clearError();
     } catch (exception) {
-      _error = exception.getErrorMessage();
+      displayError(exception.getErrorMessage());
     }
     WatchUi.requestUpdate();
   }
@@ -74,56 +85,15 @@ class MainView extends WatchUi.View {
                   Graphics.FONT_MEDIUM, provider.name_, Graphics.TEXT_JUSTIFY_CENTER);
       // OTP text
       dc.setColor(codeColor, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2, codeFont,
-                  provider.code_, Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, codeFont,
+                  provider.code_, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
     if (_error.length() > 0) {
       dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
-      drawTextBox(dc, 0, dc.getHeight()/2 + dc.getFontHeight(codeFont),
-                  dc.getWidth(), Graphics.FONT_SMALL, _error);
+      dc.drawText(dc.getWidth()/2, 0, Graphics.FONT_SMALL, _error,
+                  Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
   }
-
-  function drawTextBox(dc, x, y, width, font, text) {
-    var ts = wrapText(dc, width, font, text);
-    for (var i = 0; i < ts.size(); i++) {
-      dc.drawText(x, y + dc.getFontHeight(font)*i, font,
-                  ts[i], Graphics.TEXT_JUSTIFY_LEFT);
-    }
-  }
-}
-
-function wrapText(dc, width, font, text) {
-  var lines = [];
-  var w = dc.getWidth();
-  var cs = text.toCharArray();
-  while (dc.getTextWidthInPixels(text, font) > w) {
-    // white space wrap
-    while (cs.size() > 0) {
-      var lastWS = lastIndexOf(cs, ' ');
-      if (lastWS == -1) {
-        break;
-      }
-      var t = text.substring(0, lastWS);
-      if (dc.getTextWidthInPixels(t, font) < w) {
-        lines.add(t);
-        text = text.substring(lastWS + 1, text.length());
-        break;
-      }
-      cs = cs.slice(0, lastWS);
-    }
-  }
-  lines.add(text);
-  return lines;
-}
-
-function lastIndexOf(array, elem) {
-  for (var i = array.size() - 1; i >= 0; i--) {
-    if (array[i] == elem) {
-      return i;
-    }
-  }
-  return -1;
 }
 
 class MainViewDelegate extends WatchUi.BehaviorDelegate {
@@ -184,22 +154,22 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       WatchUi.pushView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
     case :delete_all:
-      System.println("TODO: Ask for confirmation");
+      log(DEBUG, "TODO: Ask for confirmation");
       _providers = [];
       _currentIndex = 0;
       return;
     case :export_providers:
       exportToSettings();
-      System.println("TODO: Show instructions");
+      log(DEBUG, "TODO: Show instructions");
       return;
     case :import_providers:
       importFromSettings();
       saveProviders();
-      System.println("TODO: Show instructions");
+      log(DEBUG, "TODO: Show instructions");
       return;
     default:
       _currentIndex = item;
-      _error = "";
+      clearError();
       WatchUi.requestUpdate();
     }
   }
@@ -272,7 +242,7 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
     if (provider != null) {
       _providers.add(provider);
       _currentIndex = _providers.size() - 1;
-      _error = "";
+      clearError();
       saveProviders();
     }
     WatchUi.popView(WatchUi.SLIDE_RIGHT);

@@ -1,10 +1,9 @@
 using Toybox.Application;
-using Toybox.WatchUi;
 using Toybox.System;
+using Toybox.WatchUi;
 
 var _providers = [];
 var _currentIndex = 0;
-var _error = "";
 
 function currentProvider() {
   if (_currentIndex >= 0 && _currentIndex < _providers.size()) {
@@ -20,7 +19,7 @@ function loadProviders() {
       try {
         _providers.add(providerFromDict(ps[i]));
       } catch (exception) {
-        _error = exception.getErrorMessage();
+        displayError(exception.getErrorMessage());
       }
     }
   }
@@ -42,7 +41,7 @@ function saveProviders() {
 function exportToSettings() {
   // TODO(SN): encrypt with AES
   Application.Properties.setValue("exportData", serializeProviders(_providers));
-  System.println("exported");
+  log(INFO, "exported");
 }
 
 function importFromSettings() {
@@ -61,11 +60,11 @@ function importFromSettings() {
       });
       p.update();
       _providers.add(p);
-      System.println("added: " + type + "/" + addName);
+      log(INFO, "added: " + type + "/" + addName);
       Application.Properties.setValue("addName", "");
       Application.Properties.setValue("addKey", "");
     } catch (exception instanceof InvalidValueException) {
-      System.println("error adding: " + type + "/" + addName);
+      log(ERROR, "error adding: " + type + "/" + addName);
       Application.Properties.setValue("addKey", "error: " + exception.getErrorMessage());
     }
   }
@@ -77,7 +76,7 @@ function importFromSettings() {
     for (var i = 0; i < ps.size(); i++) {
       if(_providers.indexOf(ps[i]) < 0) {
         _providers.add(ps[i]);
-        System.println("imported: " + ps[i].name_);
+        log(INFO, "imported: " + ps[i].name_);
       }
     }
     Application.Properties.setValue("exportData", "");
@@ -105,7 +104,7 @@ class App extends Application.AppBase {
   }
 
   function onSettingsChanged() {
-    System.println("settings changed");
+    log(DEBUG, "onSettingsChanged");
     importFromSettings();
     saveProviders();
     WatchUi.requestUpdate();
