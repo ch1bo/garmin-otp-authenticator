@@ -25,7 +25,7 @@ class TextInputView extends WatchUi.View {
     dc.clear();
     var font = Graphics.FONT_SMALL;
     var fh = dc.getFontHeight(font);
-    dc.drawText(5, 0, font, title_, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(dc.getWidth() / 2, 10, font, title_, Graphics.TEXT_JUSTIFY_CENTER);
     var textWidth = dc.getTextWidthInPixels(text_, font);
     // min width required for alphabet is widest char (M) + margins
     var alphabetWidth = dc.getTextWidthInPixels("M", font) + 15;
@@ -33,12 +33,12 @@ class TextInputView extends WatchUi.View {
     if (textWidth + alphabetWidth >= dc.getWidth()) {
       x = dc.getWidth() - alphabetWidth - textWidth;
     }
-    var y = (dc.getHeight() - fh)/2 + fh/2;
     drawAlphabet(dc, x + textWidth + 15);
     if (confirm_) {
       dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
     }
-    dc.drawText(x, y, font, text_, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(x, dc.getHeight()/2, font, text_,
+                Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawAlphabet(dc, x) {
@@ -49,7 +49,6 @@ class TextInputView extends WatchUi.View {
     }
     drawLetter(dc, x, 0);
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-    drawLetter(dc, x, -3);
     drawLetter(dc, x, -2);
     drawLetter(dc, x, -1);
     drawLetter(dc, x, 1);
@@ -59,9 +58,10 @@ class TextInputView extends WatchUi.View {
 
   function drawLetter(dc, x, pos) {
     var fh = dc.getFontHeight(Graphics.FONT_SMALL);
-    var y = (dc.getHeight() - fh) / 2 - fh / 2 + pos * (fh + 3) + fh;
+    var y = dc.getHeight() / 2 + pos * (fh + 3);
     var c = alphabet_[limit(cursor_ + pos, alphabet_.size())];
-    dc.drawText(x, y, Graphics.FONT_SMALL, c, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(x, y, Graphics.FONT_SMALL, c,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   // Action handlers

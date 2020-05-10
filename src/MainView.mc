@@ -39,8 +39,9 @@ class MainView extends WatchUi.View {
     dc.clear();
     var provider = currentProvider();
     if (provider == null) {
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM,
-                  "Tap to start", Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2,
+                  Graphics.FONT_MEDIUM, "Tap to start",
+                  Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       return;
     }
     // Use number font if possible
