@@ -26,17 +26,21 @@ function hmacSHA1(key, text) {
 // Local function to switch between native and polyfilled SHA1 implementation
 function hashSHA1(data) {
   if (Toybox has :Cryptography) {
-    log(DEBUG, "using native cryptography");
+    log(DEBUG, "SHA1 using native cryptography");
     // Use native implementation of SHA1, this requires conversion to/from the
     // new ByteArray type (since connect iq 3.0.0)
     var sha1 = new Cryptography.Hash({:algorithm => Cryptography.HASH_SHA1});
     sha1.update(fromArray(data));
-    return toArray(sha1.digest());
+    var res = toArray(sha1.digest());
+    log(DEBUG, "SHA1 done");
+    return res;
   } else {
-    log(DEBUG, "using polyfilled cryptography");
+    log(DEBUG, "SHA1 using polyfilled cryptography");
     var sha1 = new SHA1();
     sha1.input(data);
-    return sha1.result();
+    var res = sha1.result();
+    log(DEBUG, "SHA1 done");
+    return res;
   }
 }
 
