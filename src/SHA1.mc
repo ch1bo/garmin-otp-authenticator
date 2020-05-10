@@ -9,15 +9,10 @@
 // * 64bit signed integers (Long) are used throughout to capture 32bit values as
 //   right-shifts on 32bit signed integers (Number) perform sign extension i.e.
 //   0x80000000 >> 31 = 0xFFFFFFFF, which is undesirable for this implementation
+//
+// TODO(SN): optimize: operates on 8bit values, stored as 32bit numbers
 
 using Toybox.System;
-
-// TODO(SN): optimize: operates on 8bit values, stored as 32bit numbers
-function hashSHA1(data) {
-  var sha1 = new SHA1();
-  sha1.input(data);
-  return sha1.result();
-}
 
 const MAX_LENGTH = 0x7FFFFFFFFFFFFFFFl;
 

@@ -41,7 +41,9 @@ function hashSHA1_test2(logger) {
                   0xBA, 0xAE, 0x4A, 0xA1,
                   0xF9, 0x51, 0x29, 0xE5,
                   0xE5, 0x46, 0x70, 0xF1];
-  var digest = hashSHA1(message);
+  var sha1 = new SHA1();
+  sha1.input(message);
+  var digest = sha1.result();
   Test.assertEqual(digest.size(), 20);
   assertAllNumber(digest);
   return arrayEqual(expected, digest);
@@ -63,14 +65,14 @@ function hashSHA1_test3(logger) {
       System.println("%");
     }
   }
-  var digest = hashSHA1(message);
+  var digest = sha1.result();
   Test.assertEqual(digest.size(), 20);
   assertAllNumber(digest);
   return arrayEqual(expected, digest);
 }
 
 (:test)
-  function hashSHA1_test4(logger) {
+function hashSHA1_test4(logger) {
   var message = ("01234567012345670123456701234567" +
                  "01234567012345670123456701234567").toUtf8Array();
   var expected = [0xDE, 0xA3, 0x56, 0xA2,
