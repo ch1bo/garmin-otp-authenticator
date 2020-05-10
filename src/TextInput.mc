@@ -105,16 +105,7 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
     BehaviorDelegate.initialize();
     view_ = view;
   }
-
-  function onNextPage() {
-    view_.onUp();
-    return true;
-  }
-
-  function onPreviousPage() {
-    view_.onDown();
-    return true;
-  }
+  // InputDelegate methods
 
   function onSwipe(evt) {
     var swipe = evt.getDirection();
@@ -127,6 +118,18 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
       return true;
     }
     return false;
+  }
+
+  // BehaviorDelegate methods
+
+  function onNextPage() {
+    view_.onUp();
+    return true;
+  }
+
+  function onPreviousPage() {
+    view_.onDown();
+    return true;
   }
 
   function onSelect() {
@@ -158,6 +161,8 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
       view_.confirm(true);
     }
   }
+
+  // TextInputDelegate methods
 
   function onTextEntered(text) {
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
