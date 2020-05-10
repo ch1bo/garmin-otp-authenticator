@@ -1,6 +1,7 @@
 using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.System;
+using Toybox.Timer;
 
 module TextInput {
 
@@ -100,14 +101,83 @@ class TextInputView extends WatchUi.View {
 class TextInputDelegate extends WatchUi.BehaviorDelegate {
 
   var view_;
+  var timer_;
 
   function initialize(view) {
     BehaviorDelegate.initialize();
     view_ = view;
+    timer_ = new Timer.Timer();
   }
+
+  function onTextEntered(text) {
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+  }
+
+  function onCancel() {
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+  }
+
+  // BehaviorDelegate methods
+
+  function onNextPage() {
+    log(DEBUG, "onNextPage");
+    view_.onUp();
+    return true;
+  }
+
+  function onPreviousPage() {
+    log(DEBUG, "onPreviousPage");
+    view_.onDown();
+    return true;
+  }
+
+  function onNextMode() {
+    log(DEBUG, "onNextMode");
+    return false;
+  }
+
+  function onPreviousMode() {
+    log(DEBUG, "onPreviousMode");
+    return false;
+  }
+
+  function onSelect() {
+    log(DEBUG, "onSelect");
+    // TODO(SN): smelly access on view state
+    if (view_.confirm_) {
+      view_.confirm_ = false;
+      onTextEntered(view_.text_);
+    } else {
+      view_.enter();
+    }
+    return true;
+  }
+
+  function onBack() {
+    log(DEBUG, "onBack");
+    // TODO(SN): hold state here or in view?
+    if (view_.text_.length() > 0) {
+      view_.backspace();
+    } else {
+      onCancel();
+    }
+    return true;
+  }
+
+  function onMenu() {
+    log(DEBUG, "onMenu");
+    // TODO(SN): another hack
+    if (view_.confirm_) {
+      onTextEntered(view_.text_);
+    } else {
+      view_.confirm(true);
+    }
+  }
+
   // InputDelegate methods
 
   function onSwipe(evt) {
+    log(DEBUG, Lang.format("onSwipe: $1$", [evt]));
     var swipe = evt.getDirection();
     if (swipe == SWIPE_UP) {
       view_.onUp();
@@ -120,56 +190,19 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
     return false;
   }
 
-  // BehaviorDelegate methods
-
-  function onNextPage() {
-    view_.onUp();
-    return true;
-  }
-
-  function onPreviousPage() {
-    view_.onDown();
-    return true;
-  }
-
-  function onSelect() {
-    // TODO(SN): smelly access on view state
-    if (view_.confirm_) {
-      view_.confirm_ = false;
-      onTextEntered(view_.text_);
-    } else {
-      view_.enter();
+  // Handle long press manually (e.g. FR245)
+  function onKeyPressed(evt) {
+    log(DEBUG, Lang.format("onKeyPressed: $1$", [evt.getKey()]));
+    if (evt.getKey() == WatchUi.KEY_ENTER) {
+      timer_.start(method(:onMenu), 1000, false);
     }
     return true;
   }
 
-  function onBack() {
-    // TODO(SN): hold state here or in view?
-    if (view_.text_.length() > 0) {
-      view_.backspace();
-    } else {
-      onCancel();
-    }
+  function onKeyReleased(evt) {
+    log(DEBUG, Lang.format("onKeyReleased: $1$", [evt.getKey()]));
+    timer_.stop();
     return true;
-  }
-
-  function onMenu() {
-    // TODO(SN): another hack
-    if (view_.confirm_) {
-      onTextEntered(view_.text_);
-    } else {
-      view_.confirm(true);
-    }
-  }
-
-  // TextInputDelegate methods
-
-  function onTextEntered(text) {
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
-  }
-
-  function onCancel() {
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
 
