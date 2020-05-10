@@ -56,10 +56,14 @@ function bytesToBase16(bytes) {
   return str;
 }
 
+// Convert a base32 string to an array of bytes (Number, although only 8bit)
+//
+// str (String) - base32 string (multiple of 40 bit / 8 characters)
+// return (Array<Number>) - bytes
 function base32ToBytes(str) {
   var cs = str.toCharArray();
   if (cs.size() % 8 != 0) {
-    throw new InvalidValueException("multiple of 40 bit / 8 characters");
+    throw new InvalidValueException("multiple of 40 bit / 8 characters required");
   }
   var bs = new [cs.size() / 8 * 5];
   for (var i = 0; i < cs.size(); i += 8) {
@@ -73,6 +77,11 @@ function base32ToBytes(str) {
   return bs;
 }
 
+// Convert an array of bytes (each Number will be truncated to 8bit) to a base32
+// string.
+//
+// bytes (Array<Number>) - bytes (multiple of 40 bit / 5 bytes)
+// return (String) - base32 string
 function bytesToBase32(bytes) {
   if (bytes.size() % 5 != 0) {
     throw new InvalidValueException("multiple of 40 bit / 5 bytes required");

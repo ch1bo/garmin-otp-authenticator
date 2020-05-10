@@ -9,7 +9,7 @@ var _errorTicks = 0;
 
 function displayError(str) {
   _error = str;
-  _errorTicks = 25;
+  _errorTicks = 50; // ~ 5 sec with the 100ms refresh (see Timer below)
 }
 
 function clearError() {

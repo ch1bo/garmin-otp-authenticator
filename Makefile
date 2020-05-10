@@ -9,12 +9,12 @@ build: build/authenticator.prg
 
 start: build/authenticator.prg
 	connectiq &
-	monkeydo build/authenticator.prg vivoactive_hr
+	monkeydo build/authenticator.prg vivoactive3
 
 .PHONY: test
 test: build/authenticator_test.prg
 	connectiq &
-	monkeydo build/authenticator_test.prg vivoactive_hr -t $(TEST_ARGS)
+	monkeydo build/authenticator_test.prg vivoactive3 -t $(TEST_ARGS)
 
 GIT_VERSION=$(shell git describe HEAD --always)
 release: build/authenticator-$(GIT_VERSION).iq build/authenticator_release.prg
