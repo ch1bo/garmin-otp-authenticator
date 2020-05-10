@@ -5,14 +5,16 @@ using Toybox.WatchUi;
 using TextInput;
 
 var _error = "";
+var _errorTicks = 0;
 
 function displayError(str) {
-  log(ERROR, str);
   _error = str;
+  _errorTicks = 25;
 }
 
 function clearError() {
   _error = "";
+  _errorTicks = 0;
 }
 
 class MainView extends WatchUi.View {
@@ -38,9 +40,11 @@ class MainView extends WatchUi.View {
           !(provider instanceof CounterBasedProvider)) {
         provider.update();
       }
-      clearError();
     } catch (exception) {
-      displayError(exception.getErrorMessage());
+      var msg = exception.getErrorMessage();
+      log(ERROR, msg);
+      exception.printStackTrace();
+      displayError(msg);
     }
     WatchUi.requestUpdate();
   }
@@ -88,9 +92,10 @@ class MainView extends WatchUi.View {
       dc.drawText(dc.getWidth()/2, dc.getHeight()/2, codeFont,
                   provider.code_, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
-    if (_error.length() > 0) {
+    if (_errorTicks > 0) {
+      _errorTicks--;
       dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, 0, Graphics.FONT_SMALL, _error,
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + dc.getFontHeight(codeFont), Graphics.FONT_SMALL, _error,
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
   }

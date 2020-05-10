@@ -19,7 +19,9 @@ function loadProviders() {
       try {
         _providers.add(providerFromDict(ps[i]));
       } catch (exception) {
-        displayError(exception.getErrorMessage());
+        var msg = exception.getErrorMessage();
+        log(ERROR, msg);
+        displayError(msg);
       }
     }
   }

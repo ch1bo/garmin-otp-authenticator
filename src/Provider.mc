@@ -90,7 +90,7 @@ class SteamGuardProvider extends TimeBasedProvider {
     next_ = now + 10; // on errors retry in 10
     var k;
     try {
-      k = base32ToBytes(key_); // TODO(SN): check on tetx input (validate function)
+      k = base32ToBytes(key_); // TODO(SN): check on text input (validate function)
     } catch (exception instanceof InvalidValueException) {
       throw new InvalidValueException("key not base32");
     }

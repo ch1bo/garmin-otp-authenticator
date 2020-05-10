@@ -23,7 +23,7 @@ function hashSHA1(data) {
   if (Toybox has :Cryptography) {
     log(DEBUG, "using native cryptography");
     // Use native implementation (since connect iq 3.0.0)
-    var sha1 = new Cryptography.Hash({ :algorithm => Cryptography.HASH_SHA1});
+    var sha1 = new Cryptography.Hash({:algorithm => Cryptography.HASH_SHA1});
     // System.println(data);
     sha1.update(data);
     var res = sha1.digest();
