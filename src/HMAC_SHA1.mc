@@ -44,14 +44,14 @@ function hashSHA1(data) {
   }
 }
 
-(:byteArray)
+(:connectiq3)
 function fromArray(arr) {
   var bytes = []b;
   bytes.addAll(arr);
   return bytes;
 }
 
-(:byteArray)
+(:connectiq3)
 function toArray(bytes) {
   var arr = new [bytes.size()];
   for (var i=0; i < arr.size(); i++) {

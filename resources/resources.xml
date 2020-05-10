@@ -1,6 +1,5 @@
 <resources>
   <string id="appName">OTP Authenticator</string>
-  <string id="appVersion">Version</string>
   <string id="addType">Add provider: type</string>
   <string id="addName">Add provider: name</string>
   <string id="addKey">Add provider: key</string>
@@ -13,7 +12,6 @@
   <bitmap id="LauncherIcon" filename="images/launcher_icon.png" />
 
   <properties>
-    <property id="appVersion" type="string">1.0.0</property>
     <property id="addType" type="number">1</property>
     <property id="addName" type="string"></property>
     <property id="addKey" type="string"></property>
@@ -21,9 +19,6 @@
   </properties>
 
   <settings>
-    <setting propertyKey="@Properties.appVersion" title="@Strings.appVersion">
-      <settingConfig type="alphaNumeric" readonly="true" />
-    </setting>
     <setting propertyKey="@Properties.addType" title="@Strings.addType">
       <settingConfig type="list">
         <listEntry value="0">@Strings.CounterBasedProvider</listEntry>

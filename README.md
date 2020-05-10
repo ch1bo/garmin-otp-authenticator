@@ -22,21 +22,24 @@ imported via widget settings.
 * Encrypted storage of keys, can be backed up and restored
 * Add provider entries via settings
 * Import/export entries via settings
+* Uses but not required native cryptography (since Connect IQ 3.0.0)
 
 ## Planned features
 
+* Encrypt on export with AES
+* Performance improvements and (:glance) optimizations
+* Other device support - on demand
 * Edit name, key and code type
 * Choosable interval and code length for Time-based
 * Better touch UX on text input - scroll momentum
 * Other UI/UX improvements - feedback welcome!
-* Other device support - low priority / on demand
 
 ## Backup / Restore
 
 Keys are stored encrypted using Garmin's application storage on the Device. The
 keys will stay in this form on the device after de-/re-installing the App
-manually or via Connect IQ Store. Unfortunately, the application storage ist not
-retained between different versions of the same app!
+manually or via Connect IQ Store. Unfortunately, the application storage may not
+be retained between different versions of the same app!
 
 To overcome this, an import/export mechanism was added to the app settings.
 

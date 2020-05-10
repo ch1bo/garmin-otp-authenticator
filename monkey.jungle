@@ -1,4 +1,4 @@
 project.manifest = manifest.xml
 
-# Exclude byte array code from vivoactive hr
-vivoactive_hr.excludeAnnotations = byteArray
+# Exclude connect iq 3.x code from vivoactive hr
+vivoactive_hr.excludeAnnotations = connectiq3
