@@ -2,6 +2,7 @@
   <iq:application entry="App" id="2d38c75c-d89a-4545-ab02-dface56df18a" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="2.4.0" name="@Strings.appName" type="widget">
     <iq:products>
       <iq:product id="vivoactive_hr"/>
+      <iq:product id="vivoactive3"/>
     </iq:products>
     <iq:permissions/>
     <iq:languages>
