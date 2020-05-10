@@ -13,6 +13,6 @@ function truncate_test(logger) {
 (:test)
 function hotp_test(logger) {
   var key = "12345678901234567890".toUtf8Array();
-  Test.assertEqual("755224", hotp(key, 0, 6));
+  assertEqual("hotp code", 1284755224, hotp(key, 0));
   return true;
 }

@@ -9,7 +9,8 @@ function provider_dict_test(logger) {
     "name" => "nc",
     "key" => "abcdefgh",
     "code" => "______",
-    "counter" => 42
+    "counter" => 42,
+    "type" => "CounterBasedProvider",
   };
   assertDictEqual("counter dict", cd, providerToDict(cp));
   assertEqual("counter provider", cp, providerFromDict(cd));
@@ -19,6 +20,8 @@ function provider_dict_test(logger) {
     "key" => "ijklmnop",
     "code" => "______",
     "interval" => 30,
+    "next" => 0,
+    "type" => "TimeBasedProvider",
   };
   assertDictEqual("time dict", td, providerToDict(tp));
   assertEqual("time provider", tp, providerFromDict(td));
@@ -28,6 +31,8 @@ function provider_dict_test(logger) {
     "key" => "aaaaaaaa",
     "code" => "______",
     "interval" => 30,
+    "next" => 0,
+    "type" => "SteamGuardProvider",
   };
   assertDictEqual("steam dict", sd, providerToDict(sp));
   assertEqual("steam provider", sp, providerFromDict(sd));
