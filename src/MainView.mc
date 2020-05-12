@@ -126,7 +126,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new WatchUi.Menu();
-      menu.setTitle("OTP Providers");
+      menu.setTitle("OTP");
       for (var i = 0; i < _providers.size(); i++) {
         menu.addItem(_providers[i].name_, i);
       }
@@ -152,11 +152,11 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       return;
     case :delete_entry:
       var menu = new WatchUi.Menu();
-      menu.setTitle("Delete provider");
+      menu.setTitle("Delete entry");
       for (var i = 0; i < _providers.size(); i++) {
         menu.addItem(_providers[i].name_, _providers[i]);
       }
-      WatchUi.pushView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      WatchUi.switchToView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
     case :delete_all:
       log(DEBUG, "TODO: Ask for confirmation");
@@ -204,7 +204,7 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
   }
   function onTextEntered(text) {
     _enteredName = text;
-    var view = new TextInput.TextInputView("Enter key (Base32)", Alphabet.BASE32);
+    var view = new TextInput.TextInputView("Enter key", Alphabet.BASE32);
     WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_LEFT);
   }
 }
