@@ -50,7 +50,7 @@ function hashSHA1_test2(logger) {
 }
 
 // Note: This test is very slow, disable it for development
-(:test)
+// (:test)
 function hashSHA1_test3(logger) {
   var expected = [0x34, 0xAA, 0x97, 0x3C,
                   0xD4, 0xC4, 0xDA, 0xA4,

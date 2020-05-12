@@ -3,7 +3,7 @@
 ## 1.0.1 - 2020-05-12
 
   * Improve instructions and menu titles.
-  * Fix a bug when seleting 'Counter based' type.
+  * Fix the 'Counter based' provider type.
 
 ## 1.0.0 - 2020-05-10
 

@@ -36,3 +36,7 @@ function log(level, msg) {
                  , date.sec.format("%02d")
                  , levelStr, msg ]));
 }
+
+function logf(level, format, values) {
+  return log(level, Lang.format(format, values));
+}

@@ -8,7 +8,6 @@ function provider_dict_test(logger) {
   var cd = {
     "name" => "nc",
     "key" => "abcdefgh",
-    "code" => "______",
     "counter" => 42,
     "type" => "CounterBasedProvider",
   };
@@ -18,7 +17,6 @@ function provider_dict_test(logger) {
   var td = {
     "name" => "nt",
     "key" => "ijklmnop",
-    "code" => "______",
     "interval" => 30,
     "next" => 0,
     "type" => "TimeBasedProvider",
@@ -29,7 +27,6 @@ function provider_dict_test(logger) {
   var sd = {
     "name" => "ns",
     "key" => "aaaaaaaa",
-    "code" => "______",
     "interval" => 30,
     "next" => 0,
     "type" => "SteamGuardProvider",

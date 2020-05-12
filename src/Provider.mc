@@ -1,11 +1,19 @@
+const EMPTY_CODE = "______";
+
 class Provider {
   var name_;
   var key_;
-  var code_ = "______";
+  var code_ = EMPTY_CODE;
 
   function initialize(name, key) {
     name_ = name;
     key_ = key;
+  }
+
+  // Update code_, potentially calculating it from key_
+  function update() {
+    log(WARN, "update() not implemented");
+    return code_;
   }
 
   function equals(other) {
@@ -17,6 +25,7 @@ class Provider {
 
 class CounterBasedProvider extends Provider {
   var counter_;
+  var next_ = 0;
 
   function initialize(name, key, counter) {
     Provider.initialize(name, key);
@@ -24,14 +33,29 @@ class CounterBasedProvider extends Provider {
   }
 
   function update() {
+    var now = Time.now().value();
+    if (now < next_) {
+      return code_;
+    }
+    next_ = now + 10; // on errors retry in 10
     var k;
     try {
-      k = base32ToBytes(key_); // TODO(SN): profile how expensive this is
+      // TODO(SN): profile how expensive this is
+      // TODO(SN): rather check on text input (validate function)!
+      k = base32ToBytes(key_);
     } catch (exception instanceof InvalidValueException) {
-      throw new InvalidValueException("key not base32");
+      // NOTE(SN): \n to have error message in two lines
+      throw new InvalidValueException("\nkey not base32");
     }
     code_ = toDigits(hotp(k, counter_), 6);
+    return code_;
+  }
+
+  // Increment counter and get "next" code
+  function next() {
     counter_++;
+    logf(DEBUG, "new counter: $1$", [counter_]);
+    next_ = 0; // invalidate code_
   }
 
   function equals(other) {
@@ -53,18 +77,19 @@ class TimeBasedProvider extends Provider {
   function update() {
     var now = Time.now().value();
     if (now < next_) {
-      return false;
+      return code_;
     }
     next_ = now + 10; // on errors retry in 10
     var k;
     try {
       k = base32ToBytes(key_);
     } catch (exception instanceof InvalidValueException) {
-      throw new InvalidValueException("key not base32");
+      // NOTE(SN): \n to have error message in two lines
+      throw new InvalidValueException("\nkey not base32");
     }
     code_ = toDigits(totp(k, interval_), 6);
     next_ = (now / interval_ + 1) * interval_;
-    return true;
+    return code_;
   }
 
   function equals(other) {
@@ -74,9 +99,8 @@ class TimeBasedProvider extends Provider {
   }
 }
 
-// TODO(SN): dry key handling
+// TODO(SN): dry with TimeBasedProvider
 class SteamGuardProvider extends TimeBasedProvider {
-  var next_ = 0;
 
   function initialize(name, key, interval) {
     TimeBasedProvider.initialize(name, key, interval);
@@ -84,19 +108,20 @@ class SteamGuardProvider extends TimeBasedProvider {
 
   function update() {
     var now = Time.now().value();
-    if (now < next_) {
-      return false;
+    if (code_ != EMPTY_CODE && now < next_) {
+      return code_;
     }
     next_ = now + 10; // on errors retry in 10
     var k;
     try {
-      k = base32ToBytes(key_); // TODO(SN): check on text input (validate function)
+      k = base32ToBytes(key_);
     } catch (exception instanceof InvalidValueException) {
-      throw new InvalidValueException("key not base32");
+      // NOTE(SN): \n to have error message in two lines
+      throw new InvalidValueException("\nkey not base32");
     }
     code_ = toSteam(totp(k, interval_));
     next_ = (now / interval_ + 1) * interval_;
-    return true;
+    return code_;
   }
 
   function equals(other) {
@@ -111,7 +136,6 @@ function providerToDict(p) {
   var d = {
     "name" => p.name_,
     "key" => p.key_,
-    "code" => p.code_
   };
   switch (p) {
   case instanceof CounterBasedProvider:
@@ -155,7 +179,6 @@ function providerFromDict(d) {
   default:
     throw new InvalidValueException("not a provider dict");
   }
-  p.code_ = d.get("code");
   return p;
 }
 

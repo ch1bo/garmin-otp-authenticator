@@ -19,7 +19,6 @@ function clearError() {
 
 class MainView extends WatchUi.View {
   var timer_;
-
   function initialize() {
     View.initialize();
     timer_ = new Timer.Timer();
@@ -36,8 +35,7 @@ class MainView extends WatchUi.View {
   function update() {
     var provider = currentProvider();
     try {
-      if (provider != null && provider has :update &&
-          !(provider instanceof CounterBasedProvider)) {
+      if (provider != null) {
         provider.update();
       }
     } catch (exception) {
@@ -63,18 +61,16 @@ class MainView extends WatchUi.View {
     var codeColor = Graphics.COLOR_WHITE;
     var codeFont = Graphics.FONT_NUMBER_HOT;
     var codeHeight = dc.getFontHeight(codeFont);
-    // Note: This switch deliberately falls-through
     switch (provider) {
+    // NOTE(SN): This case deliberately falls-through
     case instanceof SteamGuardProvider:
       codeFont = Graphics.FONT_LARGE;
       codeHeight = dc.getFontHeight(codeFont);
     case instanceof TimeBasedProvider:
-      // Countdown text
-      var delta = provider.next_ - Time.now().value();
-      dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + codeHeight/2, Graphics.FONT_NUMBER_MILD,
-                  delta, Graphics.TEXT_JUSTIFY_CENTER);
+      // Provider name
+      drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
       // Colored OTP code depending on countdown
+      var delta = provider.next_ - Time.now().value();
       if (delta > 15) {
         codeColor = Graphics.COLOR_GREEN;
       } else if (delta > 5) {
@@ -82,22 +78,42 @@ class MainView extends WatchUi.View {
       } else {
         codeColor = Graphics.COLOR_RED;
       }
+      drawCode(dc, codeColor, codeFont, provider.code_);
+      // Countdown text
+      drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, delta);
+      break;
     case instanceof CounterBasedProvider:
-      // Provider text
-      dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2 - dc.getFontHeight(Graphics.FONT_MEDIUM),
-                  Graphics.FONT_MEDIUM, provider.name_, Graphics.TEXT_JUSTIFY_CENTER);
-      // OTP text
-      dc.setColor(codeColor, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, codeFont,
-                  provider.code_, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+      // Provider name
+      drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+      drawCode(dc, codeColor, codeFont, provider.code_);
+      // Instructions
+      drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "Press ENTER\nfor next code");
+      break;
     }
     if (_errorTicks > 0) {
       _errorTicks--;
       dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + dc.getFontHeight(codeFont), Graphics.FONT_SMALL, _error,
+      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_SMALL, _error,
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
+  }
+
+  function drawAboveCode(dc, codeHeight, font, text) {
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2 - dc.getFontHeight(font),
+                font, text, Graphics.TEXT_JUSTIFY_CENTER);
+  }
+
+  function drawCode(dc, codeColor, codeFont, code) {
+    dc.setColor(codeColor, Graphics.COLOR_BLACK);
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2, codeFont,
+                code, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+  }
+
+  function drawBelowCode(dc, codeHeight, font, text) {
+    dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
+    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + codeHeight/2, font,
+                text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 }
 
@@ -112,7 +128,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var provider = currentProvider();
       switch (provider) {
       case instanceof CounterBasedProvider:
-        provider.update();
+        provider.next();
         WatchUi.requestUpdate();
         return;
       }
