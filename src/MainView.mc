@@ -239,7 +239,7 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
       break;
     case :counter:
       provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
-      return;
+      break;
     case :steam:
       provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
       break;

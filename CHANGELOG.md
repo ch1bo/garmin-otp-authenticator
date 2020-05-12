@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 - 2020-05-12
+
+  * Improve instructions and menu titles.
+  * Fix a bug when seleting 'Counter based' type.
+
 ## 1.0.0 - 2020-05-10
 
   * Use native cryptography when available (CIQ > 3.0.0)
