@@ -124,13 +124,13 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onKey(event) {
     var key = event.getKey();
-    if (key == KEY_ENTER) {
+    if (key == KEY_MENU) {
       var provider = currentProvider();
       switch (provider) {
       case instanceof CounterBasedProvider:
         provider.next();
         WatchUi.requestUpdate();
-        return;
+        return true;
       }
     }
     BehaviorDelegate.onKey(event);
