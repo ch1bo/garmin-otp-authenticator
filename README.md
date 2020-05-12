@@ -67,6 +67,20 @@ Using the same approach as above, previously exported key data can be imported a
 * Bigger font for Steam-Guard codes (requires custom font)
 * Other UI/UX improvements - feedback welcome!
 
+## Steam guard
+
+This app does support the steam guard authentication code scheme. However,
+access onto the secret key is usually not provided by the setup.
+
+If you have a rooted Android phone, you can read the secret key out of the
+installed and configured steam Android App.
+
+The secret is located in a file at path
+`/data/data/com.valvesoftware.android.steam.community/files/Steamguard*` and can
+be read using `adb` or a local shell and `su` (thus the rooted phone
+requirement).
+
+
 ## License
 
 The source code for garmin-otp-authenticator is released under the [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/).
