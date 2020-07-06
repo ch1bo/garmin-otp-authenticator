@@ -9,7 +9,7 @@
   <string id="exportData">Exported data</string>
 
   <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
-  <bitmap id="LauncherIcon" filename="images/launcher_icon.png" />
+  <bitmap id="LauncherIcon" filename="images/icon.png" />
 
   <properties>
     <property id="addType" type="number">1</property>
