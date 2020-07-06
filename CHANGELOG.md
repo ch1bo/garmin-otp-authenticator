@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - 2020-07-06
+
+  * Add support for vivoactive 4(s)
+
 ## 1.0.1 - 2020-05-12
 
   * Improve instructions and menu titles.
