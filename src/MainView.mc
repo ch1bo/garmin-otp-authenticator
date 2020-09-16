@@ -24,13 +24,9 @@ class MainView extends WatchUi.View {
     timer_ = new Timer.Timer();
   }
 
-  function onShow() {
-    timer_.start(method(:update), 100, true);
-  }
+  function onShow() { timer_.start(method( : update), 100, true); }
 
-  function onHide() {
-    timer_.stop();
-  }
+  function onHide() { timer_.stop(); }
 
   function update() {
     var provider = currentProvider();
@@ -52,8 +48,8 @@ class MainView extends WatchUi.View {
     dc.clear();
     var provider = currentProvider();
     if (provider == null) {
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2,
-                  Graphics.FONT_MEDIUM, "Tap to start",
+      dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_MEDIUM,
+                  "Tap to start",
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       return;
     }
@@ -87,40 +83,41 @@ class MainView extends WatchUi.View {
       drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
       drawCode(dc, codeColor, codeFont, provider.code_);
       // Instructions
-      drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "Press ENTER\nfor next code");
+      drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
+                    "Press ENTER\nfor next code");
       break;
     }
     if (_errorTicks > 0) {
       _errorTicks--;
       dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_SMALL, _error,
+      dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_SMALL,
+                  _error,
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
   }
 
   function drawAboveCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 - codeHeight/2 - dc.getFontHeight(font),
+    var fh = dc.getFontHeight(font);
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh - 5,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 
   function drawCode(dc, codeColor, codeFont, code) {
     dc.setColor(codeColor, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2, codeFont,
-                code, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, codeFont, code,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth()/2, dc.getHeight()/2 + codeHeight/2, font,
-                text, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2 + 10,
+                font, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 }
 
 class MainViewDelegate extends WatchUi.BehaviorDelegate {
-  function initialize() {
-    BehaviorDelegate.initialize();
-  }
+  function initialize() { BehaviorDelegate.initialize(); }
 
   function onKey(event) {
     var key = event.getKey();
@@ -146,27 +143,28 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       for (var i = 0; i < _providers.size(); i++) {
         menu.addItem(_providers[i].name_, i);
       }
-      menu.addItem("New entry", :new_entry);
-      menu.addItem("Delete entry", :delete_entry);
-      menu.addItem("Delete ALL", :delete_all);
-      menu.addItem("Export", :export_providers);
-      menu.addItem("Import", :import_providers);
+      menu.addItem("New entry", : new_entry);
+      menu.addItem("Delete entry", : delete_entry);
+      menu.addItem("Delete ALL", : delete_all);
+      menu.addItem("Export", : export_providers);
+      menu.addItem("Import", : import_providers);
       WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
   }
 }
 
 class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
-  function initialize() {
-    MenuInputDelegate.initialize();
-  }
+  function initialize() { MenuInputDelegate.initialize(); }
   function onMenuItem(item) {
-    switch(item) {
-    case :new_entry:
+    switch (item) {
+    case:
+    new_entry:
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
-      WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
+      WatchUi.switchToView(view, new NameInputDelegate(view),
+                           WatchUi.SLIDE_LEFT);
       return;
-    case :delete_entry:
+    case:
+    delete_entry:
       var menu = new WatchUi.Menu();
       menu.setTitle("Delete entry");
       for (var i = 0; i < _providers.size(); i++) {
@@ -174,16 +172,19 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       }
       WatchUi.switchToView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
-    case :delete_all:
+    case:
+    delete_all:
       log(DEBUG, "TODO: Ask for confirmation");
       _providers = [];
       _currentIndex = 0;
       return;
-    case :export_providers:
+    case:
+    export_providers:
       exportToSettings();
       log(DEBUG, "TODO: Show instructions");
       return;
-    case :import_providers:
+    case:
+    import_providers:
       importFromSettings();
       saveProviders();
       log(DEBUG, "TODO: Show instructions");
@@ -197,9 +198,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
 }
 
 class DeleteMenuDelegate extends WatchUi.MenuInputDelegate {
-  function initialize() {
-    MenuInputDelegate.initialize();
-  }
+  function initialize() { MenuInputDelegate.initialize(); }
   function onMenuItem(item) {
     var provider = currentProvider();
     if (provider != null && provider == item) {
@@ -215,9 +214,7 @@ class DeleteMenuDelegate extends WatchUi.MenuInputDelegate {
 var _enteredName = "";
 
 class NameInputDelegate extends TextInput.TextInputDelegate {
-  function initialize(view) {
-    TextInputDelegate.initialize(view);
-  }
+  function initialize(view) { TextInputDelegate.initialize(view); }
   function onTextEntered(text) {
     _enteredName = text;
     var view = new TextInput.TextInputView("Enter key", Alphabet.BASE32);
@@ -228,35 +225,34 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
 var _enteredKey = "";
 
 class KeyInputDelegate extends TextInput.TextInputDelegate {
-  function initialize(view) {
-    TextInputDelegate.initialize(view);
-  }
+  function initialize(view) { TextInputDelegate.initialize(view); }
   function onTextEntered(text) {
     _enteredKey = text;
     var menu = new WatchUi.Menu();
     menu.setTitle("Select type");
-    menu.addItem("Time based", :time);
-    menu.addItem("Counter based", :counter);
-    menu.addItem("Steam guard", :steam);
+    menu.addItem("Time based", : time);
+    menu.addItem("Counter based", : counter);
+    menu.addItem("Steam guard", : steam);
     WatchUi.pushView(menu, new TypeMenuDelegate(), WatchUi.SLIDE_LEFT);
   }
 }
 
 class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
-  function initialize() {
-    MenuInputDelegate.initialize();
-  }
+  function initialize() { MenuInputDelegate.initialize(); }
 
   function onMenuItem(item) {
     var provider;
-    switch(item) {
-    case :time:
+    switch (item) {
+    case:
+    time:
       provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
       break;
-    case :counter:
+    case:
+    counter:
       provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
       break;
-    case :steam:
+    case:
+    steam:
       provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
       break;
     }

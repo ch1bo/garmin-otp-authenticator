@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 - UNRELEASED
+
+  * Add support for fenix5 series and venu.
+  * Slightly space out lines in main view to accomodate denser displays.
+
 ## 1.0.2 - 2020-07-06
 
   * Add support for vivoactive 4(s)
