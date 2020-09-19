@@ -26,7 +26,9 @@ class MainView extends WatchUi.View {
 
   function onShow() { timer_.start(method( : update), 100, true); }
 
-  function onHide() { timer_.stop(); }
+  function onHide() {
+    timer_.stop();
+  }
 
   function update() {
     var provider = currentProvider();
@@ -191,6 +193,7 @@ class ProvidersMenuDelegate extends WatchUi.MenuInputDelegate {
       return;
     default:
       _currentIndex = item;
+      saveProviders();
       clearError();
       WatchUi.requestUpdate();
     }

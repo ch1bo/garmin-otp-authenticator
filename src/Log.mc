@@ -10,6 +10,7 @@ enum {
   DEBUG
 }
 
+(:glance)
 function log(level, msg) {
   var date = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
   var levelStr = "";
@@ -37,6 +38,7 @@ function log(level, msg) {
                  , levelStr, msg ]));
 }
 
+(:glance)
 function logf(level, format, values) {
   return log(level, Lang.format(format, values));
 }

@@ -11,8 +11,7 @@ DEVICE ?= vivoactive_hr
 build: build/authenticator_$(DEVICE).prg
 
 start: build/authenticator_$(DEVICE).prg
-	connectiq &
-	monkeydo build/authenticator_$(DEVICE).prg $(DEVICE)
+	monkeydo build/authenticator_$(DEVICE).prg $(DEVICE) || echo "Make sure to have a simulator running (commmand: 'connectiq')"
 
 .PHONY: test
 test: build/authenticator_$(DEVICE)_test.prg

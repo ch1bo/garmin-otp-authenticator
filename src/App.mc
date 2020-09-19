@@ -85,6 +85,7 @@ function importFromSettings() {
   }
 }
 
+(:glance)
 class App extends Application.AppBase {
 
   function initialize() {
@@ -92,16 +93,17 @@ class App extends Application.AppBase {
   }
 
   function onStart(state) {
-    loadProviders();
-    importFromSettings();
-    saveProviders();
+    log(DEBUG, "App onStart");
   }
 
   function onStop(state) {
-    saveProviders();
+    log(DEBUG, "App onStop");
   }
 
   function getInitialView() {
+    loadProviders();
+    importFromSettings();
+    saveProviders();
     return [new MainView(), new MainViewDelegate()];
   }
 
