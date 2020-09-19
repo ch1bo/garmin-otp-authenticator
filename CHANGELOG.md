@@ -1,9 +1,10 @@
 # Changelog
 
-## 1.0.3 - UNRELEASED
+## 1.0.3 - 2020-09-19
 
-  * Add support for fenix5 series and venu.
+  * Add support for fenix5 series, fenix6 serias, fr945 and venu.
   * Slightly space out lines in main view to accomodate denser displays.
+  * Do not load full app in glance view.
 
 ## 1.0.2 - 2020-07-06
 

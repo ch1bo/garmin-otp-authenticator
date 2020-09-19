@@ -19,7 +19,7 @@ test: build/authenticator_$(DEVICE)_test.prg
 	monkeydo build/authenticator_$(DEVICE)_test.prg $(DEVICE) -t $(TEST_ARGS)
 
 GIT_VERSION=$(shell git describe HEAD --always)
-release: build/authenticator-$(GIT_VERSION).iq build/authenticator_$(DEVICE)_release.prg
+release: build/authenticator-$(GIT_VERSION).iq
 
 %.prg: $(KEY) $(MANIFEST) $(RESOURCES) $(SOURCES)
 	monkeyc -o $@ -w -y $(KEY) -f $(PWD)/monkey.jungle -d $(DEVICE)
