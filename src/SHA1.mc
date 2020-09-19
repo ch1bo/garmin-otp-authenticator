@@ -14,8 +14,11 @@
 
 using Toybox.System;
 
+// Not required on connectiq < 3
+(:connectiq2)
 const MAX_LENGTH = 0x7FFFFFFFFFFFFFFFl;
 
+(:connectiq2)
 class SHA1 {
   var H0 = 0x67452301l;
   var H1 = 0xEFCDAB89l;
@@ -176,14 +179,17 @@ class SHA1 {
   }
 }
 
+(:connectiq2)
 function r32(n, x) {
   return t32((x << n) | (x >> (32 - n)));
 }
 
+(:connectiq2)
 function t32(x) {
   return x & 0xffffffffl;
 }
 
+(:connectiq2)
 function t8(x) {
   return x & 0xffl;
 }

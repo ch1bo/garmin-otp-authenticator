@@ -1,4 +1,8 @@
 project.manifest = manifest.xml
 
-# Exclude connect iq 3.x code from vivoactive hr
+# Exclude connectiq 2.x code by default
+base.excludeAnnotations = connectiq2
+
+# Exclude connectiq 3.x code for some devices
 vivoactive_hr.excludeAnnotations = connectiq3
+fr735xt.excludeAnnotations = connectiq3

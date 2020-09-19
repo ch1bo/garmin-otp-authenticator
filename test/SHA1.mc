@@ -1,22 +1,23 @@
+// Tests for the polyfilled SHA1 implemenation only included for connectiq 2.x
 using Toybox.System;
 using Toybox.Test;
 
-(:test)
-  function t32_test(logger) {
+(:connectiq2 :test)
+function t32_test(logger) {
   return t32(0xffffff00000001l) == 1;
 }
 
-(:test)
-  function r32_test(logger) {
+(:connectiq2 :test)
+function r32_test(logger) {
   return r32(1, 0x80000000l) == 0x00000001l;
 }
 
-(:test)
+(:connectiq2 :test)
 function r32_test2(logger) {
   return r32(1, 0xEC6D6E6Fl) == 0xD8DADCDFl;
 }
 
-(:test)
+(:connectiq2 :test)
 function hashSHA1_test1(logger) {
   var message = "abc".toUtf8Array();
   var expected = [0xA9, 0x99, 0x3E, 0x36,
@@ -32,7 +33,7 @@ function hashSHA1_test1(logger) {
   return arrayEqual(expected, digest);
 }
 
-(:test)
+(:connectiq2 :test)
 function hashSHA1_test2(logger) {
   var message = ("abcdbcdecdefdefgefghfghighijhi" +
                "jkijkljklmklmnlmnomnopnopq").toUtf8Array();
@@ -50,7 +51,7 @@ function hashSHA1_test2(logger) {
 }
 
 // Note: This test is very slow, disable it for development
-// (:test)
+(:connectiq2)
 function hashSHA1_test3(logger) {
   var expected = [0x34, 0xAA, 0x97, 0x3C,
                   0xD4, 0xC4, 0xDA, 0xA4,
@@ -71,7 +72,7 @@ function hashSHA1_test3(logger) {
   return arrayEqual(expected, digest);
 }
 
-(:test)
+(:connectiq2 :test)
 function hashSHA1_test4(logger) {
   var message = ("01234567012345670123456701234567" +
                  "01234567012345670123456701234567").toUtf8Array();
