@@ -4,18 +4,18 @@ SOURCES ?= $(wildcard src/*.mc)
 TESTS ?= $(wildcard test/*.mc)
 KEY ?= signing-key.der
 
-# Test using oldest, supported device (connectiq 2.x)
-DEVICE ?= vivoactive_hr
+DEVICE ?= vivoactive3
 
 .PHONY: build
 build: build/authenticator_$(DEVICE).prg
 
 start: build/authenticator_$(DEVICE).prg
-	monkeydo build/authenticator_$(DEVICE).prg $(DEVICE) || echo "Make sure to have a simulator running (commmand: 'connectiq')"
+	ps -C simulator || simulator & \
+	monkeydo build/authenticator_$(DEVICE).prg $(DEVICE)
 
 .PHONY: test
 test: build/authenticator_$(DEVICE)_test.prg
-	connectiq &
+	ps -C simulator || simulator & \
 	monkeydo build/authenticator_$(DEVICE)_test.prg $(DEVICE) -t $(TEST_ARGS)
 
 GIT_VERSION=$(shell git describe HEAD --always)
