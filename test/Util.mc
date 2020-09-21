@@ -17,6 +17,14 @@ function assertAllNumber(values) {
   }
 }
 
+function assertString(v) {
+  switch(v) {
+  case instanceof Lang.String:
+    return;
+  }
+  Test.assert(false);
+}
+
 function assertEqual(message, expected, actual) {
   Test.assertEqualMessage(expected, actual, Lang.format(message + " not equal\nexpected: $1$\n but got: $2$", [expected, actual]));
 }

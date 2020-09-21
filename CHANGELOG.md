@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 - 2020-09-21
+
+  * Support base32 padding ('=') characters when decoding keys.
+
 ## 1.0.3 - 2020-09-19
 
   * Add support for fenix5 series, fenix6 serias, fr945 and venu.

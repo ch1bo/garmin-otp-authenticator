@@ -65,14 +65,46 @@ function base32ToBytes(str) {
   if (cs.size() % 8 != 0) {
     throw new InvalidValueException("multiple of 40 bit / 8 characters required");
   }
-  var bs = new [cs.size() / 8 * 5];
+  var nBytes = cs.size() / 8 * 5;
+  // Count trailing '=' padding characters
+  var eqCount = 0;
+  for (var i = cs.size() - 1; i >= 0 && cs[i] == '='; i--) {
+    eqCount++;
+  }
+  switch(eqCount) {
+    case 0:
+      break;
+    case 1:
+      nBytes -= 1;
+      break;
+    case 3:
+      nBytes -= 2;
+      break;
+    case 4:
+      nBytes -= 3;
+      break;
+    case 6:
+      nBytes -= 4;
+      break;
+    default:
+      throw new InvalidValueException("too much padding");
+  }
+  var bs = new [nBytes];
   for (var i = 0; i < cs.size(); i += 8) {
     var j = i / 8 * 5;
     bs[j] = b32toi(cs[i]) & 0x1F << 3 | b32toi(cs[i+1]) & 0x1C >> 2; // 5 + 3
-    bs[j+1] = b32toi(cs[i+1]) & 0x03 << 6 | b32toi(cs[i+2]) & 0x1F << 1 | b32toi(cs[i+3]) & 0x10 >> 4; // 2 + 5 + 1
-    bs[j+2] = b32toi(cs[i+3]) & 0x0F << 4 | b32toi(cs[i+4]) & 0x1E >> 1; // 4 + 4
-    bs[j+3] = b32toi(cs[i+4]) & 0x01 << 7 | b32toi(cs[i+5]) & 0x1F << 2 | b32toi(cs[i+6]) & 0x18 >> 3; // 1 + 5 + 2
-    bs[j+4] = b32toi(cs[i+6]) & 0x07 << 5 | b32toi(cs[i+7]) & 0x1F; // 3 + 5;
+    if (j+1 < nBytes) {
+      bs[j+1] = b32toi(cs[i+1]) & 0x03 << 6 | b32toi(cs[i+2]) & 0x1F << 1 | b32toi(cs[i+3]) & 0x10 >> 4; // 2 + 5 + 1
+    }
+    if (j+2 < nBytes) {
+      bs[j+2] = b32toi(cs[i+3]) & 0x0F << 4 | b32toi(cs[i+4]) & 0x1E >> 1; // 4 + 4
+    }
+    if (j+3 < nBytes) {
+      bs[j+3] = b32toi(cs[i+4]) & 0x01 << 7 | b32toi(cs[i+5]) & 0x1F << 2 | b32toi(cs[i+6]) & 0x18 >> 3; // 1 + 5 + 2
+    }
+    if (j+4 < nBytes) {
+      bs[j+4] = b32toi(cs[i+6]) & 0x07 << 5 | b32toi(cs[i+7]) & 0x1F; // 3 + 5;
+    }
   }
   return bs;
 }
@@ -134,6 +166,7 @@ function b32toi(c) {
   case '5': return 29;
   case '6': return 30;
   case '7': return 31;
+  case '=': return 0;
   default:
     throw new UnexpectedSymbolException(c);
   }
