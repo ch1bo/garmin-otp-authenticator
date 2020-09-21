@@ -58,10 +58,10 @@ Using the same approach as above, previously exported key data can be imported a
 
 ## Planned features
 
+* Edit name, key and code type and lexical sorted entries
 * Encrypt on export with AES
-* Performance improvements and (:glance) optimizations
+* A fully capable glance view
 * Other device support - on demand
-* Edit name, key and code type
 * Choosable interval and code length for Time-based
 * Better touch UX on text input - scroll momentum
 * Bigger font for Steam-Guard codes (requires custom font)
