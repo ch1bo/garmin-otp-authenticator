@@ -140,6 +140,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
+      // TODO(SN): this is limited to 16 entries, try Menu2 or build something own
       var menu = new WatchUi.Menu();
       menu.setTitle("OTP");
       for (var i = 0; i < _providers.size(); i++) {
