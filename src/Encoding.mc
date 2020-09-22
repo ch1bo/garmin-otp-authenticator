@@ -1,4 +1,5 @@
 using Toybox.Lang;
+using Toybox.StringUtil;
 using Toybox.System;
 
 // Implementation of Base16 and Base32 encoding
@@ -54,6 +55,22 @@ function bytesToBase16(bytes) {
     str += bytes[i].format("%X");
   }
   return str;
+}
+
+// Pad a base32 string with '=' to get a valid multiple of 8 characters.
+//
+// str (String) - base32 string
+// return (String) - padded base32 string to a multiple of 40 bit / 8 characters
+function padBase32(str) {
+  var padLength = str.length() % 8;
+  if (padLength == 0) {
+    return str;
+  }
+  var padding = new [padLength];
+  for (var i=0; i < padLength; i++) {
+    padding[i] = '=';
+  }
+  return str + StringUtil.charArrayToString(padding);
 }
 
 // Convert a base32 string to an array of bytes (Number, although only 8bit)

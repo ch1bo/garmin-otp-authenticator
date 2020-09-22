@@ -41,11 +41,11 @@ class CounterBasedProvider extends Provider {
     var k;
     try {
       // TODO(SN): profile how expensive this is
-      // TODO(SN): rather check on text input (validate function)!
+      // TODO(SN): rather check on provider creation (validate function)!
       k = base32ToBytes(key_);
-    } catch (exception instanceof InvalidValueException) {
+    } catch (e) {
       // NOTE(SN): \n to have error message in two lines
-      throw new InvalidValueException("\nkey not base32");
+      throw new InvalidValueException("\nkey not base32\n" + e.getErrorMessage());
     }
     code_ = toDigits(hotp(k, counter_), 6);
     return code_;
@@ -83,9 +83,9 @@ class TimeBasedProvider extends Provider {
     var k;
     try {
       k = base32ToBytes(key_);
-    } catch (exception instanceof InvalidValueException) {
+    } catch (e) {
       // NOTE(SN): \n to have error message in two lines
-      throw new InvalidValueException("\nkey not base32");
+      throw new InvalidValueException("\nkey not base32\n" + e.getErrorMessage());
     }
     code_ = toDigits(totp(k, interval_), 6);
     next_ = (now / interval_ + 1) * interval_;
@@ -115,9 +115,9 @@ class SteamGuardProvider extends TimeBasedProvider {
     var k;
     try {
       k = base32ToBytes(key_);
-    } catch (exception instanceof InvalidValueException) {
+    } catch (e) {
       // NOTE(SN): \n to have error message in two lines
-      throw new InvalidValueException("\nkey not base32");
+      throw new InvalidValueException("\nkey not base32\n" + e.getErrorMessage());
     }
     code_ = toSteam(totp(k, interval_));
     next_ = (now / interval_ + 1) * interval_;
@@ -183,8 +183,9 @@ function providerFromDict(d) {
 }
 
 // Pretty unsafe but simple serialization. Unsafe because strings are not
-// escaped and '=' would not be parsable.
-// TODO(SN): use Dictonary.toString() and make this parsable?
+// escaped and '=' are dropped, thus padding needs to be re-added (leaks base32
+// knowledge abstraction).
+// TODO(SN): use Dictonary.toString() and make this parsable? -> breaking change
 
 function serializeProviders(ps) {
   var s = "";
@@ -238,7 +239,7 @@ function parseProvider(s) {
     }
     var counter = parseNumber(tokens[0], "counter");
     var name = parseString(tokens[1], "name");
-    var key = parseString(tokens[2], "key");
+    var key = padBase32(parseString(tokens[2], "key"));
     return new CounterBasedProvider(name, key, counter);
   }
   if (type.equals("SteamGuardProvider")) {
@@ -247,7 +248,7 @@ function parseProvider(s) {
     }
     var interval = parseNumber(tokens[0], "interval");
     var name = parseString(tokens[1], "name");
-    var key = parseString(tokens[2], "key");
+    var key = padBase32(parseString(tokens[2], "key"));
     return new SteamGuardProvider(name, key, interval);
   }
   if (type.equals("TimeBasedProvider")) {
@@ -256,7 +257,7 @@ function parseProvider(s) {
     }
     var interval = parseNumber(tokens[0], "interval");
     var name = parseString(tokens[1], "name");
-    var key = parseString(tokens[2], "key");
+    var key = padBase32(parseString(tokens[2], "key"));
     return new TimeBasedProvider(name, key, interval);
   }
   throw new InvalidValueException("not a provider dict");
