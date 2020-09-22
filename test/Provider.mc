@@ -73,5 +73,11 @@ function provider_str_test(logger) {
   var full = cs + ";" + ts + ";" + ss + ";";
   assertEqual("full string", full, serializeProviders(ps));
   assertArrayEqual("provider list", ps, parseProviders(full));
+
+  // Key with padding
+  cp = new CounterBasedProvider("nc", "aaaa====", 42);
+  cs = "CounterBasedProvider:counter=42,name=nc,key=aaaa====";
+  assertEqual("counter string", cs, serializeProvider(cp));
+  assertEqual("counter provider", cp, parseProvider(cs));
   return true;
 }
