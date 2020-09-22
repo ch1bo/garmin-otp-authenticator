@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.4 - 2020-09-21
+## 1.0.4 - 2020-09-22
 
   * Support base32 padding ('=') characters when decoding keys.
 
