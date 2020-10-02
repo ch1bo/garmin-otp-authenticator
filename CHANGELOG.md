@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5 - UNRELEASED
+
+  * Filter whitespace and add padding as necessary on settings import.
+
 ## 1.0.4 - 2020-09-22
 
   * Support base32 padding ('=') characters when decoding keys.

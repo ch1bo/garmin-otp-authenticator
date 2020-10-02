@@ -53,6 +53,21 @@ function provider_dict_padding_test(logger) {
 }
 
 (:test)
+function provider_dict_strip_padding_test(logger) {
+  var td = {
+    "name" => "nt",
+    "key" => " aa bb ",
+    "interval" => 30,
+    "next" => 0,
+    "type" => "TimeBasedProvider",
+  };
+  var tp = providerFromDict(td);
+  tp.update();
+  assertString(tp.code_);
+  return tp.code_ != EMPTY_CODE;
+}
+
+(:test)
 function provider_str_test(logger) {
   var cp = new CounterBasedProvider("nc", "abcdefgh", 42);
   var cs = "CounterBasedProvider:counter=42,name=nc,key=abcdefgh";

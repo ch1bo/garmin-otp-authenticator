@@ -62,10 +62,11 @@ function bytesToBase16(bytes) {
 // str (String) - base32 string
 // return (String) - padded base32 string to a multiple of 40 bit / 8 characters
 function padBase32(str) {
-  var padLength = str.length() % 8;
-  if (padLength == 0) {
+  var l = str.length() % 8;
+  if (l == 0) {
     return str;
   }
+  var padLength = 8 - l;
   var padding = new [padLength];
   for (var i=0; i < padLength; i++) {
     padding[i] = '=';

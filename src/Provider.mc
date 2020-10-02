@@ -1,3 +1,5 @@
+using Toybox.StringUtil;
+
 const EMPTY_CODE = "______";
 
 class Provider {
@@ -166,15 +168,17 @@ function providerFromDict(d) {
   if (interval == null) {
     interval = 30;
   }
+  // Strip and pad if necessary to be more liberal in what keyw we accept.
+  var key = padBase32(strip(d.get("key")));
   switch (d.get("type")) {
   case "CounterBasedProvider":
-    p = new CounterBasedProvider(d.get("name"), d.get("key"), counter);
+    p = new CounterBasedProvider(d.get("name"), key, counter);
     break;
   case "SteamGuardProvider":
-    p = new SteamGuardProvider(d.get("name"), d.get("key"), interval);
+    p = new SteamGuardProvider(d.get("name"), key, interval);
     break;
   case "TimeBasedProvider":
-    p = new TimeBasedProvider(d.get("name"), d.get("key"), 30);
+    p = new TimeBasedProvider(d.get("name"), key, 30);
     break;
   default:
     throw new InvalidValueException("not a provider dict");
@@ -301,4 +305,17 @@ function split(str, del) {
 function findNext(str, q, i) {
   var x = str.substring(i, str.length()).find(q);
   return x != null ? x + i : null;
+}
+
+// Trim and filter whitespace (space, newlines, carriage returns and tabs) from
+// a string.
+function strip(str) {
+  var out = [];
+  var cs = str.toCharArray();
+  for (var i = 0; i < cs.size(); i++) {
+    if (cs[i] != ' ' && cs[i] != '\n' && cs[i] != '\r' && cs[i] != '\t') {
+      out.add(cs[i]);
+    }
+  }
+  return StringUtil.charArrayToString(out);
 }

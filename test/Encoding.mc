@@ -66,3 +66,12 @@ function base32_decode_padded(logger) {
                    base32ToBytes("MZXW6YTBMZXQ===="));
   return true;
 }
+
+(:test)
+function padBase32_test(logger) {
+  assertEqual("padded base32", "MY======", padBase32("MY"));
+  assertEqual("padded base32", "MZXQ====", padBase32("MZXQ"));
+  assertEqual("padded base32", "MZXW6===", padBase32("MZXW6"));
+  assertEqual("padded base32", "MZXW6YQ=", padBase32("MZXW6YQ"));
+  return true;
+}
