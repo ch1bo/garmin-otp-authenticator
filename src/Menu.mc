@@ -89,9 +89,9 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
-    self.onMenuItem(item.getId());
-    // popView as this was done automatically in ConnectIQ 2.x
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    if (self.onMenuItem(item.getId()) != true) {
+      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+    }
   }
 
   function onMenuItem(identifier) {
