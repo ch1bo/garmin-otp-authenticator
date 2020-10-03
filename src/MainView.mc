@@ -162,36 +162,29 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       for (var i = 0; i < _providers.size(); i++) {
         selectMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
       }
-      // TODO(SN): use switchToView here if possible / not available on CIQ 2.x for builtins
-      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-      WatchUi.pushView(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_IMMEDIATE);
-      return true; // view switch handled
+      Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return true; // don't pop view
     case :new_entry:
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
-      WatchUi.switchToView(view, new NameInputDelegate(view),
-                           WatchUi.SLIDE_LEFT);
-      return true;
+      WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
+      return true; // don't pop view
     case :delete_entry:
       var deleteMenu = new Menu.MenuView({ :title => "Delete" });
       for (var i = 0; i < _providers.size(); i++) {
         deleteMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
       }
-      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-      WatchUi.pushView(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
-      return true;
+      Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return true; // don't pop view
     case :delete_all:
-      log(DEBUG, "TODO: Ask for confirmation");
       WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
                        new DeleteAllConfirmationDelegate(), WatchUi.SLIDE_LEFT);
-      return true;
+      return true; // don't pop view
     case :export_providers:
       exportToSettings();
-      log(DEBUG, "TODO: Show instructions");
       break;
     case :import_providers:
       importFromSettings();
       saveProviders();
-      log(DEBUG, "TODO: Show instructions");
       break;
     }
   }

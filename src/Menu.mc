@@ -7,6 +7,18 @@ using Toybox.WatchUi;
 module Menu {
 
 (:connectiq2)
+function switchTo(menu, delegate, transition) {
+  // On CIQ 2.x native menus can't be switchViewTo'ed
+  WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+  WatchUi.pushView(menu, delegate, transition);
+}
+
+(:connectiq3)
+function switchTo(menu, delegate, transition) {
+  WatchUi.switchToView(menu, delegate, transition);
+}
+
+(:connectiq2)
 class MenuView extends WatchUi.Menu {
   private var nItems;
 
