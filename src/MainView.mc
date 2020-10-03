@@ -140,66 +140,70 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
-      var menu = new Menu.MenuView({
-          :title => "Providers",
-          :focus => _providers.size() - 1
-      });
-      for (var i = 0; i < _providers.size(); i++) {
-        menu.addItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
-      }
+      var menu = new Menu.MenuView({:title => "Main menu"});
+      menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
       menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
       menu.addItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
       menu.addItem(new Menu.MenuItem("Delete ALL", null, :delete_all, null));
       menu.addItem(new Menu.MenuItem("Export", "to settings until next start", :export_providers, null));
       menu.addItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
-      WatchUi.pushView(menu, new ProvidersMenuDelegate(), WatchUi.SLIDE_LEFT);
+      WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
   }
 }
 
-class ProvidersMenuDelegate extends Menu.MenuDelegate {
+class MainMenuDelegate extends Menu.MenuDelegate {
   function initialize() { Menu.MenuDelegate.initialize(); }
 
   function onMenuItem(identifier) {
-    logf(DEBUG, "onMenuItem: $1$", [identifier]);
     switch (identifier) {
-    case:
-    new_entry:
+    case :select_entry:
+      var selectMenu = new Menu.MenuView({ :title => "Select entry" });
+      for (var i = 0; i < _providers.size(); i++) {
+        selectMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
+      }
+      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+      WatchUi.pushView(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return;
+    case :new_entry:
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.switchToView(view, new NameInputDelegate(view),
                            WatchUi.SLIDE_LEFT);
       return;
-    case:
-    delete_entry:
-      var menu = new Menu.MenuView({ :title => "Delete entry" });
+    case :delete_entry:
+      var deleteMenu = new Menu.MenuView({ :title => "Delete entry" });
       for (var i = 0; i < _providers.size(); i++) {
-        menu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
+        deleteMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
       }
-      WatchUi.switchToView(menu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+      WatchUi.pushView(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
-    case:
-    delete_all:
+    case :delete_all:
       log(DEBUG, "TODO: Ask for confirmation");
       _providers = [];
       _currentIndex = 0;
       break;
-    case:
-    export_providers:
+    case :export_providers:
       exportToSettings();
       log(DEBUG, "TODO: Show instructions");
       break;
-    case:
-    import_providers:
+    case :import_providers:
       importFromSettings();
       saveProviders();
       log(DEBUG, "TODO: Show instructions");
       break;
-    default:
-      _currentIndex = identifier;
-      logf(DEBUG, "setting current index $1$", [_currentIndex]);
-      saveProviders();
-      clearError();
     }
+  }
+}
+
+class SelectMenuDelegate extends Menu.MenuDelegate {
+  function initialize() { Menu.MenuDelegate.initialize(); }
+
+  function onMenuItem(identifier) {
+    _currentIndex = identifier;
+    logf(DEBUG, "setting current index $1$", [_currentIndex]);
+    saveProviders();
+    clearError();
   }
 }
 
