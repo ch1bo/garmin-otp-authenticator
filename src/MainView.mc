@@ -101,7 +101,7 @@ class MainView extends WatchUi.View {
   function drawAboveCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh - 5,
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 
@@ -113,7 +113,7 @@ class MainView extends WatchUi.View {
 
   function drawBelowCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2 + 10,
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER);
   }
 }
@@ -140,7 +140,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
-      var menu = new Menu.MenuView(null);
+      var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
       menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
       menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
       menu.addItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
@@ -166,7 +166,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       return true; // don't pop view
     case :new_entry:
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
-      WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_LEFT);
+      WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
     case :delete_entry:
       var deleteMenu = new Menu.MenuView({ :title => "Delete" });
@@ -187,6 +187,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       saveProviders();
       break;
     }
+    return false;
   }
 }
 
@@ -223,6 +224,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
         _providers = [];
         _currentIndex = 0;
         saveProviders();
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:
         break;

@@ -110,7 +110,7 @@ class SteamGuardProvider extends TimeBasedProvider {
 
   function update() {
     var now = Time.now().value();
-    if (code_ != EMPTY_CODE && now < next_) {
+    if (now < next_) {
       return code_;
     }
     next_ = now + 10; // on errors retry in 10
@@ -178,7 +178,7 @@ function providerFromDict(d) {
     p = new SteamGuardProvider(d.get("name"), key, interval);
     break;
   case "TimeBasedProvider":
-    p = new TimeBasedProvider(d.get("name"), key, 30);
+    p = new TimeBasedProvider(d.get("name"), key, interval);
     break;
   default:
     throw new InvalidValueException("not a provider dict");
