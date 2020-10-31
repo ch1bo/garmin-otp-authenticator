@@ -122,7 +122,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   function initialize() { BehaviorDelegate.initialize(); }
 
   function onKey(event) {
-    logf(DEBUG, "onKey: $1", [event.getKey()]);
+    logf(DEBUG, "onKey: $1$", [event.getKey()]);
     var key = event.getKey();
     if (key == KEY_MENU) {
       var provider = currentProvider();
@@ -137,7 +137,18 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onSwipe(event) {
-    logf(DEBUG, "onSwipe: $1", [event.getDirection()]);
+    logf(DEBUG, "onSwipe: $1$", [event.getDirection()]);
+    switch (event.getDirection()) {
+      case WatchUi.SWIPE_LEFT:
+        log(DEBUG, "SWIPE_LEFT");
+        nextProvider();
+        clearError();
+        break;
+      case WatchUi.SWIPE_RIGHT:
+        log(DEBUG, "SWIPE_RIGHT");
+        // Ends widget
+        break;
+    }
     BehaviorDelegate.onSwipe(event);
   }
 
@@ -210,9 +221,7 @@ class SelectMenuDelegate extends Menu.MenuDelegate {
   function initialize() { Menu.MenuDelegate.initialize(); }
 
   function onMenuItem(identifier) {
-    _currentIndex = identifier;
-    logf(DEBUG, "setting current index $1$", [_currentIndex]);
-    saveProviders();
+    selectProvider(identifier);
     clearError();
   }
 }
@@ -221,12 +230,8 @@ class DeleteMenuDelegate extends Menu.MenuDelegate {
   function initialize() { Menu.MenuDelegate.initialize(); }
 
   function onMenuItem(identifier) {
-    var provider = currentProvider();
-    if (provider != null && provider == identifier) {
-      _currentIndex = 0;
-    }
-    _providers.remove(identifier);
-    saveProviders();
+    deleteProvider(identifier);
+    clearError();
   }
 }
 
@@ -236,9 +241,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   function onResponse(response) {
     switch (response) {
       case WatchUi.CONFIRM_YES:
-        _providers = [];
-        _currentIndex = 0;
-        saveProviders();
+        deleteAllProviders();
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:

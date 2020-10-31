@@ -6,6 +6,7 @@
     newer devices (CIQ > 3.0.0) Old devices still 16 entries max, but not in
     conflict with app menu entries.
   * Ask for confirmation before deleting all entries.
+  * Cycle providers when swiping left in the main view.
 
 ## 1.0.5 - 2020-10-03
 

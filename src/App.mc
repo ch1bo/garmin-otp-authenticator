@@ -12,6 +12,42 @@ function currentProvider() {
   return null;
 }
 
+function selectProvider(index) {
+  logf(DEBUG, "selectProvider $1$ / $2$", [index, _providers.size()]);
+  if (index >= 0 && index < _providers.size()) {
+    _currentIndex = index;
+    saveProviders();
+  }
+}
+
+function nextProvider() {
+  selectProvider((_currentIndex + 1) % _providers.size());
+}
+
+function deleteProvider(provider) {
+  var cur = currentProvider();
+  if (cur != null && cur == provider) {
+    nextProvider();
+  }
+  _providers.remove(provider);
+  saveProviders();
+}
+
+function deleteAllProviders() {
+  _providers = [];
+  _currentIndex = 0;
+  saveProviders();
+}
+
+function saveProviders() {
+  var ps = new [_providers.size()];
+  for (var i = 0; i < _providers.size(); i++) {
+    ps[i] = providerToDict(_providers[i]);
+  }
+  Application.Storage.setValue("providers", ps);
+  Application.Storage.setValue("currentIndex", _currentIndex);
+}
+
 function loadProviders() {
   var ps = Application.Storage.getValue("providers");
   if (ps) {
@@ -29,15 +65,6 @@ function loadProviders() {
   if (ci != null) {
     _currentIndex = ci;
   }
-}
-
-function saveProviders() {
-  var ps = new [_providers.size()];
-  for (var i = 0; i < _providers.size(); i++) {
-    ps[i] = providerToDict(_providers[i]);
-  }
-  Application.Storage.setValue("providers", ps);
-  Application.Storage.setValue("currentIndex", _currentIndex);
 }
 
 function exportToSettings() {
