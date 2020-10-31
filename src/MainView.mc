@@ -122,6 +122,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   function initialize() { BehaviorDelegate.initialize(); }
 
   function onKey(event) {
+    logf(DEBUG, "onKey: $1", [event.getKey()]);
     var key = event.getKey();
     if (key == KEY_MENU) {
       var provider = currentProvider();
@@ -133,6 +134,11 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       }
     }
     BehaviorDelegate.onKey(event);
+  }
+
+  function onSwipe(event) {
+    logf(DEBUG, "onSwipe: $1", [event.getDirection()]);
+    BehaviorDelegate.onSwipe(event);
   }
 
   function onSelect() {
@@ -150,6 +156,15 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
   }
+
+  function onPreviousPage() {
+    log(DEBUG, "onPreviousPage");
+  }
+
+  function onNextPage() {
+    log(DEBUG, "onNextPage");
+  }
+
 }
 
 class MainMenuDelegate extends Menu.MenuDelegate {
