@@ -136,11 +136,14 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
+      var cur = currentProvider();
+      var name = cur == null ? null : cur.name_;
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
       menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
       menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
+      // menu.addItem(new Menu.MenuItem("Edit", name, :edit_current, null));
+      menu.addItem(new Menu.MenuItem("Delete current", name, :delete_current, null));
+      menu.addItem(new Menu.MenuItem("Delete all", null, :delete_all, null));
       menu.addItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
       menu.addItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
@@ -164,12 +167,9 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
-    case :delete_entry:
-      var deleteMenu = new Menu.MenuView({ :title => "Delete" });
-      for (var i = 0; i < _providers.size(); i++) {
-        deleteMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
-      }
-      Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+    case :delete_current:
+      WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
+                       new DeleteCurrentConfirmationDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
     case :delete_all:
       WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
@@ -191,22 +191,22 @@ class SelectMenuDelegate extends Menu.MenuDelegate {
   function initialize() { Menu.MenuDelegate.initialize(); }
 
   function onMenuItem(identifier) {
-    _currentIndex = identifier;
-    logf(DEBUG, "setting current index $1$", [_currentIndex]);
-    saveProviders();
+    selectProvider(identifier);
   }
 }
 
-class DeleteMenuDelegate extends Menu.MenuDelegate {
-  function initialize() { Menu.MenuDelegate.initialize(); }
+class DeleteCurrentConfirmationDelegate extends WatchUi.ConfirmationDelegate {
+  function initialize() { WatchUi.ConfirmationDelegate.initialize(); }
 
-  function onMenuItem(identifier) {
-    var provider = currentProvider();
-    if (provider != null && provider == identifier) {
-      _currentIndex = 0;
+  function onResponse(response) {
+    switch (response) {
+      case WatchUi.CONFIRM_YES:
+        deleteCurrentProvider();
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
+        break;
+      case WatchUi.CONFIRM_NO:
+        break;
     }
-    _providers.remove(identifier);
-    saveProviders();
   }
 }
 
@@ -216,9 +216,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   function onResponse(response) {
     switch (response) {
       case WatchUi.CONFIRM_YES:
-        _providers = [];
-        _currentIndex = 0;
-        saveProviders();
+        deleteAllProviders();
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:

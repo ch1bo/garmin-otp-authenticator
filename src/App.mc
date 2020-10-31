@@ -13,6 +13,41 @@ function currentProvider() {
   }
   return null;
 }
+
+function selectProvider(index) {
+  logf(DEBUG, "selectProvider $1$ / $2$", [index, _providers.size()]);
+  if (index >= 0 && index < _providers.size()) {
+    _currentIndex = index;
+    saveProviders();
+  }
+}
+
+function deleteCurrentProvider() {
+  var cur = currentProvider();
+  if (cur != null) {
+    _providers.remove(cur);
+    if (_currentIndex > 0) {
+      _currentIndex = _currentIndex - 1;
+    }
+    saveProviders();
+  }
+}
+
+function deleteAllProviders() {
+  _providers = [];
+  _currentIndex = 0;
+  saveProviders();
+}
+
+function saveProviders() {
+  var ps = new [_providers.size()];
+  for (var i = 0; i < _providers.size(); i++) {
+    ps[i] = providerToDict(_providers[i]);
+  }
+  Application.Storage.setValue("providers", ps);
+  Application.Storage.setValue("currentIndex", _currentIndex);
+}
+
 (:glance)
 function loadProviders() {
   var ps = Application.Storage.getValue("providers");
@@ -37,15 +72,6 @@ function loadProviders() {
   if (ci != null) {
     _currentIndex = ci;
   }
-}
-
-function saveProviders() {
-  var ps = new [_providers.size()];
-  for (var i = 0; i < _providers.size(); i++) {
-    ps[i] = providerToDict(_providers[i]);
-  }
-  Application.Storage.setValue("providers", ps);
-  Application.Storage.setValue("currentIndex", _currentIndex);
 }
 
 function exportToSettings() {
