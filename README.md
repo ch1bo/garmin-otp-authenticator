@@ -18,7 +18,7 @@ Less secure, but more convenient: key data can be also added, exported and impor
 * Encrypted storage of keys, can be backed up and restored
 * Add provider entries via settings
 * Import/export entries via settings
-* Uses but not required native cryptography (since Connect IQ 3.0.0)
+* Uses native cryptography when available (since Connect IQ 3.0.0)
 
 ## Getting started
 
@@ -65,6 +65,7 @@ Using the same approach as above, previously exported key data can be imported a
 * Choosable interval and code length for Time-based
 * Better touch UX on text input - scroll momentum
 * Bigger font for Steam-Guard codes (requires custom font)
+* Optional master password/PIN
 * Other UI/UX improvements - feedback welcome!
 
 ## Steam guard
