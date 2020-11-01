@@ -133,7 +133,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (_providers.size() == 0) {
-      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
+      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, "");
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var cur = currentProvider();
@@ -141,7 +141,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
       menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
       menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
-      // menu.addItem(new Menu.MenuItem("Edit", name, :edit_current, null));
+      menu.addItem(new Menu.MenuItem("Edit current", name, :edit_current, null));
       menu.addItem(new Menu.MenuItem("Delete current", name, :delete_current, null));
       menu.addItem(new Menu.MenuItem("Delete all", null, :delete_all, null));
       menu.addItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
@@ -164,8 +164,19 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
     case :new_entry:
-      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
+      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, "");
       WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
+      return true; // don't pop view
+    case :edit_current:
+      var cur = currentProvider();
+      if (cur == null) {
+        log(WARN, "Edit menu requested when currentProvider is null");
+        return false;
+      }
+      var editMenu = new Menu.MenuView({ :title => "Select" });
+      editMenu.addItem(new Menu.MenuItem("Name", cur.name_, :edit_name, null));
+      editMenu.addItem(new Menu.MenuItem("Key", null, :edit_key, null));
+      Menu.switchTo(editMenu, new EditMenuDelegate(cur), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
     case :delete_current:
       WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
@@ -225,7 +236,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   }
 }
 
-// Name, key and type input view stack
+// New entry name, key and type input view stack
 
 var _enteredName = "";
 
@@ -284,6 +295,69 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
       saveProviders();
     }
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+  }
+}
+
+// Edit submenus
+
+class EditMenuDelegate extends Menu.MenuDelegate {
+  var provider_;
+
+  function initialize(provider) {
+    provider_ = provider;
+    Menu.MenuDelegate.initialize();
+  }
+
+  function onMenuItem(identifier) {
+    logf(DEBUG, "onMenuItem $1$", [identifier]);
+    switch (identifier) {
+    case :edit_name:
+      var view = new TextInput.TextInputView("Edit name", Alphabet.ALPHANUM, provider_.name_);
+      WatchUi.switchToView(view, new EditNameDelegate(view, provider_), WatchUi.SLIDE_RIGHT);
+      return true; // don't pop view
+    case :edit_key:
+      var view = new TextInput.TextInputView("New key", Alphabet.ALPHANUM, "");
+      WatchUi.switchToView(view, new EditKeyDelegate(view, provider_), WatchUi.SLIDE_RIGHT);
+      return true; // don't pop view
+    }
+    return false;
+  }
+}
+
+class EditNameDelegate extends TextInput.TextInputDelegate {
+  var provider_;
+
+  function initialize(view, provider) {
+    provider_ = provider;
+    TextInputDelegate.initialize(view);
+  }
+
+  function onTextEntered(text) {
+    provider_.name_ = text;
+    saveProviders();
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+  }
+}
+
+class EditKeyDelegate extends TextInput.TextInputDelegate {
+  var provider_;
+
+  function initialize(view, provider) {
+    provider_ = provider;
+    TextInputDelegate.initialize(view);
+  }
+
+  function onTextEntered(text) {
+    provider_.key_ = text;
+    // Reset counters as this is essentially identical to creating a new token
+    switch (provider) {
+    case instanceof CounterBasedProvider:
+      log(DEBUG, "Resetting HOTP counter");
+      provider.counter_ = 0;
+      break;
+    }
+    saveProviders();
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }

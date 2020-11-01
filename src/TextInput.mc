@@ -13,12 +13,12 @@ class TextInputView extends WatchUi.View {
   var text_;
   var title_;
 
-  function initialize(title, alphabet) {
+  function initialize(title, alphabet, text) {
     View.initialize();
     title_ = title;
     alphabet_ = alphabet;
     cursor_ = 0;
-    text_ = "";
+    text_ = text != null ? text : "";
   }
 
   function onUpdate(dc) {
