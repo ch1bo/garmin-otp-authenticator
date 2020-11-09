@@ -98,6 +98,7 @@ class App extends Application.AppBase {
 
   function onStop(state) {
     log(DEBUG, "App onStop");
+    saveProviders();
   }
 
   function getInitialView() {
