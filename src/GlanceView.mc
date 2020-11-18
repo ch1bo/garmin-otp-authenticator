@@ -82,6 +82,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
 
     switch (provider) {
     case instanceof SteamGuardProvider:
+      subFont = Graphics.FONT_GLANCE;
     case instanceof TimeBasedProvider:
       // Colored OTP code depending on countdown
       var delta = provider.next_ - Time.now().value();
