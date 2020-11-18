@@ -2,6 +2,7 @@ using Toybox.StringUtil;
 
 const EMPTY_CODE = "______";
 
+(:glance)
 class Provider {
   var name_;
   var key_;
@@ -25,6 +26,7 @@ class Provider {
   }
 }
 
+(:glance)
 class CounterBasedProvider extends Provider {
   var counter_;
   var next_ = 0;
@@ -67,6 +69,7 @@ class CounterBasedProvider extends Provider {
   }
 }
 
+(:glance)
 class TimeBasedProvider extends Provider {
   var interval_;
   var next_ = 0;
@@ -102,6 +105,7 @@ class TimeBasedProvider extends Provider {
 }
 
 // TODO(SN): dry with TimeBasedProvider
+(:glance)
 class SteamGuardProvider extends TimeBasedProvider {
 
   function initialize(name, key, interval) {
@@ -158,6 +162,7 @@ function providerToDict(p) {
   return d;
 }
 
+(:glance)
 function providerFromDict(d) {
   var p = null;
   var counter = d.get("counter");
@@ -309,6 +314,7 @@ function findNext(str, q, i) {
 
 // Trim and filter whitespace (space, newlines, carriage returns and tabs) from
 // a string.
+(:glance)
 function strip(str) {
   var out = [];
   var cs = str.toCharArray();

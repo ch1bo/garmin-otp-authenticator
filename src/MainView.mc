@@ -6,7 +6,9 @@ using TextInput;
 
 var _error = "";
 var _errorTicks = 0;
+var _enableAntiAlias = false;
 
+(:glance)
 function displayError(str) {
   _error = str;
   _errorTicks = 50; // ~ 5 sec with the 100ms refresh (see Timer below)
@@ -19,8 +21,11 @@ function clearError() {
 
 class MainView extends WatchUi.View {
   var timer_;
+  var screen_shape_;
+
   function initialize() {
     View.initialize();
+    screen_shape_ = System.getDeviceSettings().screenShape;
     timer_ = new Timer.Timer();
   }
 
@@ -46,6 +51,10 @@ class MainView extends WatchUi.View {
   }
 
   function onUpdate(dc) {
+    // Available from 3.2.0
+    if ( dc has :setAntiAlias ) {
+      _enableAntiAlias = true;
+    }
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var provider = currentProvider();
@@ -79,6 +88,7 @@ class MainView extends WatchUi.View {
       drawCode(dc, codeColor, codeFont, provider.code_);
       // Countdown text
       drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, delta);
+      drawProgress(dc, delta, 30, codeColor);
       break;
     case instanceof CounterBasedProvider:
       // Provider name
@@ -98,11 +108,27 @@ class MainView extends WatchUi.View {
     }
   }
 
+  function drawProgress(dc, value, max, codeColor) {
+    dc.setPenWidth(dc.getHeight() / 40);
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
+      if ( _enableAntiAlias ) {
+        dc.setAntiAlias(true);
+      }
+      dc.drawArc(dc.getWidth() / 2, dc.getHeight() / 2, (dc.getWidth() / 2) - 2, Graphics.ARC_COUNTER_CLOCKWISE, 90, ((value * 360) / max) + 90);
+      if ( _enableAntiAlias ) {
+        dc.setAntiAlias(false);
+      }
+    } else if (screen_shape_ == System.SCREEN_SHAPE_RECTANGLE) {
+      dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
+    }
+  }
+
   function drawAboveCode(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh,
-                font, text, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh / 2,
+                font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawCode(dc, codeColor, codeFont, code) {
@@ -112,9 +138,10 @@ class MainView extends WatchUi.View {
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2,
-                font, text, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    var fh = dc.getFontHeight(font);
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2 + fh / 2,
+                font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 }
 

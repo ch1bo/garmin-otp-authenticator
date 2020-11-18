@@ -5,6 +5,7 @@ using Toybox.WatchUi;
 var _providers = [];
 var _currentIndex = 0;
 
+(:glance)
 function currentProvider() {
   if (_currentIndex >= 0 && _currentIndex < _providers.size()) {
     return _providers[_currentIndex];
@@ -12,7 +13,8 @@ function currentProvider() {
   return null;
 }
 
-function loadProviders() {
+(:glance)
+function loadProviders(displayerror) {
   var ps = Application.Storage.getValue("providers");
   if (ps) {
     for (var i = 0; i < ps.size(); i++) {
@@ -21,7 +23,9 @@ function loadProviders() {
       } catch (exception) {
         var msg = exception.getErrorMessage();
         log(ERROR, msg);
-        displayError(msg);
+        if (displayerror) {
+          displayError(msg);
+        }
       }
     }
   }
@@ -102,10 +106,16 @@ class App extends Application.AppBase {
   }
 
   function getInitialView() {
-    loadProviders();
+    loadProviders(true);
     importFromSettings();
     saveProviders();
     return [new MainView(), new MainViewDelegate()];
+  }
+
+  function getGlanceView() {
+    log(DEBUG, "App GlanceView");
+    loadProviders(false);
+    return [ new WidgetGlanceView() ];
   }
 
   function onSettingsChanged() {

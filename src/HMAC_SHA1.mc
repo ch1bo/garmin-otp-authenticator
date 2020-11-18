@@ -7,6 +7,7 @@ using Toybox.System;
 // key (Array<Number>) - key bytes (8-bit Numbers)
 // text (String) - massage to authenticate
 // return (Array<Number>) - MAC bytes (8-bit Numbers)
+(:glance)
 function hmacSHA1(key, text) {
   var BS = 64;
   if (key.size() > BS) {
@@ -24,7 +25,7 @@ function hmacSHA1(key, text) {
 }
 
 // Native SHA1 cryptography available as of connect iq 3.0.0
-(:connectiq3)
+(:connectiq3,:glance)
 function hashSHA1(data) {
   log(DEBUG, "SHA1 using native cryptography");
   // Use native implementation of SHA1, this requires conversion to/from the
@@ -36,14 +37,14 @@ function hashSHA1(data) {
   return res;
 }
 
-(:connectiq3)
+(:connectiq3,:glance)
 function fromArray(arr) {
   var bytes = []b;
   bytes.addAll(arr);
   return bytes;
 }
 
-(:connectiq3)
+(:connectiq3,:glance)
 function toArray(bytes) {
   var arr = new [bytes.size()];
   for (var i=0; i < arr.size(); i++) {
