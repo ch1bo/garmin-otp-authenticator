@@ -4,10 +4,6 @@ using Toybox.WatchUi;
 
 using TextInput;
 
-var _error = "";
-var _errorTicks = 0;
-var _enableAntiAlias = false;
-
 (:glance)
 function displayError(str) {
   _error = str;
