@@ -6,7 +6,6 @@ var _providers = [];
 var _currentIndex = 0;
 var _error = "";
 var _errorTicks = 0;
-var _enableAntiAlias = false;
 
 (:glance)
 function currentProvider() {

@@ -47,10 +47,6 @@ class MainView extends WatchUi.View {
   }
 
   function onUpdate(dc) {
-    // Available from 3.2.0
-    if ( dc has :setAntiAlias ) {
-      _enableAntiAlias = true;
-    }
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var provider = currentProvider();
@@ -108,14 +104,16 @@ class MainView extends WatchUi.View {
     dc.setPenWidth(dc.getHeight() / 40);
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
     if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
-      if ( _enableAntiAlias ) {
+      // Available from 3.2.0
+      if ( dc has :setAntiAlias ) {
         dc.setAntiAlias(true);
       }
       dc.drawArc(dc.getWidth() / 2, dc.getHeight() / 2, (dc.getWidth() / 2) - 2, Graphics.ARC_COUNTER_CLOCKWISE, 90, ((value * 360) / max) + 90);
-      if ( _enableAntiAlias ) {
+      // Available from 3.2.0
+      if ( dc has :setAntiAlias ) {
         dc.setAntiAlias(false);
       }
-    } else if (screen_shape_ == System.SCREEN_SHAPE_RECTANGLE) {
+    } else {
       dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
     }
   }
