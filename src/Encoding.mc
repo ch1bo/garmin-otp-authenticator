@@ -5,6 +5,7 @@ using Toybox.System;
 // Implementation of Base16 and Base32 encoding
 // rfc3548 https://tools.ietf.org/html/rfc3548
 
+(:glance)
 function base16ToBytes(string) {
   // pad zero
   var l = string.length();
@@ -20,6 +21,7 @@ function base16ToBytes(string) {
   return bs;
 }
 
+(:glance)
 function hex(char) {
   switch(char.toUpper()) {
   case '0': return 0x0;
@@ -43,6 +45,7 @@ function hex(char) {
   }
 }
 
+(:glance)
 function bytesToBase16(bytes) {
   var str = "";
   for (var i = 0; i < bytes.size(); i++) {
@@ -61,6 +64,7 @@ function bytesToBase16(bytes) {
 //
 // str (String) - base32 string
 // return (String) - padded base32 string to a multiple of 40 bit / 8 characters
+(:glance)
 function padBase32(str) {
   var l = str.length() % 8;
   if (l == 0) {
@@ -78,6 +82,7 @@ function padBase32(str) {
 //
 // str (String) - base32 string (multiple of 40 bit / 8 characters)
 // return (Array<Number>) - bytes
+(:glance)
 function base32ToBytes(str) {
   var cs = str.toCharArray();
   if (cs.size() % 8 != 0) {
@@ -132,6 +137,7 @@ function base32ToBytes(str) {
 //
 // bytes (Array<Number>) - bytes (multiple of 40 bit / 5 bytes)
 // return (String) - base32 string
+(:glance)
 function bytesToBase32(bytes) {
   if (bytes.size() % 5 != 0) {
     throw new InvalidValueException("multiple of 40 bit / 5 bytes required");
@@ -150,6 +156,7 @@ function bytesToBase32(bytes) {
   return str;
 }
 
+(:glance)
 function b32toi(c) {
   switch(c.toUpper()) {
   case 'A': return 0;
@@ -190,6 +197,7 @@ function b32toi(c) {
   }
 }
 
+(:glance)
 function itob32(i) {
   switch(i) {
   case 0 : return 'A';
@@ -229,6 +237,7 @@ function itob32(i) {
   }
 }
 
+(:glance)
 class UnexpectedSymbolException extends Lang.Exception {
   var symbol_;
 
@@ -242,6 +251,7 @@ class UnexpectedSymbolException extends Lang.Exception {
   }
 }
 
+(:glance)
 class InvalidValueException extends Lang.Exception {
   var value_;
 
