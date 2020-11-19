@@ -19,19 +19,11 @@ class WidgetGlanceView extends WatchUi.GlanceView {
   }
 
   function update() {
-    if (_errorTicks == 0) {
-      var provider = currentProvider();
-      try {
-        if (provider != null) {
-          provider.update();
-        }
-      } catch (exception) {
-        var msg = exception.getErrorMessage();
-        log(ERROR, msg);
-        exception.printStackTrace();
-      }
-      WatchUi.requestUpdate();
+    var provider = currentProvider();
+    if (provider != null) {
+      provider.update();
     }
+    WatchUi.requestUpdate();
   }
 
   function drawMain(dc, text, font, codeColor, space) {
@@ -68,13 +60,6 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     if (provider == null) {
       drawMain(dc, "OTP Authenticator", mainFont, mainColor, 0);
       drawSub(dc, "Tap to start", subFont, subColor, 0);
-      return;
-    }
-
-    if (_errorTicks > 0) {
-      mainColor = Graphics.COLOR_RED;
-      drawMain(dc, "ERROR", mainFont, mainColor, 0);
-      drawSub(dc, "Tap to view details", subFont, subColor, 0);
       return;
     }
 
