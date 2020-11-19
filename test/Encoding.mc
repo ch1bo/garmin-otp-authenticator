@@ -54,6 +54,12 @@ function base32_test3(logger) {
 
 (:test)
 function base32_decode_padded(logger) {
+  assertArrayEqual("decoded bytes", [],
+                   base32ToBytes(""));
+  assertArrayEqual("decoded bytes", [0, 0, 0, 0, 0],
+                   base32ToBytes("========"));
+  assertArrayEqual("decoded bytes", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                   base32ToBytes("================"));
   assertArrayEqual("decoded bytes", "f".toUtf8Array(),
                    base32ToBytes("MY======"));
   assertArrayEqual("decoded bytes", "fo".toUtf8Array(),
@@ -69,6 +75,8 @@ function base32_decode_padded(logger) {
 
 (:test)
 function padBase32_test(logger) {
+  assertEqual("padded base32", "", padBase32(""));
+  assertEqual("padded base32", "========", padBase32("="));
   assertEqual("padded base32", "MY======", padBase32("MY"));
   assertEqual("padded base32", "MZXQ====", padBase32("MZXQ"));
   assertEqual("padded base32", "MZXW6===", padBase32("MZXW6"));

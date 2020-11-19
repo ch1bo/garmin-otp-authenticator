@@ -80,15 +80,18 @@ function padBase32(str) {
 
 // Convert a base32 string to an array of bytes (Number, although only 8bit)
 //
-// str (String) - base32 string (multiple of 40 bit / 8 characters)
+// Note: This function is very permissive with padding. More specifically, it
+// does pad the string if necessary and treats already given padding characters
+// as 0. It even allows input which only consists of padding. This allows to use
+// it in a very robust, but .. well, permissive way.
+//
+// str (String) - base32 string
 // return (Array<Number>) - bytes
 (:glance)
 function base32ToBytes(str) {
-  var cs = str.toCharArray();
-  if (cs.size() % 8 != 0) {
-    throw new InvalidValueException("multiple of 40 bit / 8 characters required");
-  }
+  var cs = padBase32(str).toCharArray();
   var nBytes = cs.size() / 8 * 5;
+  // REVIEW(SN) Is this still necessary?
   // Count trailing '=' padding characters
   var eqCount = 0;
   for (var i = cs.size() - 1; i >= 0 && cs[i] == '='; i--) {
@@ -109,8 +112,6 @@ function base32ToBytes(str) {
     case 6:
       nBytes -= 4;
       break;
-    default:
-      throw new InvalidValueException("too much padding");
   }
   var bs = new [nBytes];
   for (var i = 0; i < cs.size(); i += 8) {

@@ -6,14 +6,17 @@ const EMPTY_CODE = "______";
 class Provider {
   var name_;
   var key_;
+
+  var keyBytes_;
   var code_ = EMPTY_CODE;
 
   function initialize(name, key) {
     name_ = name;
     key_ = key;
+    keyBytes_ = base32ToBytes(key);
   }
 
-  // Update code_, potentially calculating it from key_
+  // Update code_, potentially calculating it from keyBytes_
   function update() {
     log(WARN, "update() not implemented");
     return code_;
@@ -42,16 +45,7 @@ class CounterBasedProvider extends Provider {
       return code_;
     }
     next_ = now + 10; // on errors retry in 10
-    var k;
-    try {
-      // TODO(SN): profile how expensive this is
-      // TODO(SN): rather check on provider creation (validate function)!
-      k = base32ToBytes(key_);
-    } catch (e) {
-      // NOTE(SN): \n to have error message in two lines
-      throw new InvalidValueException("\nkey not base32\n" + e.getErrorMessage());
-    }
-    code_ = toDigits(hotp(k, counter_), 6);
+    code_ = toDigits(hotp(keyBytes_, counter_), 6);
     return code_;
   }
 
@@ -85,14 +79,7 @@ class TimeBasedProvider extends Provider {
       return code_;
     }
     next_ = now + 10; // on errors retry in 10
-    var k;
-    try {
-      k = base32ToBytes(key_);
-    } catch (e) {
-      // NOTE(SN): \n to have error message in two lines
-      throw new InvalidValueException("\nkey not base32\n" + e.getErrorMessage());
-    }
-    code_ = toDigits(totp(k, interval_), 6);
+    code_ = toDigits(totp(keyBytes_, interval_), 6);
     next_ = (now / interval_ + 1) * interval_;
     return code_;
   }
@@ -104,7 +91,6 @@ class TimeBasedProvider extends Provider {
   }
 }
 
-// TODO(SN): dry with TimeBasedProvider
 (:glance)
 class SteamGuardProvider extends TimeBasedProvider {
 
@@ -118,14 +104,7 @@ class SteamGuardProvider extends TimeBasedProvider {
       return code_;
     }
     next_ = now + 10; // on errors retry in 10
-    var k;
-    try {
-      k = base32ToBytes(key_);
-    } catch (e) {
-      // NOTE(SN): \n to have error message in two lines
-      throw new InvalidValueException("\nkey not base32\n" + e.getErrorMessage());
-    }
-    code_ = toSteam(totp(k, interval_));
+    code_ = toSteam(totp(keyBytes_, interval_));
     next_ = (now / interval_ + 1) * interval_;
     return code_;
   }
@@ -173,8 +152,8 @@ function providerFromDict(d) {
   if (interval == null) {
     interval = 30;
   }
-  // Strip and pad if necessary to be more liberal in what keyw we accept.
-  var key = padBase32(strip(d.get("key")));
+  // Strip and pad if necessary to be more liberal in what keys we accept.
+  var key = strip(d.get("key"));
   switch (d.get("type")) {
   case "CounterBasedProvider":
     p = new CounterBasedProvider(d.get("name"), key, counter);
@@ -221,6 +200,7 @@ function serializeProvider(p) {
     break;
   }
   s += "name=" + p.name_ + ",";
+  // TODO(SN): persist keyBytes_ instead? -> breaking change
   s += "key=" + p.key_;
   return s;
 }

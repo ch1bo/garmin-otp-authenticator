@@ -4,17 +4,6 @@ using Toybox.WatchUi;
 
 using TextInput;
 
-(:glance)
-function displayError(str) {
-  _error = str;
-  _errorTicks = 50; // ~ 5 sec with the 100ms refresh (see Timer below)
-}
-
-function clearError() {
-  _error = "";
-  _errorTicks = 0;
-}
-
 class MainView extends WatchUi.View {
   var timer_;
   var screen_shape_;
@@ -33,15 +22,8 @@ class MainView extends WatchUi.View {
 
   function update() {
     var provider = currentProvider();
-    try {
-      if (provider != null) {
-        provider.update();
-      }
-    } catch (exception) {
-      var msg = exception.getErrorMessage();
-      log(ERROR, msg);
-      exception.printStackTrace();
-      displayError(msg);
+    if (provider != null) {
+      provider.update();
     }
     WatchUi.requestUpdate();
   }
@@ -91,13 +73,6 @@ class MainView extends WatchUi.View {
                     "Press ENTER\nfor next code");
       break;
     }
-    if (_errorTicks > 0) {
-      _errorTicks--;
-      dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
-      dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_SMALL,
-                  _error,
-                  Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-    }
   }
 
   function drawProgress(dc, value, max, codeColor) {
@@ -105,12 +80,12 @@ class MainView extends WatchUi.View {
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
     if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
       // Available from 3.2.0
-      if ( dc has :setAntiAlias ) {
+      if (dc has :setAntiAlias) {
         dc.setAntiAlias(true);
       }
       dc.drawArc(dc.getWidth() / 2, dc.getHeight() / 2, (dc.getWidth() / 2) - 2, Graphics.ARC_COUNTER_CLOCKWISE, 90, ((value * 360) / max) + 90);
       // Available from 3.2.0
-      if ( dc has :setAntiAlias ) {
+      if (dc has :setAntiAlias) {
         dc.setAntiAlias(false);
       }
     } else {
@@ -219,7 +194,6 @@ class SelectMenuDelegate extends Menu.MenuDelegate {
     _currentIndex = identifier;
     logf(DEBUG, "setting current index $1$", [_currentIndex]);
     saveProviders();
-    clearError();
   }
 }
 
@@ -272,11 +246,12 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) { TextInputDelegate.initialize(view); }
   function onTextEntered(text) {
     _enteredKey = text;
+
     var menu = new WatchUi.Menu();
     menu.setTitle("Select type");
-    menu.addItem("Time based", : time);
-    menu.addItem("Counter based", : counter);
-    menu.addItem("Steam guard", : steam);
+    menu.addItem("Time based", :time);
+    menu.addItem("Counter based", :counter);
+    menu.addItem("Steam guard", :steam);
     WatchUi.pushView(menu, new TypeMenuDelegate(), WatchUi.SLIDE_LEFT);
   }
 }
@@ -285,6 +260,11 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
   function initialize() { MenuInputDelegate.initialize(); }
 
   function onMenuItem(item) {
+    // NOTE(SN) When creating providers here, we rely on the fact, that any
+    // input provided here (as it uses the Alphabet.BASE32) can be converted to
+    // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
+    // This is possible, because base32ToBytes also accepts empty strings or
+    // strings only consisting of padding.
     var provider;
     switch (item) {
     case:
@@ -303,7 +283,6 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
     if (provider != null) {
       _providers.add(provider);
       _currentIndex = _providers.size() - 1;
-      clearError();
       saveProviders();
     }
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
