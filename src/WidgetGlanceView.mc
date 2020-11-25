@@ -14,7 +14,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     timer_ = new Timer.Timer();
   }
 
-  function onShow() { timer_.start(method( : update), 500, true); }
+  function onShow() { timer_.start(method( : update), 1000, true); }
 
   function onHide() {
     timer_.stop();
