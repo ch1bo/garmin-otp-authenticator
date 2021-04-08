@@ -39,6 +39,8 @@ let
     xorg.libX11
     xorg.libXext
     zlib
+    # TODO(SN): libwebkitgtk-1.0.so.0 is maybe just libwebkit2gtk-4.0.so (from
+    # webkitgtk) renamed?
   ] + ":${stdenv.cc.cc.lib}/lib64";
 
   binaries = [
