@@ -4,14 +4,46 @@
 , makeWrapper
 , unzip
 , jre
+  # libraries used by SDK binaries
+, atk
+, cairo
+, expat
+, freetype
+, gdk-pixbuf
+, glib
+, gnome2
+, libpng
+, libSM
+, libudev
+, libusb
+, libXxf86vm
+, pango
+, xorg
+, zlib
 }:
 let
   rpath = lib.makeLibraryPath [
-    # TODO(SN): extend this to get 'simulator' running etc.
+    atk
+    cairo
+    expat
+    freetype
+    gdk-pixbuf
+    glib
+    gnome2.gtk
+    libpng
+    libSM
+    libudev
+    libusb
+    libXxf86vm
+    pango
+    xorg.libX11
+    xorg.libXext
+    zlib
   ] + ":${stdenv.cc.cc.lib}/lib64";
 
   binaries = [
     "$out/bin/shell"
+    "$out/bin/simulator"
   ];
 in
 stdenv.mkDerivation rec {
