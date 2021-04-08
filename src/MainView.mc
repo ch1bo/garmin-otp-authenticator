@@ -311,13 +311,14 @@ class EditMenuDelegate extends Menu.MenuDelegate {
 
   function onMenuItem(identifier) {
     logf(DEBUG, "onMenuItem $1$", [identifier]);
+    var view;
     switch (identifier) {
     case :edit_name:
-      var view = new TextInput.TextInputView("Edit name", Alphabet.ALPHANUM, provider_.name_);
+      view = new TextInput.TextInputView("Edit name", Alphabet.ALPHANUM, provider_.name_);
       WatchUi.switchToView(view, new EditNameDelegate(view, provider_), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
     case :edit_key:
-      var view = new TextInput.TextInputView("New key", Alphabet.ALPHANUM, "");
+      view = new TextInput.TextInputView("New key", Alphabet.ALPHANUM, "");
       WatchUi.switchToView(view, new EditKeyDelegate(view, provider_), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
     }
@@ -351,10 +352,10 @@ class EditKeyDelegate extends TextInput.TextInputDelegate {
   function onTextEntered(text) {
     provider_.key_ = text;
     // Reset counters as this is essentially identical to creating a new token
-    switch (provider) {
+    switch (provider_) {
     case instanceof CounterBasedProvider:
       log(DEBUG, "Resetting HOTP counter");
-      provider.counter_ = 0;
+      provider_.counter_ = 0;
       break;
     }
     saveProviders();
