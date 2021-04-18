@@ -13,8 +13,11 @@
 , gdk-pixbuf
 , glib
 , gnome2
+, fontconfig
+, libjpeg
 , libpng
 , libSM
+, libsoup
 , libudev
 , libusb
 , libXxf86vm
@@ -32,11 +35,14 @@ let
     gdk-pixbuf
     glib
     gnome2.gtk
+    fontconfig
     libpng
     libSM
+    libsoup
     libudev
     libusb
     libXxf86vm
+    linkedLibjpeg
     linkedWebkitgtk
     pango
     xorg.libX11
@@ -56,6 +62,16 @@ let
     ''
       mkdir -p $out/lib
       ln -s ${webkitgtk}/lib/libwebkit2gtk-4.0.so $out/lib/libwebkitgtk-1.0.so.0
+      ln -s ${webkitgtk}/lib/libjavascriptcoregtk-4.0.so $out/lib/libjavascriptcoregtk-1.0.so.0
+    '';
+
+  linkedLibjpeg = runCommand libjpeg.name
+    {
+      propagatedBuildInputs = [ libjpeg ];
+    }
+    ''
+      mkdir -p $out/lib
+      ln -s ${libjpeg.out}/lib/libjpeg.so.62.3.0 $out/lib/libjpeg.so.8
     '';
 in
 stdenv.mkDerivation rec {
