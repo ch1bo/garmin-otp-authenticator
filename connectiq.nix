@@ -2,6 +2,7 @@
 , stdenv
 , fetchurl
 , makeWrapper
+, runCommand
 , unzip
 , jre
   # libraries used by SDK binaries
@@ -19,6 +20,7 @@
 , libXxf86vm
 , pango
 , xorg
+, webkitgtk
 , zlib
 }:
 let
@@ -35,18 +37,26 @@ let
     libudev
     libusb
     libXxf86vm
+    linkedWebkitgtk
     pango
     xorg.libX11
     xorg.libXext
     zlib
-    # TODO(SN): libwebkitgtk-1.0.so.0 is maybe just libwebkit2gtk-4.0.so (from
-    # webkitgtk) renamed?
   ] + ":${stdenv.cc.cc.lib}/lib64";
 
   binaries = [
     "$out/bin/shell"
     "$out/bin/simulator"
   ];
+
+  linkedWebkitgtk = runCommand webkitgtk.name
+    {
+      propagatedBuildInputs = [ webkitgtk ];
+    }
+    ''
+      mkdir -p $out/lib
+      ln -s ${webkitgtk}/lib/libwebkit2gtk-4.0.so $out/lib/libwebkitgtk-1.0.so.0
+    '';
 in
 stdenv.mkDerivation rec {
   pname = "connectiq-sdk";
