@@ -23,7 +23,6 @@
 , libXxf86vm
 , pango
 , xorg
-, webkitgtk
 , zlib
 }:
 let
@@ -43,7 +42,6 @@ let
     libusb
     libXxf86vm
     linkedLibjpeg
-    linkedWebkitgtk
     pango
     xorg.libX11
     xorg.libXext
@@ -55,15 +53,13 @@ let
     "$out/bin/simulator"
   ];
 
-  linkedWebkitgtk = runCommand webkitgtk.name
-    {
-      propagatedBuildInputs = [ webkitgtk ];
-    }
-    ''
-      mkdir -p $out/lib
-      ln -s ${webkitgtk}/lib/libwebkit2gtk-4.0.so $out/lib/libwebkitgtk-1.0.so.0
-      ln -s ${webkitgtk}/lib/libjavascriptcoregtk-4.0.so $out/lib/libjavascriptcoregtk-1.0.so.0
-    '';
+  oldWebkitgtk = (import
+    (builtins.fetchTarball {
+      name = "nixpkgs-for-libwebkitgtk-1.0";
+      url = "https://github.com/nixos/nixpkgs/archive/989711d6f46fe71cb76510194885c1e03c215253.tar.gz";
+      sha256 = "156wr9h7sjlhz6mqrbnpjk3fb0sy9084hkm0nz65j5w97k72r37l";
+    })
+    { }).webkitgtk24x-gtk2;
 
   linkedLibjpeg = runCommand libjpeg.name
     {
