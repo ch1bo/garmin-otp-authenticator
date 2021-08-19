@@ -133,14 +133,17 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (_providers.size() == 0) {
-      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
+      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, "");
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
+      var cur = currentProvider();
+      var name = cur == null ? null : cur.name_;
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
       menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
       menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
+      menu.addItem(new Menu.MenuItem("Edit current", name, :edit_current, null));
+      menu.addItem(new Menu.MenuItem("Delete current", name, :delete_current, null));
+      menu.addItem(new Menu.MenuItem("Delete all", null, :delete_all, null));
       menu.addItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
       menu.addItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
@@ -161,15 +164,23 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
     case :new_entry:
-      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
+      var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, "");
       WatchUi.switchToView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
-    case :delete_entry:
-      var deleteMenu = new Menu.MenuView({ :title => "Delete" });
-      for (var i = 0; i < _providers.size(); i++) {
-        deleteMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
+    case :edit_current:
+      var cur = currentProvider();
+      if (cur == null) {
+        log(WARN, "Edit menu requested when currentProvider is null");
+        return false;
       }
-      Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
+      var editMenu = new Menu.MenuView({ :title => "Select" });
+      editMenu.addItem(new Menu.MenuItem("Name", cur.name_, :edit_name, null));
+      editMenu.addItem(new Menu.MenuItem("Key", null, :edit_key, null));
+      Menu.switchTo(editMenu, new EditMenuDelegate(cur), WatchUi.SLIDE_LEFT);
+      return true; // don't pop view
+    case :delete_current:
+      WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
+                       new DeleteCurrentConfirmationDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
     case :delete_all:
       WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
@@ -191,22 +202,22 @@ class SelectMenuDelegate extends Menu.MenuDelegate {
   function initialize() { Menu.MenuDelegate.initialize(); }
 
   function onMenuItem(identifier) {
-    _currentIndex = identifier;
-    logf(DEBUG, "setting current index $1$", [_currentIndex]);
-    saveProviders();
+    selectProvider(identifier);
   }
 }
 
-class DeleteMenuDelegate extends Menu.MenuDelegate {
-  function initialize() { Menu.MenuDelegate.initialize(); }
+class DeleteCurrentConfirmationDelegate extends WatchUi.ConfirmationDelegate {
+  function initialize() { WatchUi.ConfirmationDelegate.initialize(); }
 
-  function onMenuItem(identifier) {
-    var provider = currentProvider();
-    if (provider != null && provider == identifier) {
-      _currentIndex = 0;
+  function onResponse(response) {
+    switch (response) {
+      case WatchUi.CONFIRM_YES:
+        deleteCurrentProvider();
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
+        break;
+      case WatchUi.CONFIRM_NO:
+        break;
     }
-    _providers.remove(identifier);
-    saveProviders();
   }
 }
 
@@ -216,9 +227,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   function onResponse(response) {
     switch (response) {
       case WatchUi.CONFIRM_YES:
-        _providers = [];
-        _currentIndex = 0;
-        saveProviders();
+        deleteAllProviders();
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:
@@ -227,7 +236,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   }
 }
 
-// Name, key and type input view stack
+// New entry name, key and type input view stack
 
 var _enteredName = "";
 
@@ -286,6 +295,70 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
       saveProviders();
     }
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+  }
+}
+
+// Edit submenus
+
+class EditMenuDelegate extends Menu.MenuDelegate {
+  var provider_;
+
+  function initialize(provider) {
+    provider_ = provider;
+    Menu.MenuDelegate.initialize();
+  }
+
+  function onMenuItem(identifier) {
+    logf(DEBUG, "onMenuItem $1$", [identifier]);
+    var view;
+    switch (identifier) {
+    case :edit_name:
+      view = new TextInput.TextInputView("Edit name", Alphabet.ALPHANUM, provider_.name_);
+      WatchUi.switchToView(view, new EditNameDelegate(view, provider_), WatchUi.SLIDE_RIGHT);
+      return true; // don't pop view
+    case :edit_key:
+      view = new TextInput.TextInputView("New key", Alphabet.ALPHANUM, "");
+      WatchUi.switchToView(view, new EditKeyDelegate(view, provider_), WatchUi.SLIDE_RIGHT);
+      return true; // don't pop view
+    }
+    return false;
+  }
+}
+
+class EditNameDelegate extends TextInput.TextInputDelegate {
+  var provider_;
+
+  function initialize(view, provider) {
+    provider_ = provider;
+    TextInputDelegate.initialize(view);
+  }
+
+  function onTextEntered(text) {
+    provider_.name_ = text;
+    saveProviders();
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+  }
+}
+
+class EditKeyDelegate extends TextInput.TextInputDelegate {
+  var provider_;
+
+  function initialize(view, provider) {
+    provider_ = provider;
+    TextInputDelegate.initialize(view);
+  }
+
+  function onTextEntered(text) {
+    provider_.key_ = text;
+    // Reset counters as this is essentially identical to creating a new token
+    switch (provider_) {
+    case instanceof CounterBasedProvider:
+      log(DEBUG, "Resetting HOTP counter");
+      provider_.counter_ = 0;
+      break;
+    }
+    saveProviders();
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
