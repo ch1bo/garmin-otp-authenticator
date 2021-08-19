@@ -244,7 +244,7 @@ class NameInputDelegate extends TextInput.TextInputDelegate {
   function initialize(view) { TextInputDelegate.initialize(view); }
   function onTextEntered(text) {
     _enteredName = text;
-    var view = new TextInput.TextInputView("Enter key", Alphabet.BASE32);
+    var view = new TextInput.TextInputView("Enter key", Alphabet.BASE32, "");
     WatchUi.pushView(view, new KeyInputDelegate(view), WatchUi.SLIDE_LEFT);
   }
 }
@@ -310,6 +310,8 @@ class EditMenuDelegate extends Menu.MenuDelegate {
   }
 
   function onMenuItem(identifier) {
+    var view;
+
     logf(DEBUG, "onMenuItem $1$", [identifier]);
     var view;
     switch (identifier) {
