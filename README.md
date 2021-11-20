@@ -58,9 +58,9 @@ Using the same approach as above, previously exported key data can be imported a
 
 ## Planned features
 
+* Rotating code colors for counter-based OTP.
 * Edit name, key and code type and lexical sorted entries
 * Encrypt on export with AES
-* A fully capable glance view
 * Other device support - on demand
 * Choosable interval and code length for Time-based
 * Better touch UX on text input - scroll momentum

@@ -39,7 +39,7 @@ class MainView extends WatchUi.View {
       return;
     }
     // Use number font if possible
-    var codeColor = Graphics.COLOR_WHITE;
+    var codeColor = Graphics.COLOR_GREEN;
     var codeFont = Graphics.FONT_NUMBER_HOT;
     var codeHeight = dc.getFontHeight(codeFont);
     switch (provider) {
@@ -70,7 +70,7 @@ class MainView extends WatchUi.View {
       drawCode(dc, codeColor, codeFont, provider.code_);
       // Instructions
       drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
-                    "Press ENTER\nfor next code");
+                    "MENU for next code");
       break;
     }
   }
@@ -119,6 +119,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onKey(event) {
     var key = event.getKey();
+    logf(DEBUG, "onKey $1$", [key]);
     if (key == KEY_MENU) {
       var provider = currentProvider();
       switch (provider) {

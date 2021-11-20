@@ -8,6 +8,7 @@
   * Add a glance view (@shinji).
   * Save providers when leaving widget (@JuanPotato).
   * Only draw entered, to be confirmed text green in TextInput.
+  * Paint counter-based codes always green and mention "MENU" button.
 
 ## 1.1.0 - 2020-10-31
 
