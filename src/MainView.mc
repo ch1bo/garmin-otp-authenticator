@@ -70,7 +70,7 @@ class MainView extends WatchUi.View {
       drawCode(dc, codeColor, codeFont, provider.code_);
       // Instructions
       drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
-                    "MENU for next code");
+                    "ENTER for next code");
       break;
     }
   }
@@ -120,7 +120,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   function onKey(event) {
     var key = event.getKey();
     logf(DEBUG, "onKey $1$", [key]);
-    if (key == KEY_MENU) {
+    if (key == KEY_MENU || key == KEY_ENTER) {
       var provider = currentProvider();
       switch (provider) {
       case instanceof CounterBasedProvider:
