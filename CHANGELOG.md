@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 - UNRELEASED
+## 1.2.0 - 2021-11-20
 
   * Add support for Venu 2 devices.
   * Add support for Forerunner 935 devices.
