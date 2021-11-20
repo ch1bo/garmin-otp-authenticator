@@ -81,6 +81,19 @@ The secret is located in a file at path
 be read using `adb` or a local shell and `su` (thus the rooted phone
 requirement).
 
+## Development
+
+Due to very old libraries used in the Garmin SDK, notably in the simulator,
+modern Linux distributions and especially NixOS is hard to support. Thus, the
+current "best" practice is to use an Ubuntu docker image like [this
+one](https://github.com/kalemena/docker-connectiq):
+
+```
+./run-in-docker.sh
+developer@c2efd41df61f$ monkeyc -d vivoactive3 -f ./monkey.jungle -o build/authenticator_vivoactive3.prg -y signing-key.der
+developer@c2efd41df61f$ connectiq &
+developer@c2efd41df61f$ monkeydo build/authenticator_vivoactive3.prg
+```
 
 ## License
 
