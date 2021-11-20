@@ -43,9 +43,7 @@ class TextInputView extends WatchUi.View {
   }
 
   function drawAlphabet(dc, x) {
-    if (confirm_) {
-      dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
-    } else {
+    if (!confirm_) {
       dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_BLACK);
     }
     drawLetter(dc, x, 0);
