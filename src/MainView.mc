@@ -127,8 +127,19 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
         WatchUi.requestUpdate();
         return true;
       }
+    } else if (key == KEY_DOWN || key == KEY_UP) {
+      var delta = key == KEY_DOWN ? 1 : -1;
+      _currentIndex += delta;
+      if (_currentIndex == -1) {
+        _currentIndex = _providers.size() - 1;
+      } else if (_currentIndex == _providers.size()) {
+        _currentIndex = 0;
+      }
+      saveProviders();
+      WatchUi.requestUpdate();
+      return true;
     }
-    BehaviorDelegate.onKey(event);
+    return BehaviorDelegate.onKey(event);
   }
 
   function onSelect() {
