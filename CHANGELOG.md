@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 - UNRELEASED
+
+  * Add support for Venu 2 devices.
+
 ## 1.1.0 - 2020-10-31
 
   * Move OTP provider selection into submenu with unlimited number of entries on
