@@ -3,6 +3,9 @@
 ## 1.2.0 - UNRELEASED
 
   * Add support for Venu 2 devices.
+  * Visualize remaining time as circular/rectangular progress bar (@shinji).
+  * Add a glance view (@shinji).
+  * Save providers when leaving widget (@JuanPotato).
 
 ## 1.1.0 - 2020-10-31
 
