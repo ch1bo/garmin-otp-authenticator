@@ -131,11 +131,12 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     } else if (key == KEY_DOWN || key == KEY_UP) {
       var delta = key == KEY_DOWN ? 1 : -1;
       _currentIndex += delta;
-      if (_currentIndex == -1) {
+      if (_currentIndex < 0) {
         _currentIndex = _providers.size() - 1;
-      } else if (_currentIndex == _providers.size()) {
+      } else if (_currentIndex >= _providers.size()) {
         _currentIndex = 0;
       }
+      logf(DEBUG, "quick switch to index $1$", [_currentIndex]);
       saveProviders();
       WatchUi.requestUpdate();
       return true;
