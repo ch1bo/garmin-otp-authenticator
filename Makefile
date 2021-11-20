@@ -4,7 +4,7 @@ SOURCES ?= $(wildcard src/*.mc)
 TESTS ?= $(wildcard test/*.mc)
 KEY ?= signing-key.der
 
-DEVICE ?= venu2
+DEVICE ?= vivoactive3
 
 .PHONY: build
 build: build/authenticator_$(DEVICE).prg
