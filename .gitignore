@@ -3,3 +3,10 @@ signing-key.der
 
 # Local garmin files (SDKs etc.)
 .Garmin/
+
+# Docker related
+.bash_history
+
+# Eclipse stuff (occasionally in use)
+.classpath
+.project

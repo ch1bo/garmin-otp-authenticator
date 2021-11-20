@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Adapted from https://raw.githubusercontent.com/kalemena/docker-connectiq/master/run.sh
 xhost +local:
 
 MAP_UID=${UID:-`id -u`}
@@ -13,4 +12,4 @@ docker run -it --rm \
     -w $PWD \
     -u $MAP_UID:$MAP_GID \
     --privileged \
-    kalemena/connectiq:latest "$@"
+    connectiq:latest "$@"
