@@ -6,29 +6,27 @@ using TextInput;
 
 (:glance)
 class WidgetGlanceView extends WatchUi.GlanceView {
+
   var timer_;
+
   function initialize() {
     GlanceView.initialize();
     timer_ = new Timer.Timer();
   }
 
-  function onShow() { timer_.start(method( : update), 500, true); }
+  function onShow() { timer_.start(method( : update), 1000, true); }
 
   function onHide() {
     timer_.stop();
   }
 
   function update() {
-    var provider = currentProvider();
-    if (provider != null) {
-      provider.update();
-    }
     WatchUi.requestUpdate();
   }
 
   function drawMain(dc, text, font, codeColor, space) {
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-    dc.drawText(0, dc.getHeight() / 2 - dc.getFontHeight(font) / 2 - space, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(0, dc.getHeight() / 4 - space, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawSub(dc, text, font, codeColor, space) {
@@ -63,6 +61,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
       return;
     }
 
+    provider.update();
     subFont = Graphics.FONT_GLANCE_NUMBER;
 
     switch (provider) {
