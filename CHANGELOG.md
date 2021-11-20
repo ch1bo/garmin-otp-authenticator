@@ -6,6 +6,7 @@
   * Add support for Forerunner 935 devices.
   * Visualize remaining time as circular/rectangular progress bar (@shinji).
   * Add a glance view (@shinji).
+  * Quick switch providers with Up/Down buttons (@The-Compiler).
   * Save providers when leaving widget (@JuanPotato).
   * Only draw entered, to be confirmed text green in TextInput.
   * Paint counter-based codes always green and mention "MENU" button.
