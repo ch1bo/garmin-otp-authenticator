@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 - UNRELEASED
+## 1.3.0 - 2022-01-06
 
   * Add support for Forerunner 55, drawing the code with a smaller font.
   * Add support for Forerunner 735xt, 745 and MARQ devices.
