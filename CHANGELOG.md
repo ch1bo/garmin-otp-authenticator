@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 - UNRELEASED
+
+  * Add support for Forerunner 55, drawing the code with a smaller font.
+
 ## 1.2.0 - 2021-11-20
 
   * Add support for Venu 2 devices.

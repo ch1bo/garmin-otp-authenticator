@@ -59,7 +59,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     var provider = currentProvider();
     if (provider == null) {
       drawMain(dc, "OTP Authenticator", mainFont, mainColor, 0);
-      drawSub(dc, "Tap to start", subFont, subColor, 0);
+      drawSub(dc, "ENTER to start", subFont, subColor, 0);
       return;
     }
 

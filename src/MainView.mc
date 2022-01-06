@@ -34,13 +34,16 @@ class MainView extends WatchUi.View {
     var provider = currentProvider();
     if (provider == null) {
       dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_MEDIUM,
-                  "Tap to start",
+                  "ENTER to start",
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       return;
     }
     // Use number font if possible
     var codeColor = Graphics.COLOR_GREEN;
     var codeFont = Graphics.FONT_NUMBER_HOT;
+    if (dc.getWidth() < 210) {
+      codeFont = Graphics.FONT_NUMBER_MILD;
+    }
     var codeHeight = dc.getFontHeight(codeFont);
     switch (provider) {
     // NOTE(SN): This case deliberately falls-through
