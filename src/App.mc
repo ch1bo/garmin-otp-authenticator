@@ -113,10 +113,10 @@ class App extends Application.AppBase {
 
   function onStop(state) {
     log(DEBUG, "App onStop");
-    // saveProviders();
   }
 
   function getInitialView() {
+    log(DEBUG, "App getInitialView");
     loadProviders();
     importFromSettings();
     saveProviders();
@@ -124,13 +124,13 @@ class App extends Application.AppBase {
   }
 
   function getGlanceView() {
-    log(DEBUG, "App GlanceView");
+    log(DEBUG, "App getGlanceView");
     loadProviders();
     return [ new WidgetGlanceView() ];
   }
 
   function onSettingsChanged() {
-    log(DEBUG, "onSettingsChanged");
+    log(DEBUG, "App onSettingsChanged");
     importFromSettings();
     saveProviders();
     WatchUi.requestUpdate();

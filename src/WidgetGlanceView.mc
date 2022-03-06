@@ -12,9 +12,13 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     timer_ = new Timer.Timer();
   }
 
-  function onShow() { timer_.start(method( : update), 500, true); }
+  function onShow() {
+    log(DEBUG, "GlanceView onShow");
+    timer_.start(method( : update), 5000, true);
+  }
 
   function onHide() {
+    log(DEBUG, "GlanceView onHide");
     timer_.stop();
   }
 
@@ -48,6 +52,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
   }
 
   function onUpdate(dc) {
+    log(DEBUG, "GlanceView onUpdate");
     var mainColor = Graphics.COLOR_WHITE;
     var mainFont = Graphics.FONT_GLANCE;
     var subColor = Graphics.COLOR_DK_GRAY;
