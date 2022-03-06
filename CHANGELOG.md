@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 - UNRELEASED
+
+  * Add support for Venu 2 Plus Fenix 7, 7S and 7X watches.
+
 ## 1.3.0 - 2022-01-06
 
   * Add support for Forerunner 55, drawing the code with a smaller font.
