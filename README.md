@@ -95,6 +95,11 @@ docker build . -t connectiq
 developer@c2efd41df61f$ make start
 ```
 
+The docker container uses the SDKs and Device files from the `.Garmin/` working
+directory. To check for new and download SDK packages, launch `sdkmanager` from
+within the docker container. Also, for some tasks the Garmin IDE is helpful,
+available in the `eclipse` of the docker container.
+
 ## License
 
 The source code for garmin-otp-authenticator is released under the [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/).
