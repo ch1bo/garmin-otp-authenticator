@@ -17,6 +17,7 @@ class MainView extends WatchUi.View {
   function onShow() {
     log(DEBUG, "MainView onShow");
     timer_.start(method( : update), 1000, true);
+    update();
   }
 
   function onHide() {

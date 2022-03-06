@@ -15,6 +15,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
   function onShow() {
     log(DEBUG, "GlanceView onShow");
     timer_.start(method( : update), 5000, true);
+    update();
   }
 
   function onHide() {
