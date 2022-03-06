@@ -7,14 +7,20 @@ using TextInput;
 (:glance)
 class WidgetGlanceView extends WatchUi.GlanceView {
   var timer_;
+  var update_rate_;
+
   function initialize() {
     GlanceView.initialize();
     timer_ = new Timer.Timer();
+    update_rate_ = Application.Properties.getValue("glanceRate");
   }
 
   function onShow() {
-    log(DEBUG, "GlanceView onShow");
-    timer_.start(method( : update), 5000, true);
+    logf(DEBUG, "GlanceView onShow, update rate: $1$", [update_rate_]);
+    if (update_rate_ > 0) {
+      var period = 60.0 / update_rate_ * 1000;
+      timer_.start(method( : update), period, true);
+    }
     update();
   }
 

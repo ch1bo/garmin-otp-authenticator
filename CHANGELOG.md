@@ -3,6 +3,7 @@
 ## 1.4.0 - UNRELEASED
 
   * Add support for Venu 2 Plus Fenix 7, 7S and 7X watches.
+  * Add settings to configure refresh rate of main view and glance view.
 
 ## 1.3.0 - 2022-01-06
 

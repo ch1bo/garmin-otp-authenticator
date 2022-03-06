@@ -5,18 +5,23 @@ using Toybox.WatchUi;
 using TextInput;
 
 class MainView extends WatchUi.View {
-  var timer_;
   var screen_shape_;
+  var timer_;
+  var update_rate_;
 
   function initialize() {
     View.initialize();
     screen_shape_ = System.getDeviceSettings().screenShape;
     timer_ = new Timer.Timer();
+    update_rate_ = Application.Properties.getValue("mainRate");
   }
 
   function onShow() {
-    log(DEBUG, "MainView onShow");
-    timer_.start(method( : update), 1000, true);
+    logf(DEBUG, "MainView onShow, update rate: $1$", [update_rate_]);
+    if (update_rate_ > 0) {
+      var period = 60.0 / update_rate_ * 1000;
+      timer_.start(method( : update), period, true);
+    }
     update();
   }
 

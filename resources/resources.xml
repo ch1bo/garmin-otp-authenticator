@@ -1,5 +1,8 @@
 <resources>
   <string id="appName">OTP Authenticator</string>
+  <string id="mainRate">Refresh rate in widget (per minute)</string>
+  <string id="glanceRate">Refresh rate at glance (per minute)</string>
+  <string id="ratePrompt">Higher rates might have an impact on battery drain</string>
   <string id="addType">Add provider: type</string>
   <string id="addName">Add provider: name</string>
   <string id="addKey">Add provider: key</string>
@@ -12,6 +15,8 @@
   <bitmap id="LauncherIcon" filename="icon.png" />
 
   <properties>
+    <property id="mainRate" type="number">60</property>
+    <property id="glanceRate" type="number">12</property>
     <property id="addType" type="number">1</property>
     <property id="addName" type="string"></property>
     <property id="addKey" type="string"></property>
@@ -19,6 +24,12 @@
   </properties>
 
   <settings>
+    <setting propertyKey="@Properties.mainRate" title="@Strings.mainRate" prompt="@Strings.ratePrompt">
+      <settingConfig type="numeric" min="0" max="600" />
+    </setting>
+    <setting propertyKey="@Properties.glanceRate" title="@Strings.glanceRate" prompt="@Strings.ratePrompt">
+      <settingConfig type="numeric" min="0" max="60" />
+    </setting>
     <setting propertyKey="@Properties.addType" title="@Strings.addType">
       <settingConfig type="list">
         <listEntry value="0">@Strings.CounterBasedProvider</listEntry>
