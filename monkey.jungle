@@ -1,4 +1,5 @@
 project.manifest = manifest.xml
+base.sourcePath = src;test
 
 # Exclude connectiq 2.x code by default
 base.excludeAnnotations = connectiq2
