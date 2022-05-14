@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0 - UNRELEASED
+
+  * Add support for Descent Mk2 and Epix 2 watches.
+
 ## 1.4.0 - 2022-03-06
 
   * Add support for Venu 2 Plus Fenix 7, 7S and 7X watches.

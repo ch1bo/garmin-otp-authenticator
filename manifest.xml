@@ -1,6 +1,9 @@
 <iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="1">
     <iq:application entry="App" id="2d38c75cd89a4545ab02dface56df18a" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="2.4.0" name="@Strings.appName" type="widget">
         <iq:products>
+            <iq:product id="descentmk2"/>
+            <iq:product id="descentmk2s"/>
+            <iq:product id="epix2"/>
             <iq:product id="fenix5"/>
             <iq:product id="fenix5plus"/>
             <iq:product id="fenix5s"/>
