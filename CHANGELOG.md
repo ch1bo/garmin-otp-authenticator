@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.0 - UNRELEASED
+## 1.5.0 - 2022-05-14
 
   * Add support for Descent Mk2 and Epix 2 watches.
 
