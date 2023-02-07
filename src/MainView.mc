@@ -65,7 +65,9 @@ class MainView extends WatchUi.View {
       drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
       // Colored OTP code depending on countdown
       var delta = provider.next_ - Time.now().value();
-      if (delta > 15) {
+      if (DISPLAY_IS_BLACK_AND_WHITE) {
+        codeColor = Graphics.COLOR_WHITE;
+      } else if (delta > 15) {
         codeColor = Graphics.COLOR_GREEN;
       } else if (delta > 5) {
         codeColor = Graphics.COLOR_ORANGE;
@@ -91,16 +93,35 @@ class MainView extends WatchUi.View {
   function drawProgress(dc, value, max, codeColor) {
     dc.setPenWidth(dc.getHeight() / 40);
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    var subscreen = WatchUi.getSubscreen();
     if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
       // Available from 3.2.0
       if (dc has :setAntiAlias) {
         dc.setAntiAlias(true);
       }
-      dc.drawArc(dc.getWidth() / 2, dc.getHeight() / 2, (dc.getWidth() / 2) - 2, Graphics.ARC_COUNTER_CLOCKWISE, 90, ((value * 360) / max) + 90);
+      dc.drawArc(
+        dc.getWidth() / 2,
+        dc.getHeight() / 2,
+        (dc.getWidth() / 2) - 2,
+        Graphics.ARC_COUNTER_CLOCKWISE,
+        90, ((value * 360) / max) + 90
+      );
       // Available from 3.2.0
       if (dc has :setAntiAlias) {
         dc.setAntiAlias(false);
       }
+    } else if (subscreen != null) {
+      dc.setPenWidth(subscreen.width / 2);
+      dc.drawArc(
+        subscreen.x + subscreen.width / 2,
+        subscreen.y + subscreen.height / 2,
+        // I don't understand how the radius parameter works
+        // Apparently a quarter width works to get a complete circle
+        subscreen.width / 4,
+        Graphics.ARC_COUNTER_CLOCKWISE,
+        90, ((value * 360) / max) + 90
+      );
+      // dc.fillRectangle(subscreen.x, subscreen.y, ((value * subscreen.width) / max), subscreen.height);
     } else {
       dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
     }
