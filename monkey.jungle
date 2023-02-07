@@ -1,8 +1,8 @@
 project.manifest = manifest.xml
 base.sourcePath = src;test
 
-# Exclude connectiq 2.x code by default
-base.excludeAnnotations = connectiq2
+# Exclude connectiq 2.x and black-and-white display code by default
+base.excludeAnnotations = connectiq2;isBlackAndWhite
 
 # Exclude connectiq 3.x code for some devices
 vivoactive_hr.excludeAnnotations = connectiq3
@@ -12,3 +12,11 @@ fr735xt.excludeAnnotations = connectiq3
 vivoactive_hr.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
+
+instinct2.resourcePath = $(base.resourcePath);resources-instinct
+instinct2s.resourcePath = $(base.resourcePath);resources-instinct
+instinctcrossover.resourcePath = $(base.resourcePath);resources-instinct
+
+instinct2.excludeAnnotations = connectiq2;isColor
+instinct2s.excludeAnnotations = connectiq2;isColor
+instinctcrossover.excludeAnnotations = connectiq2;isColor
