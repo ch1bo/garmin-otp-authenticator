@@ -163,12 +163,12 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
-      menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
-      menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
-      menu.addItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
-      menu.addItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
+      menu.addMenuItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("New entry", null, :new_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
+      menu.addMenuItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
+      menu.addMenuItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
     return true;
@@ -183,7 +183,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
     case :select_entry:
       var selectMenu = new Menu.MenuView({ :title => "Select" });
       for (var i = 0; i < _providers.size(); i++) {
-        selectMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
+        selectMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
       }
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
@@ -194,7 +194,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
     case :delete_entry:
       var deleteMenu = new Menu.MenuView({ :title => "Delete" });
       for (var i = 0; i < _providers.size(); i++) {
-        deleteMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
+        deleteMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
       }
       Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
@@ -275,11 +275,10 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function onTextEntered(text) {
     _enteredKey = text;
 
-    var menu = new WatchUi.Menu();
-    menu.setTitle("Select type");
-    menu.addItem("Time based", :time);
-    menu.addItem("Counter based", :counter);
-    menu.addItem("Steam guard", :steam);
+    var menu = new Menu.MenuView({ :title => "Type" });
+    menu.addMenuItem(new Menu.MenuItem("Time based", null, :time, null));
+    menu.addMenuItem(new Menu.MenuItem("Counter based", null, :counter, null));
+    menu.addMenuItem(new Menu.MenuItem("Steam guard", null, :steam, null));
     WatchUi.pushView(menu, new TypeMenuDelegate(), WatchUi.SLIDE_LEFT);
   }
 }

@@ -34,12 +34,16 @@ class MenuView extends WatchUi.Menu {
     self.nItems = 0;
   }
 
-  function addItem(item) {
+  function addMenuItem(item) {
+    self.addItem(item.getLabel(), item.getId());
+  }
+
+  function addItem(name, identifier) {
     self.nItems++;
     if (self.nItems > WatchUi.Menu.MAX_SIZE) {
       logf(WARN, "Menu item overflow ($1$ > $2$), truncating items", [self.nItems, WatchUi.Menu.MAX_SIZE]);
     } else {
-      WatchUi.Menu.addItem(item.getLabel(), item.getId());
+      WatchUi.Menu.addItem(name, identifier);
     }
   }
 }
@@ -48,6 +52,10 @@ class MenuView extends WatchUi.Menu {
 class MenuView extends WatchUi.Menu2 {
   function initialize(options) {
     WatchUi.Menu2.initialize(options);
+  }
+
+  function addMenuItem(item) {
+    self.addItem(item);
   }
 }
 
