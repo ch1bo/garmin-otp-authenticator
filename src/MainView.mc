@@ -171,6 +171,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       menu.addItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
+    return true;
   }
 }
 
@@ -250,6 +251,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
       case WatchUi.CONFIRM_NO:
         break;
     }
+    return true;
   }
 }
 
@@ -291,7 +293,7 @@ class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
     // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
     // This is possible, because base32ToBytes also accepts empty strings or
     // strings only consisting of padding.
-    var provider;
+    var provider = null;
     switch (item) {
     case:
     time:

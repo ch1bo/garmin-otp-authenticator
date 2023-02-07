@@ -170,6 +170,7 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
     } else {
       view_.confirm(true);
     }
+    return true;
   }
 
   // InputDelegate methods
