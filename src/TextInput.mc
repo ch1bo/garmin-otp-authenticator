@@ -3,6 +3,8 @@ using Toybox.Graphics;
 using Toybox.System;
 using Toybox.Timer;
 
+const CHECKMARK = '✓';
+
 module TextInput {
 
 class TextInputView extends WatchUi.View {
@@ -16,7 +18,9 @@ class TextInputView extends WatchUi.View {
   function initialize(title, alphabet) {
     View.initialize();
     title_ = title;
-    alphabet_ = alphabet;
+    alphabet_ = new [0];
+    alphabet_.addAll(alphabet);
+    alphabet_.add(CHECKMARK);
     cursor_ = 0;
     text_ = "";
   }
@@ -26,7 +30,12 @@ class TextInputView extends WatchUi.View {
     dc.clear();
     var font = Graphics.FONT_SMALL;
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, 10, font, title_, Graphics.TEXT_JUSTIFY_CENTER);
+    var hasSubscreen = WatchUi.getSubscreen() != null;
+    // This assumes the subscreen is in the top right corner (as it is for
+    // instinct2)
+    var textJustify = hasSubscreen ? Graphics.TEXT_JUSTIFY_LEFT : Graphics.TEXT_JUSTIFY_CENTER;
+    var textX = hasSubscreen ? 5 : dc.getWidth() / 2;
+    dc.drawText(textX, 10, font, title_, textJustify);
     var textWidth = dc.getTextWidthInPixels(text_, font);
     // min width required for alphabet is widest char (M) + margins
     var alphabetWidth = dc.getTextWidthInPixels("M", font) + 15;
@@ -34,9 +43,14 @@ class TextInputView extends WatchUi.View {
     if (textWidth + alphabetWidth >= dc.getWidth()) {
       x = dc.getWidth() - alphabetWidth - textWidth;
     }
-    drawAlphabet(dc, x + textWidth + 15);
-    if (confirm_) {
-      dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
+    if (!confirm_) {
+      drawAlphabet(dc, x + textWidth + 15);
+    } else {
+      dc.drawText(textX, 35, font, "Confirm?", textJustify);
+      // Green is not visible on black and white displays, do not use
+      if (!DISPLAY_IS_BLACK_AND_WHITE) {
+        dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
+      }
     }
     dc.drawText(x, dc.getHeight()/2, font, text_,
                 Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -79,7 +93,12 @@ class TextInputView extends WatchUi.View {
   }
 
   function enter() {
-    text_ = text_ + alphabet_[limit(cursor_, alphabet_.size())];
+    var selected_char = alphabet_[limit(cursor_, alphabet_.size())];
+    if (selected_char == CHECKMARK) {
+      self.confirm(true);
+      return;
+    }
+    text_ = text_ + selected_char;
     confirm_ = false;
     WatchUi.requestUpdate();
   }
