@@ -304,17 +304,17 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   }
 }
 
-class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
-  function initialize() { MenuInputDelegate.initialize(); }
+class TypeMenuDelegate extends Menu.MenuDelegate {
+  function initialize() { Menu.MenuDelegate.initialize(); }
 
-  function onMenuItem(item) {
+  function onMenuItem(identifier) {
     // NOTE(SN) When creating providers here, we rely on the fact, that any
     // input provided here (as it uses the Alphabet.BASE32) can be converted to
     // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
     // This is possible, because base32ToBytes also accepts empty strings or
     // strings only consisting of padding.
     var provider = null;
-    switch (item) {
+    switch (identifier) {
     case:
     time:
       provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
