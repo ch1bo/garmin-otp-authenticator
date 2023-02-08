@@ -3,9 +3,17 @@ using Toybox.Graphics;
 using Toybox.System;
 using Toybox.Timer;
 
-const CHECKMARK = '✓';
+using Subscreen;
 
 module TextInput {
+
+(:connectiq3)
+const CHECKMARK = '✓';
+
+// Can't find a reference for the supported chars, but the checkmark above
+// doesn't seem to work on < iq 2; fall back
+(:connectiq2)
+const CHECKMARK = '>';
 
 class TextInputView extends WatchUi.View {
 
@@ -30,7 +38,7 @@ class TextInputView extends WatchUi.View {
     dc.clear();
     var font = Graphics.FONT_SMALL;
     var fh = dc.getFontHeight(font);
-    var hasSubscreen = WatchUi.getSubscreen() != null;
+    var hasSubscreen = Subscreen.getSubscreen() != null;
     // This assumes the subscreen is in the top right corner (as it is for
     // instinct2)
     var textJustify = hasSubscreen ? Graphics.TEXT_JUSTIFY_LEFT : Graphics.TEXT_JUSTIFY_CENTER;
