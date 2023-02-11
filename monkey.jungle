@@ -13,9 +13,9 @@ vivoactive_hr.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
 
-instinct2.resourcePath = $(base.resourcePath);resources-instinct
-instinct2s.resourcePath = $(base.resourcePath);resources-instinct
-instinctcrossover.resourcePath = $(base.resourcePath);resources-instinct
+instinct2.resourcePath = $(base.resourcePath);resources-instinct-176x176
+instinct2s.resourcePath = $(base.resourcePath);resources-instinct-163x156
+instinctcrossover.resourcePath = $(base.resourcePath);resources-instinct-176x176
 
 instinct2.excludeAnnotations = connectiq2;isColor
 instinct2s.excludeAnnotations = connectiq2;isColor
