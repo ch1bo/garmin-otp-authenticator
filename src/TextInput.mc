@@ -102,6 +102,8 @@ class TextInputView extends WatchUi.View {
 
   function enter() {
     var selected_char = alphabet_[limit(cursor_, alphabet_.size())];
+    // On some devices long-pressing the select button acts as a shortcut,
+    // adding this secondary way to confirm the input works around this
     if (selected_char == CHECKMARK) {
       self.confirm(true);
       return;
