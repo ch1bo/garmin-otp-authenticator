@@ -4,6 +4,7 @@ using Toybox.WatchUi;
 
 using TextInput;
 using Subscreen;
+using CountdownColor;
 
 class MainView extends WatchUi.View {
   var screen_shape_;
@@ -64,17 +65,8 @@ class MainView extends WatchUi.View {
     case instanceof TimeBasedProvider:
       // Provider name
       drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-      // Colored OTP code depending on countdown
       var delta = provider.next_ - Time.now().value();
-      if (DISPLAY_IS_BLACK_AND_WHITE) {
-        codeColor = Graphics.COLOR_WHITE;
-      } else if (delta > 15) {
-        codeColor = Graphics.COLOR_GREEN;
-      } else if (delta > 5) {
-        codeColor = Graphics.COLOR_ORANGE;
-      } else {
-        codeColor = Graphics.COLOR_RED;
-      }
+      codeColor = CountdownColor.getCountdownColor(delta);
       drawCode(dc, codeColor, codeFont, provider.code_);
       // Countdown text
       drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, delta);
