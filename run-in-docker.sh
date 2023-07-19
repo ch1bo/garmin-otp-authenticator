@@ -12,4 +12,5 @@ docker run -it --rm \
     -w $PWD \
     -u $MAP_UID:$MAP_GID \
     --privileged \
+    --ipc=host \
     connectiq:latest "$@"
