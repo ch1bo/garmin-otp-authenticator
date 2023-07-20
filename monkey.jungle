@@ -8,15 +8,14 @@ base.excludeAnnotations = connectiq2;isBlackAndWhite
 vivoactive_hr.excludeAnnotations = connectiq3;isBlackAndWhite
 fr735xt.excludeAnnotations = connectiq3;isBlackAndWhite
 
-# Share resources-vivoactive3 for the 40x33 icon
+# Re-use resources-vivoactive3 for the 40x33 icon
 vivoactive_hr.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
 
-instinct2.resourcePath = $(base.resourcePath);resources-instinct-176x176
-instinct2s.resourcePath = $(base.resourcePath);resources-instinct-163x156
-instinctcrossover.resourcePath = $(base.resourcePath);resources-instinct-176x176
+# Re-use resources-instinct2 for the 62x62 bw icon
+instinct2x.resourcePath = $(instinct2.resourcePath)
 
 instinct2.excludeAnnotations = connectiq2;isColor
+instinct2x.excludeAnnotations = connectiq2;isColor
 instinct2s.excludeAnnotations = connectiq2;isColor
-instinctcrossover.excludeAnnotations = connectiq2;isColor

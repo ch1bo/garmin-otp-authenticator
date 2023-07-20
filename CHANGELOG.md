@@ -4,7 +4,7 @@
 
   * Added ✓ into the alphabet to confirm TextInput.
   * Add support for Forerunner 955
-  * Add support for Instinct 2 and 2s.
+  * Add support for Instinct 2, 2x and 2s.
   * Use the subscreen to show progress when available.
 
 ## 1.5.0 - 2022-05-14

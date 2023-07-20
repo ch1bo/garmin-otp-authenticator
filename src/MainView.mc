@@ -84,26 +84,15 @@ class MainView extends WatchUi.View {
   }
 
   function drawProgress(dc, value, max, codeColor) {
+    // Available from 3.2.0
+    if (dc has :setAntiAlias) {
+      dc.setAntiAlias(true);
+    }
     dc.setPenWidth(dc.getHeight() / 40);
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
     var subscreen = Device.getSubscreen();
-    if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
-      // Available from 3.2.0
-      if (dc has :setAntiAlias) {
-        dc.setAntiAlias(true);
-      }
-      dc.drawArc(
-        dc.getWidth() / 2,
-        dc.getHeight() / 2,
-        (dc.getWidth() / 2) - 2,
-        Graphics.ARC_COUNTER_CLOCKWISE,
-        90, ((value * 360) / max) + 90
-      );
-      // Available from 3.2.0
-      if (dc has :setAntiAlias) {
-        dc.setAntiAlias(false);
-      }
-    } else if (subscreen != null) {
+    if (subscreen != null) {
+      // Use the subscreen to paint an clock like countdown
       dc.setPenWidth(subscreen.width / 2);
       dc.drawArc(
         subscreen.x + subscreen.width / 2,
@@ -114,7 +103,17 @@ class MainView extends WatchUi.View {
         Graphics.ARC_COUNTER_CLOCKWISE,
         90, ((value * 360) / max) + 90
       );
+    } else if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
+      // Use the whole screen to paint a clock like countdown
+      dc.drawArc(
+        dc.getWidth() / 2,
+        dc.getHeight() / 2,
+        (dc.getWidth() / 2) - 2,
+        Graphics.ARC_COUNTER_CLOCKWISE,
+        90, ((value * 360) / max) + 90
+      );
     } else {
+      // Fallback to a very basic bar at the top of the screen
       dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
     }
   }
