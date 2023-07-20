@@ -13,6 +13,16 @@ function getSubscreen() {
   return null;
 }
 
+(:glance)
+function subscreenIsTopRight(screenWidth) {
+  var subscreen = getSubscreen();
+  return (
+    subscreen != null && subscreen.y == 0 &&
+    // Is horizontal position of subscreen >= 90% of remaining screen width?
+    subscreen.x >= (screenWidth - subscreen.width) * 0.9
+  );
+}
+
 enum {
   BLACK_AND_WHITE,
   COLOR,

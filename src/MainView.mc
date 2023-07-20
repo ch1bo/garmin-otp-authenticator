@@ -57,19 +57,29 @@ class MainView extends WatchUi.View {
       codeFont = Graphics.FONT_NUMBER_MILD;
     }
     var codeHeight = dc.getFontHeight(codeFont);
+    var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
     switch (provider) {
     // NOTE(SN): This case deliberately falls-through
     case instanceof SteamGuardProvider:
       codeFont = Graphics.FONT_LARGE;
       codeHeight = dc.getFontHeight(codeFont);
     case instanceof TimeBasedProvider:
-      // Provider name
-      drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
       var delta = provider.next_ - Time.now().value();
+      var deltaText = delta < 0 ? "--" : delta.toString();
+      delta = delta < 0 ? 0 : delta;
       codeColor = CountdownColor.getCountdownColor(delta);
       drawCode(dc, codeColor, codeFont, provider.code_);
-      // Countdown text
-      drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, delta);
+      if (subscreenIsTopRight) {
+        // Provider name
+        drawBelowCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+        // Countdown text
+        drawTopLeftOfSubscreen(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+      } else {
+        // Provider name
+        drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+        // Countdown text
+        drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+      }
       drawProgress(dc, delta, 30, codeColor);
       break;
     case instanceof CounterBasedProvider:
@@ -92,7 +102,7 @@ class MainView extends WatchUi.View {
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
     var subscreen = Device.getSubscreen();
     if (subscreen != null) {
-      // Use the subscreen to paint an clock like countdown
+      // Use the subscreen to paint a clock like countdown
       dc.setPenWidth(subscreen.width / 2);
       dc.drawArc(
         subscreen.x + subscreen.width / 2,
@@ -118,24 +128,47 @@ class MainView extends WatchUi.View {
     }
   }
 
-  function drawAboveCode(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-    var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh / 2,
-                font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+  function getCodeY(dc) {
+    var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
+    var subscreen = Device.getSubscreen();
+    var dcHeight = dc.getHeight();
+    if (subscreenIsTopRight) {
+      var drawableHeight = subscreen.height + (dcHeight - subscreen.height);
+      // Not exactly one quarter, because of visual gravity: more space above 
+      // than below (in spite of room above not being used because of subscreen)
+      return subscreen.height + (drawableHeight / 4.8);
+    } else {
+      return dcHeight / 2;
+    }
   }
 
   function drawCode(dc, codeColor, codeFont, code) {
     dc.setColor(codeColor, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, codeFont, code,
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc), codeFont, code,
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+  }
+
+  function drawAboveCode(dc, codeHeight, font, text) {
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+    var fh = dc.getFontHeight(font);
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - fh / 2,
+                font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2 + fh / 2,
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2 + fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+  }
+
+  function drawTopLeftOfSubscreen(dc, codeHeight, font, text) {
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    var subscreen = Device.getSubscreen();
+    // Don't center exactly in the middle because instinct subscreen is round
+    var x = (dc.getWidth() - subscreen.width) / 2.3;
+    dc.drawText(x, subscreen.height / 2,
+                font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 }
 
