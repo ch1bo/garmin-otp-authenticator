@@ -2,9 +2,9 @@ using Toybox.System;
 using Toybox.Timer;
 using Toybox.WatchUi;
 
-using TextInput;
-using Subscreen;
 using CountdownColor;
+using Device;
+using TextInput;
 
 class MainView extends WatchUi.View {
   var screen_shape_;
@@ -86,7 +86,7 @@ class MainView extends WatchUi.View {
   function drawProgress(dc, value, max, codeColor) {
     dc.setPenWidth(dc.getHeight() / 40);
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-    var subscreen = Subscreen.getSubscreen();
+    var subscreen = Device.getSubscreen();
     if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
       // Available from 3.2.0
       if (dc has :setAntiAlias) {
@@ -114,7 +114,6 @@ class MainView extends WatchUi.View {
         Graphics.ARC_COUNTER_CLOCKWISE,
         90, ((value * 360) / max) + 90
       );
-      // dc.fillRectangle(subscreen.x, subscreen.y, ((value * subscreen.width) / max), subscreen.height);
     } else {
       dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
     }

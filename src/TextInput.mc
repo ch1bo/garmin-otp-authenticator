@@ -3,7 +3,7 @@ using Toybox.Graphics;
 using Toybox.System;
 using Toybox.Timer;
 
-using Subscreen;
+using Device;
 
 module TextInput {
 
@@ -37,8 +37,8 @@ class TextInputView extends WatchUi.View {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var font = Graphics.FONT_SMALL;
-    var fh = dc.getFontHeight(font);
-    var hasSubscreen = Subscreen.getSubscreen() != null;
+    // TODO: this leads to too much conditionals in here
+    var hasSubscreen = Device.getSubscreen() != null;
     // This assumes the subscreen is in the top right corner (as it is for
     // instinct2)
     var textJustify = hasSubscreen ? Graphics.TEXT_JUSTIFY_LEFT : Graphics.TEXT_JUSTIFY_CENTER;
