@@ -100,6 +100,30 @@ directory. To check for new and download SDK packages, launch `sdkmanager` from
 within the docker container. Also, for some tasks the Garmin IDE is helpful,
 available in the `eclipse` of the docker container.
 
+While a default device is defined in `Makefile`, one can select the device to
+run tests for or start the simulator on with `DEVICE=<device name in manifest>`.
+
+### Testing
+
+The codebase contains tests about the logic which can be run with `make test`,
+while the interface needs to be tested manually with the simulator using `make
+start`.
+
+Testing with all supported devices on every change is obviously infeasible, but
+the following list of devices should be considered as they are in way or the
+other special or representative:
+
+- `vivoactive3`: the device of the creator of this widget (still), touch screen
+- `vivoactive_hr`: an old api level 2.4.0 device with square screen, touch screen
+- `fenix5`: good representative for api level 3.1.0, buttons only
+- `fenix6`: good representative for api level 3.4.0, buttons only
+- `fenix7`: good representative for api level 4.2.0, touch screen
+- `venu2`: amoled (full color) higher resolution screen
+- `instinct2`: semi-octagon shape with subscreen, black-white screen
+
+[Full list](https://developer.garmin.com/connect-iq/compatible-devices/) of
+devices and their capabilities
+
 ## License
 
 The source code for garmin-otp-authenticator is released under the [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/).

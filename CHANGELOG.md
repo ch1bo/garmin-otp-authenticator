@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0 - UNRELEASED
+
+  * Added ✓ into the alphabet to confirm TextInput.
+  * Add support for Forerunner 955
+  * Add support for Instinct 2, 2s and crossover.
+  * Use the subscreen to show progress when available.
+
 ## 1.5.0 - 2022-05-14
 
   * Add support for Descent Mk2 and Epix 2 watches.
