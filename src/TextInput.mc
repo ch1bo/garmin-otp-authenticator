@@ -10,6 +10,7 @@ module TextInput {
 (:connectiq3)
 const CHECKMARK = '✓';
 
+// TODO: broken on vivoactive3 as well (3.1.0)
 // Can't find a reference for the supported chars, but the checkmark above
 // doesn't seem to work on < iq 2; fall back
 (:connectiq2)
@@ -56,7 +57,7 @@ class TextInputView extends WatchUi.View {
     } else {
       dc.drawText(textX, 35, font, "Confirm?", textJustify);
       // Green is not visible on black and white displays, do not use
-      if (!DISPLAY_IS_BLACK_AND_WHITE) {
+      if (Device.getPalette() != Device.BLACK_AND_WHITE) {
         dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
       }
     }

@@ -13,12 +13,19 @@ function getSubscreen() {
   return null;
 }
 
+enum {
+  BLACK_AND_WHITE,
+  COLOR,
 }
 
-
-// TODO: Make this a class with static fields like System.ScreenShape
 (:isColor)
-const DISPLAY_IS_BLACK_AND_WHITE = false;
+function getPalette() {
+  return COLOR;
+}
 
 (:isBlackAndWhite)
-const DISPLAY_IS_BLACK_AND_WHITE = true;
+function getPalette() {
+  return BLACK_AND_WHITE;
+}
+
+}
