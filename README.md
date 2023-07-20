@@ -121,6 +121,10 @@ other special or representative:
 - `venu2`: amoled (full color) higher resolution screen
 - `instinct2`: semi-octagon shape with subscreen, black-white screen
 
+To run all of these in sequence, use `./run-in-docker.sh ./test-all.sh`. To
+advance from one device to the next in the manual test, the widget must stop
+gracefully, e.g. using the back button.
+
 [Full list](https://developer.garmin.com/connect-iq/compatible-devices/) of
 devices and their capabilities
 
