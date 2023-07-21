@@ -13,6 +13,7 @@ function currentProvider() {
   }
   return null;
 }
+
 (:glance)
 function loadProviders() {
   var ps = Application.Storage.getValue("providers");

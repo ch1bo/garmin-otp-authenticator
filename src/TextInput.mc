@@ -3,7 +3,12 @@ using Toybox.Graphics;
 using Toybox.System;
 using Toybox.Timer;
 
+using Device;
+
 module TextInput {
+
+// Using a latin1 character as unicode was not supported on all devices
+const CHECKMARK = '»';
 
 class TextInputView extends WatchUi.View {
 
@@ -16,17 +21,28 @@ class TextInputView extends WatchUi.View {
   function initialize(title, alphabet) {
     View.initialize();
     title_ = title;
-    alphabet_ = alphabet;
+    alphabet_ = new [0];
+    alphabet_.addAll(alphabet);
+    alphabet_.add(CHECKMARK);
     cursor_ = 0;
     text_ = "";
   }
 
+  // XXX: This layout is suboptimal for the instinct2: The prompt text should
+  // not be on the top left corner, but also needs to be left to not flow into
+  // the subscreen. Also, the alphabet stretches to far top and overflows with
+  // the prompt text. Should: Create a device specific layout to also avoid
+  // conditionals in the rendering logic.
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var font = Graphics.FONT_SMALL;
-    var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, 10, font, title_, Graphics.TEXT_JUSTIFY_CENTER);
+    var hasSubscreen = Device.getSubscreen() != null;
+    // This assumes the subscreen is in the top right corner (as it is for
+    // instinct2)
+    var textJustify = hasSubscreen ? Graphics.TEXT_JUSTIFY_LEFT : Graphics.TEXT_JUSTIFY_CENTER;
+    var textX = hasSubscreen ? 5 : dc.getWidth() / 2;
+    dc.drawText(textX, 10, font, title_, textJustify);
     var textWidth = dc.getTextWidthInPixels(text_, font);
     // min width required for alphabet is widest char (M) + margins
     var alphabetWidth = dc.getTextWidthInPixels("M", font) + 15;
@@ -34,9 +50,14 @@ class TextInputView extends WatchUi.View {
     if (textWidth + alphabetWidth >= dc.getWidth()) {
       x = dc.getWidth() - alphabetWidth - textWidth;
     }
-    drawAlphabet(dc, x + textWidth + 15);
-    if (confirm_) {
-      dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
+    if (!confirm_) {
+      drawAlphabet(dc, x + textWidth + 15);
+    } else {
+      dc.drawText(textX, 35, font, "Confirm?", textJustify);
+      // Green is not visible on black and white displays, do not use
+      if (Device.getPalette() != Device.BLACK_AND_WHITE) {
+        dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
+      }
     }
     dc.drawText(x, dc.getHeight()/2, font, text_,
                 Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -56,10 +77,11 @@ class TextInputView extends WatchUi.View {
   }
 
   function drawLetter(dc, x, pos) {
-    var fh = dc.getFontHeight(Graphics.FONT_SMALL);
+    var font = Graphics.FONT_SMALL;
+    var fh = dc.getFontHeight(font);
     var y = dc.getHeight() / 2 + pos * (fh + 3);
     var c = alphabet_[limit(cursor_ + pos, alphabet_.size())];
-    dc.drawText(x, y, Graphics.FONT_SMALL, c,
+    dc.drawText(x, y, font, c,
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
@@ -79,7 +101,14 @@ class TextInputView extends WatchUi.View {
   }
 
   function enter() {
-    text_ = text_ + alphabet_[limit(cursor_, alphabet_.size())];
+    var selected_char = alphabet_[limit(cursor_, alphabet_.size())];
+    // On some devices long-pressing the select button acts as a shortcut,
+    // adding this secondary way to confirm the input works around this
+    if (selected_char == CHECKMARK) {
+      self.confirm(true);
+      return;
+    }
+    text_ = text_ + selected_char;
     confirm_ = false;
     WatchUi.requestUpdate();
   }
@@ -170,6 +199,7 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
     } else {
       view_.confirm(true);
     }
+    return true;
   }
 
   // InputDelegate methods

@@ -59,7 +59,7 @@ function hotp(key, counter) {
 (:glance)
 function truncate(bytes) {
   if (bytes.size() != 20) {
-    throw new Lang.UnexpectedTypeException();
+    throw new Lang.UnexpectedTypeException("HOTP hash must be 20 bytes", 0, 0);
   }
   // Offset is the low-order 4 bits of the byte at 19
   var offset = bytes[19] & 0xf;

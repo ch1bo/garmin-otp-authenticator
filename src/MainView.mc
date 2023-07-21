@@ -2,6 +2,8 @@ using Toybox.System;
 using Toybox.Timer;
 using Toybox.WatchUi;
 
+using CountdownColor;
+using Device;
 using TextInput;
 
 class MainView extends WatchUi.View {
@@ -38,6 +40,10 @@ class MainView extends WatchUi.View {
     WatchUi.requestUpdate();
   }
 
+  // XXX: This is getting unwieldy, especially for handling the special cases
+  // for devices with a subscreen on the top right corner (instinct2). Should:
+  // Create a device specific layout to also avoid conditionals in the rendering
+  // logic.
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
@@ -55,26 +61,29 @@ class MainView extends WatchUi.View {
       codeFont = Graphics.FONT_NUMBER_MILD;
     }
     var codeHeight = dc.getFontHeight(codeFont);
+    var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
     switch (provider) {
     // NOTE(SN): This case deliberately falls-through
     case instanceof SteamGuardProvider:
       codeFont = Graphics.FONT_LARGE;
       codeHeight = dc.getFontHeight(codeFont);
     case instanceof TimeBasedProvider:
-      // Provider name
-      drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-      // Colored OTP code depending on countdown
       var delta = provider.next_ - Time.now().value();
-      if (delta > 15) {
-        codeColor = Graphics.COLOR_GREEN;
-      } else if (delta > 5) {
-        codeColor = Graphics.COLOR_ORANGE;
-      } else {
-        codeColor = Graphics.COLOR_RED;
-      }
+      var deltaText = delta < 0 ? "--" : delta.toString();
+      delta = delta < 0 ? 0 : delta;
+      codeColor = CountdownColor.getCountdownColor(delta);
       drawCode(dc, codeColor, codeFont, provider.code_);
-      // Countdown text
-      drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, delta);
+      if (subscreenIsTopRight) {
+        // Provider name
+        drawBelowCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+        // Countdown text
+        drawTopLeftOfSubscreen(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+      } else {
+        // Provider name
+        drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+        // Countdown text
+        drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+      }
       drawProgress(dc, delta, 30, codeColor);
       break;
     case instanceof CounterBasedProvider:
@@ -89,41 +98,81 @@ class MainView extends WatchUi.View {
   }
 
   function drawProgress(dc, value, max, codeColor) {
+    // Available from 3.2.0
+    if (dc has :setAntiAlias) {
+      dc.setAntiAlias(true);
+    }
     dc.setPenWidth(dc.getHeight() / 40);
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-    if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
-      // Available from 3.2.0
-      if (dc has :setAntiAlias) {
-        dc.setAntiAlias(true);
-      }
-      dc.drawArc(dc.getWidth() / 2, dc.getHeight() / 2, (dc.getWidth() / 2) - 2, Graphics.ARC_COUNTER_CLOCKWISE, 90, ((value * 360) / max) + 90);
-      // Available from 3.2.0
-      if (dc has :setAntiAlias) {
-        dc.setAntiAlias(false);
-      }
+    var subscreen = Device.getSubscreen();
+    if (subscreen != null) {
+      // Use the subscreen to paint a clock like countdown
+      dc.setPenWidth(subscreen.width / 2);
+      dc.drawArc(
+        subscreen.x + subscreen.width / 2,
+        subscreen.y + subscreen.height / 2,
+        // I don't understand how the radius parameter works
+        // Apparently a quarter width works to get a complete circle
+        subscreen.width / 4,
+        Graphics.ARC_COUNTER_CLOCKWISE,
+        90, ((value * 360) / max) + 90
+      );
+    } else if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
+      // Use the whole screen to paint a clock like countdown
+      dc.drawArc(
+        dc.getWidth() / 2,
+        dc.getHeight() / 2,
+        (dc.getWidth() / 2) - 2,
+        Graphics.ARC_COUNTER_CLOCKWISE,
+        90, ((value * 360) / max) + 90
+      );
     } else {
+      // Fallback to a very basic bar at the top of the screen
       dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
     }
+  }
+
+  function getCodeY(dc) {
+    var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
+    var subscreen = Device.getSubscreen();
+    var dcHeight = dc.getHeight();
+    if (subscreenIsTopRight) {
+      var drawableHeight = subscreen.height + (dcHeight - subscreen.height);
+      // Not exactly one quarter, because of visual gravity: more space above 
+      // than below (in spite of room above not being used because of subscreen)
+      return subscreen.height + (drawableHeight / 4.8);
+    } else {
+      return dcHeight / 2;
+    }
+  }
+
+  function drawCode(dc, codeColor, codeFont, code) {
+    dc.setColor(codeColor, Graphics.COLOR_BLACK);
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc), codeFont, code,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawAboveCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 - codeHeight / 2 - fh / 2,
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-  }
-
-  function drawCode(dc, codeColor, codeFont, code) {
-    dc.setColor(codeColor, Graphics.COLOR_BLACK);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, codeFont, code,
-                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
     var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2 + codeHeight / 2 + fh / 2,
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2 + fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+  }
+
+  function drawTopLeftOfSubscreen(dc, codeHeight, font, text) {
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    var subscreen = Device.getSubscreen();
+    // Don't center exactly in the middle because instinct subscreen is round
+    var x = (dc.getWidth() - subscreen.width) / 2.3;
+    dc.drawText(x, subscreen.height / 2,
+                font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 }
 
@@ -163,14 +212,15 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
-      menu.addItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
-      menu.addItem(new Menu.MenuItem("New entry", null, :new_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
-      menu.addItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
-      menu.addItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
-      menu.addItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
+      menu.addMenuItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("New entry", null, :new_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
+      menu.addMenuItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
+      menu.addMenuItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
+    return true;
   }
 }
 
@@ -182,7 +232,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
     case :select_entry:
       var selectMenu = new Menu.MenuView({ :title => "Select" });
       for (var i = 0; i < _providers.size(); i++) {
-        selectMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
+        selectMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
       }
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
@@ -193,7 +243,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
     case :delete_entry:
       var deleteMenu = new Menu.MenuView({ :title => "Delete" });
       for (var i = 0; i < _providers.size(); i++) {
-        deleteMenu.addItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
+        deleteMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
       }
       Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return true; // don't pop view
@@ -250,6 +300,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
       case WatchUi.CONFIRM_NO:
         break;
     }
+    return true;
   }
 }
 
@@ -273,26 +324,25 @@ class KeyInputDelegate extends TextInput.TextInputDelegate {
   function onTextEntered(text) {
     _enteredKey = text;
 
-    var menu = new WatchUi.Menu();
-    menu.setTitle("Select type");
-    menu.addItem("Time based", :time);
-    menu.addItem("Counter based", :counter);
-    menu.addItem("Steam guard", :steam);
+    var menu = new Menu.MenuView({ :title => "Type" });
+    menu.addMenuItem(new Menu.MenuItem("Time based", null, :time, null));
+    menu.addMenuItem(new Menu.MenuItem("Counter based", null, :counter, null));
+    menu.addMenuItem(new Menu.MenuItem("Steam guard", null, :steam, null));
     WatchUi.pushView(menu, new TypeMenuDelegate(), WatchUi.SLIDE_LEFT);
   }
 }
 
-class TypeMenuDelegate extends WatchUi.MenuInputDelegate {
-  function initialize() { MenuInputDelegate.initialize(); }
+class TypeMenuDelegate extends Menu.MenuDelegate {
+  function initialize() { Menu.MenuDelegate.initialize(); }
 
-  function onMenuItem(item) {
+  function onMenuItem(identifier) {
     // NOTE(SN) When creating providers here, we rely on the fact, that any
     // input provided here (as it uses the Alphabet.BASE32) can be converted to
     // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
     // This is possible, because base32ToBytes also accepts empty strings or
     // strings only consisting of padding.
-    var provider;
-    switch (item) {
+    var provider = null;
+    switch (identifier) {
     case:
     time:
       provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);

@@ -1,6 +1,6 @@
 using Toybox.StringUtil;
 
-const EMPTY_CODE = "______";
+const EMPTY_CODE = "------";
 
 (:glance)
 class Provider {
