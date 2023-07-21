@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.0 - UNRELEASED
+## 1.6.0 - 2023-07-21
 
   * Added » into the alphabet to confirm TextInput.
   * Add support for Forerunner 955
