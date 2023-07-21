@@ -7,14 +7,8 @@ using Device;
 
 module TextInput {
 
-(:connectiq3)
-const CHECKMARK = '✓';
-
-// TODO: broken on vivoactive3 as well (3.1.0)
-// Can't find a reference for the supported chars, but the checkmark above
-// doesn't seem to work on < iq 2; fall back
-(:connectiq2)
-const CHECKMARK = '>';
+// Using a latin1 character as unicode was not supported on all devices
+const CHECKMARK = '»';
 
 class TextInputView extends WatchUi.View {
 
