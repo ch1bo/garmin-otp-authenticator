@@ -28,11 +28,15 @@ class TextInputView extends WatchUi.View {
     text_ = "";
   }
 
+  // XXX: This layout is suboptimal for the instinct2: The prompt text should
+  // not be on the top left corner, but also needs to be left to not flow into
+  // the subscreen. Also, the alphabet stretches to far top and overflows with
+  // the prompt text. Should: Create a device specific layout to also avoid
+  // conditionals in the rendering logic.
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
     var font = Graphics.FONT_SMALL;
-    // TODO: this leads to too much conditionals in here
     var hasSubscreen = Device.getSubscreen() != null;
     // This assumes the subscreen is in the top right corner (as it is for
     // instinct2)
@@ -73,10 +77,11 @@ class TextInputView extends WatchUi.View {
   }
 
   function drawLetter(dc, x, pos) {
-    var fh = dc.getFontHeight(Graphics.FONT_SMALL);
+    var font = Graphics.FONT_SMALL;
+    var fh = dc.getFontHeight(font);
     var y = dc.getHeight() / 2 + pos * (fh + 3);
     var c = alphabet_[limit(cursor_ + pos, alphabet_.size())];
-    dc.drawText(x, y, Graphics.FONT_SMALL, c,
+    dc.drawText(x, y, font, c,
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 

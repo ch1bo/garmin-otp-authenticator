@@ -40,6 +40,10 @@ class MainView extends WatchUi.View {
     WatchUi.requestUpdate();
   }
 
+  // XXX: This is getting unwieldy, especially for handling the special cases
+  // for devices with a subscreen on the top right corner (instinct2). Should:
+  // Create a device specific layout to also avoid conditionals in the rendering
+  // logic.
   function onUpdate(dc) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
     dc.clear();
