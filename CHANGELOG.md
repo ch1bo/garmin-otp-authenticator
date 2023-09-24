@@ -2,6 +2,7 @@
 
 ## 1.7.0 - UNRELEASED
 
+  * Gradually typed implementation to resolve compiler warnings.
   * Use 80x80 base icon image. Device builds will scale down.
 
 ## 1.6.0 - 2023-07-21

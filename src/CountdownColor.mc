@@ -1,4 +1,4 @@
-using Toybox.Graphics;
+import Toybox.Graphics;
 
 module CountdownColor {
 

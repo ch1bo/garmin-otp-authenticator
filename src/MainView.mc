@@ -1,6 +1,6 @@
-using Toybox.System;
-using Toybox.Timer;
-using Toybox.WatchUi;
+import Toybox.System;
+import Toybox.Timer;
+import Toybox.WatchUi;
 
 using CountdownColor;
 using Device;
@@ -53,47 +53,48 @@ class MainView extends WatchUi.View {
                   "ENTER to start",
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       return;
-    }
-    // Use number font if possible
-    var codeColor = Graphics.COLOR_GREEN;
-    var codeFont = Graphics.FONT_NUMBER_HOT;
-    if (dc.getWidth() < 210) {
-      codeFont = Graphics.FONT_NUMBER_MILD;
-    }
-    var codeHeight = dc.getFontHeight(codeFont);
-    var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
-    switch (provider) {
-    // NOTE(SN): This case deliberately falls-through
-    case instanceof SteamGuardProvider:
-      codeFont = Graphics.FONT_LARGE;
-      codeHeight = dc.getFontHeight(codeFont);
-    case instanceof TimeBasedProvider:
-      var delta = provider.next_ - Time.now().value();
-      var deltaText = delta < 0 ? "--" : delta.toString();
-      delta = delta < 0 ? 0 : delta;
-      codeColor = CountdownColor.getCountdownColor(delta);
-      drawCode(dc, codeColor, codeFont, provider.code_);
-      if (subscreenIsTopRight) {
-        // Provider name
-        drawBelowCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-        // Countdown text
-        drawTopLeftOfSubscreen(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
-      } else {
+    } else {
+      // Use number font if possible
+      var codeColor = Graphics.COLOR_GREEN;
+      var codeFont = Graphics.FONT_NUMBER_HOT;
+      if (dc.getWidth() < 210) {
+        codeFont = Graphics.FONT_NUMBER_MILD;
+      }
+      var codeHeight = dc.getFontHeight(codeFont);
+      var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
+      switch (provider) {
+      // NOTE(SN): This case deliberately falls-through
+      case instanceof SteamGuardProvider:
+        codeFont = Graphics.FONT_LARGE;
+        codeHeight = dc.getFontHeight(codeFont);
+      case instanceof TimeBasedProvider:
+        var delta = (provider as TimeBasedProvider).next_ - Time.now().value();
+        var deltaText = delta < 0 ? "--" : delta.toString();
+        delta = delta < 0 ? 0 : delta;
+        codeColor = CountdownColor.getCountdownColor(delta);
+        drawCode(dc, codeColor, codeFont, provider.code_);
+        if (subscreenIsTopRight) {
+          // Provider name
+          drawBelowCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+          // Countdown text
+          drawTopLeftOfSubscreen(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+        } else {
+          // Provider name
+          drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+          // Countdown text
+          drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+        }
+        drawProgress(dc, delta, 30, codeColor);
+        break;
+      case instanceof CounterBasedProvider:
         // Provider name
         drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-        // Countdown text
-        drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
+        drawCode(dc, codeColor, codeFont, provider.code_);
+        // Instructions
+        drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
+                      "ENTER for next code");
+        break;
       }
-      drawProgress(dc, delta, 30, codeColor);
-      break;
-    case instanceof CounterBasedProvider:
-      // Provider name
-      drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-      drawCode(dc, codeColor, codeFont, provider.code_);
-      // Instructions
-      drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
-                    "ENTER for next code");
-      break;
     }
   }
 
@@ -186,7 +187,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var provider = currentProvider();
       switch (provider) {
       case instanceof CounterBasedProvider:
-        provider.next();
+        (provider as CounterBasedProvider).next();
         WatchUi.requestUpdate();
         return true;
       }

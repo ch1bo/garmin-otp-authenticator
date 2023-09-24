@@ -1,13 +1,13 @@
-using Toybox.Application;
-using Toybox.Lang;
-using Toybox.System;
-using Toybox.WatchUi;
+import Toybox.Application;
+import Toybox.Lang;
+import Toybox.System;
+import Toybox.WatchUi;
 
-var _providers = [];
+var _providers as Array<Provider> = [];
 var _currentIndex = 0;
 
 (:glance)
-function currentProvider() {
+function currentProvider() as Provider? {
   if (_currentIndex >= 0 && _currentIndex < _providers.size()) {
     return _providers[_currentIndex];
   }
@@ -16,22 +16,29 @@ function currentProvider() {
 
 (:glance)
 function loadProviders() {
-  var ps = Application.Storage.getValue("providers");
-  if (ps) {
-    for (var i = 0; i < ps.size(); i++) {
-      try {
-        _providers.add(providerFromDict(ps[i]));
-      } catch (exception) {
-        var msg = exception.getErrorMessage();
-        log(ERROR, msg);
-        // NOTE(SN): We can't really report these errors and not loading them
-        // here, will result in the entry being dropped from storage! As this
-        // does result in data loss, we opt for the lesser evil and rethrow the
-        // exception with some information. That way, should this ever happen
-        // (highly unlikely in the field), we get the error via ERA and can
-        // assist the user.
-        throw new Lang.InvalidValueException("loadProviders() failed: " + msg);
-      }
+  var ps = Application.Storage.getValue("providers") as Array<ProviderDict>;
+  if (ps != null) {
+    switch (ps) {
+      case instanceof Array:
+        for (var i = 0; i < ps.size(); i++) {
+          try {
+            _providers.add(providerFromDict(ps[i]));
+          } catch (exception) {
+            var msg = exception.getErrorMessage();
+            log(ERROR, msg);
+            // NOTE(SN): We can't really report these errors and not loading them
+            // here, will result in the entry being dropped from storage! As this
+            // does result in data loss, we opt for the lesser evil and rethrow the
+            // exception with some information. That way, should this ever happen
+            // (highly unlikely in the field), we get the error via ERA and can
+            // assist the user.
+            throw new Lang.InvalidValueException("loadProviders() failed: " + msg);
+          }
+        }
+        break;
+      default:
+        logf(ERROR, "loadProviders loaded $1", [ps]);
+        throw new Lang.InvalidValueException("loadProviders() loaded not an array");
     }
   }
   var ci = Application.Storage.getValue("currentIndex");

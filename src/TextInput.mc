@@ -1,7 +1,8 @@
-using Toybox.WatchUi;
-using Toybox.Graphics;
-using Toybox.System;
-using Toybox.Timer;
+import Toybox.Lang;
+import Toybox.WatchUi;
+import Toybox.Graphics;
+import Toybox.System;
+import Toybox.Timer;
 
 using Device;
 
@@ -12,7 +13,7 @@ const CHECKMARK = '»';
 
 class TextInputView extends WatchUi.View {
 
-  var alphabet_;
+  var alphabet_ as Array<Char>;
   var confirm_ = false;
   var cursor_;
   var text_;

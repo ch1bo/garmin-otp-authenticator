@@ -1,6 +1,6 @@
-using Toybox.Lang;
-using Toybox.System;
-using Toybox.Test;
+import Toybox.Lang;
+import Toybox.System;
+import Toybox.Test;
 
 (:test)
 function hmacSHA1_test_empty(logger) {

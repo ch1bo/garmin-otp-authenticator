@@ -2,7 +2,7 @@
 // ConnectIQ 2.x, but with the size limitation of 16 items, no support for
 // sublabels etc. and the "old" callback API in the delegates.
 
-using Toybox.WatchUi;
+import Toybox.WatchUi;
 
 module Menu {
 

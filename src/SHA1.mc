@@ -12,7 +12,8 @@
 //
 // TODO(SN): optimize: operates on 8bit values, stored as 32bit numbers
 
-using Toybox.System;
+import Toybox.Lang;
+import Toybox.System;
 
 // Not required on connectiq < 3
 (:connectiq2)
@@ -28,12 +29,12 @@ class SHA1 {
   var computed = false;
 
   // 512-bit message block as 8-bit Numbers
-  var block_ = new [64];
+  var block_ as Bytes = new [64];
   var index_ = 0;
 
   var length_ = 0l;
 
-  function input(data) {
+  function input(data as Bytes) {
     for (var i = 0; i < data.size(); i++) {
       if (length_ == MAX_LENGTH) {
         System.println("WARNING: max length reached");

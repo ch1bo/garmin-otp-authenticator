@@ -1,7 +1,7 @@
-using Toybox.Lang;
-using Toybox.Math;
-using Toybox.Test;
-using Toybox.System;
+import Toybox.Lang;
+import Toybox.Math;
+import Toybox.Test;
+import Toybox.System;
 
 function assertNumber(v) {
   switch(v) {
@@ -11,7 +11,7 @@ function assertNumber(v) {
   Test.assert(false);
 }
 
-function assertAllNumber(values) {
+function assertAllNumber(values as Array<Number>) {
   for (var i = 0; i < values.size(); i++) {
     assertNumber(values[i]);
   }
@@ -39,7 +39,7 @@ function assertDictEqual(message, expected, actual) {
   Test.assertMessage(equal, message + " not equal\nexpected: " + expected + "\n but got: " + actual);
 }
 
-function arrayToString(xs) {
+function arrayToString(xs as Array<Object>) {
   var str = "[";
   for(var i = 0; i < xs.size(); i++) {
     str += xs[i].toString();
@@ -50,7 +50,7 @@ function arrayToString(xs) {
   return str + "]";
 }
 
-function arrayEqual(a, b) {
+function arrayEqual(a as Array<Object>, b as Array<Object>) {
   if (a.size() != b.size()) {
     return false;
   }
@@ -62,7 +62,7 @@ function arrayEqual(a, b) {
   return true;
 }
 
-function dictEqual(a, b) {
+function dictEqual(a as Dictionary<String, Object>, b as Dictionary<String, Object>) {
   if (a.size() != b.size()) {
     return false;
   }

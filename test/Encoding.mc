@@ -1,5 +1,5 @@
-using Toybox.Lang;
-using Toybox.System;
+import Toybox.Lang;
+import Toybox.System;
 using Toybox.Test;
 
 (:test)

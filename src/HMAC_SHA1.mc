@@ -1,19 +1,16 @@
-using Toybox.Cryptography;
-using Toybox.System;
+import Toybox.Lang;
+import Toybox.Cryptography;
+import Toybox.System;
 
 // Create a message authentication code (MAC) using Keyed-Hashing for Message
 // Authentication (HMAC) with SHA1 (https://tools.ietf.org/html/rfc2104)
-//
-// key (Array<Number>) - key bytes (8-bit Numbers)
-// text (String) - massage to authenticate
-// return (Array<Number>) - MAC bytes (8-bit Numbers)
 (:glance)
-function hmacSHA1(key, text) {
+function hmacSHA1(key as Bytes, message as Bytes) as Bytes {
   var BS = 64;
   if (key.size() > BS) {
     key = hashSHA1(key);
   }
-  // MAC = H(K XOR opad, H(K XOR ipad, text))
+  // MAC = H(K XOR opad, H(K XOR ipad, message))
   var key_ipad = new [BS];
   var key_opad = new [BS];
   for (var i = 0; i < BS; i++) {
@@ -21,12 +18,12 @@ function hmacSHA1(key, text) {
     key_ipad[i] = k ^ 0x36;
     key_opad[i] = k ^ 0x5C;
   }
-  return hashSHA1(key_opad.addAll(hashSHA1(key_ipad.addAll(text))));
+  return hashSHA1(key_opad.addAll(hashSHA1(key_ipad.addAll(message))));
 }
 
 // Native SHA1 cryptography available as of connect iq 3.0.0
 (:connectiq3,:glance)
-function hashSHA1(data) {
+function hashSHA1(data as Bytes) as Bytes {
   log(DEBUG, "SHA1 using native cryptography");
   // Use native implementation of SHA1, this requires conversion to/from the
   // new ByteArray type (since connect iq 3.0.0)
@@ -38,14 +35,14 @@ function hashSHA1(data) {
 }
 
 (:connectiq3,:glance)
-function fromArray(arr) {
+function fromArray(arr as Bytes) as ByteArray {
   var bytes = []b;
   bytes.addAll(arr);
   return bytes;
 }
 
 (:connectiq3,:glance)
-function toArray(bytes) {
+function toArray(bytes as ByteArray) as Bytes {
   var arr = new [bytes.size()];
   for (var i=0; i < arr.size(); i++) {
     arr[i] = bytes[i];
@@ -55,7 +52,7 @@ function toArray(bytes) {
 
 // Polyfilled SHA1 implementation as required pre connect iq 3.0.0
 (:connectiq2)
-function hashSHA1(data) {
+function hashSHA1(data as Bytes) as Bytes {
   log(DEBUG, "SHA1 using legacy cryptography");
   var sha1 = new SHA1();
   sha1.input(data);

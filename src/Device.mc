@@ -1,7 +1,7 @@
 // Anti-corruption layer to make certain features backward compatible or get
 // additional information about the device we are running on.
 
-using Toybox.WatchUi;
+import Toybox.WatchUi;
 
 module Device {
 

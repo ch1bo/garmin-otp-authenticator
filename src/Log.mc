@@ -1,7 +1,7 @@
-using Toybox.Lang;
-using Toybox.System;
-using Toybox.Time.Gregorian;
-using Toybox.Time;
+import Toybox.Lang;
+import Toybox.System;
+import Toybox.Time.Gregorian;
+import Toybox.Time;
 
 enum {
   ERROR,

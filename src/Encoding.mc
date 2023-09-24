@@ -1,12 +1,12 @@
-using Toybox.Lang;
-using Toybox.StringUtil;
-using Toybox.System;
+import Toybox.Lang;
+import Toybox.StringUtil;
+import Toybox.System;
 
 // Implementation of Base16 and Base32 encoding
 // rfc3548 https://tools.ietf.org/html/rfc3548
 
 (:glance)
-function base16ToBytes(string) {
+function base16ToBytes(string as String) as Bytes {
   // pad zero
   var l = string.length();
   if (l % 2 == 1) {
@@ -46,7 +46,7 @@ function hex(char) {
 }
 
 (:glance)
-function bytesToBase16(bytes) {
+function bytesToBase16(bytes as Bytes) {
   var str = "";
   for (var i = 0; i < bytes.size(); i++) {
     if (bytes[i] == null) {
@@ -61,11 +61,8 @@ function bytesToBase16(bytes) {
 }
 
 // Pad a base32 string with '=' to get a valid multiple of 8 characters.
-//
-// str (String) - base32 string
-// return (String) - padded base32 string to a multiple of 40 bit / 8 characters
 (:glance)
-function padBase32(str) {
+function padBase32(str as String) as String {
   var l = str.length() % 8;
   if (l == 0) {
     return str;
@@ -84,11 +81,8 @@ function padBase32(str) {
 // does pad the string if necessary and treats already given padding characters
 // as 0. It even allows input which only consists of padding. This allows to use
 // it in a very robust, but .. well, permissive way.
-//
-// str (String) - base32 string
-// return (Array<Number>) - bytes
 (:glance)
-function base32ToBytes(str) {
+function base32ToBytes(str as String) as Bytes {
   var cs = padBase32(str).toCharArray();
   var nBytes = cs.size() / 8 * 5;
   // REVIEW(SN) Is this still necessary?
@@ -134,12 +128,9 @@ function base32ToBytes(str) {
 }
 
 // Convert an array of bytes (each Number will be truncated to 8bit) to a base32
-// string.
-//
-// bytes (Array<Number>) - bytes (multiple of 40 bit / 5 bytes)
-// return (String) - base32 string
+// string. The input bytes must be a multiple of 5 (40 bits).
 (:glance)
-function bytesToBase32(bytes) {
+function bytesToBase32(bytes as Bytes) as String {
   if (bytes.size() % 5 != 0) {
     throw new InvalidValueException("multiple of 40 bit / 5 bytes required");
   }

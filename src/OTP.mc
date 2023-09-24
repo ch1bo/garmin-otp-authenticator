@@ -1,7 +1,7 @@
-using Toybox.Lang;
-using Toybox.Math;
-using Toybox.StringUtil;
-using Toybox.Time;
+import Toybox.Lang;
+import Toybox.Math;
+import Toybox.StringUtil;
+import Toybox.Time;
 
 // Convert an OTP code to a digit string (arfc6238/rfc4226)
 // Note: Max number of digits is 9 to stay in range of signed 32bit
@@ -57,7 +57,7 @@ function hotp(key, counter) {
 }
 
 (:glance)
-function truncate(bytes) {
+function truncate(bytes as Bytes) as Number {
   if (bytes.size() != 20) {
     throw new Lang.UnexpectedTypeException("HOTP hash must be 20 bytes", 0, 0);
   }

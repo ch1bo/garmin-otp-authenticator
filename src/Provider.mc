@@ -1,4 +1,6 @@
-using Toybox.StringUtil;
+import Toybox.Lang;
+import Toybox.StringUtil;
+import Toybox.Application;
 
 const EMPTY_CODE = "------";
 
@@ -117,7 +119,9 @@ class SteamGuardProvider extends TimeBasedProvider {
 
 const PROVIDERS = ["CounterBasedProvider", "TimeBasedProvider", "SteamGuardProvider"];
 
-function providerToDict(p) {
+typedef ProviderDict as Dictionary<PropertyKeyType, PropertyValueType>;
+
+function providerToDict(p as Provider) as ProviderDict {
   var d = {
     "name" => p.name_,
     "key" => p.key_,
@@ -125,24 +129,24 @@ function providerToDict(p) {
   switch (p) {
   case instanceof CounterBasedProvider:
     d.put("type", "CounterBasedProvider");
-    d.put("counter", p.counter_);
+    d.put("counter", (p as CounterBasedProvider).counter_);
     break;
   case instanceof SteamGuardProvider:
     d.put("type", "SteamGuardProvider");
-    d.put("interval", p.interval_);
-    d.put("next", p.next_);
+    d.put("interval", (p as SteamGuardProvider).interval_);
+    d.put("next", (p as SteamGuardProvider).next_);
     break;
   case instanceof TimeBasedProvider:
     d.put("type", "TimeBasedProvider");
-    d.put("interval", p.interval_);
-    d.put("next", p.next_);
+    d.put("interval", (p as TimeBasedProvider).interval_);
+    d.put("next", (p as TimeBasedProvider).next_);
     break;
   }
   return d;
 }
 
 (:glance)
-function providerFromDict(d) {
+function providerFromDict(d as ProviderDict) as Provider {
   var p = null;
   var counter = d.get("counter");
   if (counter == null) {
@@ -175,7 +179,7 @@ function providerFromDict(d) {
 // knowledge abstraction).
 // TODO(SN): use Dictonary.toString() and make this parsable? -> breaking change
 
-function serializeProviders(ps) {
+function serializeProviders(ps as Array<Provider>) {
   var s = "";
   for (var i = 0; i < ps.size(); i++) {
     s += serializeProvider(ps[i]) + ";";
@@ -205,7 +209,7 @@ function serializeProvider(p) {
   return s;
 }
 
-function parseProviders(s) {
+function parseProviders(s as String) as Array<Provider> {
   var ps = [];
   var parts = split(s, ";");
   for (var i = 0; i < parts.size(); i++) {
@@ -214,7 +218,7 @@ function parseProviders(s) {
   return ps;
 }
 
-function parseProvider(s) {
+function parseProvider(s as String) as Provider {
   var i = s.find(":");
   if (i == null) {
     throw new InvalidValueException("no serialized provider: " + s);
@@ -271,7 +275,7 @@ function parseNumber(str, key) {
 }
 
 // Split a string into an array of strings at del
-function split(str, del) {
+function split(str as String, del as String) as Array<String> {
   var parts = [];
   var last = 0;
   var next = findNext(str, del, 0);
@@ -295,7 +299,7 @@ function findNext(str, q, i) {
 // Trim and filter whitespace (space, newlines, carriage returns and tabs) from
 // a string.
 (:glance)
-function strip(str) {
+function strip(str as String) {
   var out = [];
   var cs = str.toCharArray();
   for (var i = 0; i < cs.size(); i++) {

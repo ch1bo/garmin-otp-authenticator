@@ -1,6 +1,6 @@
-using Toybox.Lang;
-using Toybox.System;
-using Toybox.Test;
+import Toybox.Lang;
+import Toybox.System;
+import Toybox.Test;
 
 (:test)
 function truncate_test(logger) {
