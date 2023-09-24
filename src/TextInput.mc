@@ -54,7 +54,9 @@ class TextInputView extends WatchUi.View {
     if (!confirm_) {
       drawAlphabet(dc, x + textWidth + 15);
     } else {
-      dc.drawText(textX, 35, font, "Confirm?", textJustify);
+      var fh = dc.getFontHeight(font);
+      var vspace = fh / 3;
+      dc.drawText(textX, fh + vspace, font, "Confirm?", textJustify);
       // Green is not visible on black and white displays, do not use
       if (Device.getPalette() != Device.BLACK_AND_WHITE) {
         dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
