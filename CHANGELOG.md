@@ -7,6 +7,7 @@
   * Add support for Fenix 7 Pro, 7s Pro and 7x Pro.
   * Add support for Approach S70 42mm and 47mm.
   * Fix confirm prompt overlapping on text input menu.
+  * Increase code font size on old and small devices.
 
 ## 1.6.0 - 2023-07-21
 

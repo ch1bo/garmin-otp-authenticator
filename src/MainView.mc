@@ -56,10 +56,7 @@ class MainView extends WatchUi.View {
     } else {
       // Use number font if possible
       var codeColor = Graphics.COLOR_GREEN;
-      var codeFont = Graphics.FONT_NUMBER_HOT;
-      if (dc.getWidth() < 210) {
-        codeFont = Graphics.FONT_NUMBER_MILD;
-      }
+      var codeFont = getMaxNumberFont(dc, provider.code_);
       var codeHeight = dc.getFontHeight(codeFont);
       var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
       switch (provider) {
@@ -131,6 +128,20 @@ class MainView extends WatchUi.View {
       // Fallback to a very basic bar at the top of the screen
       dc.fillRectangle(0, 0, ((value * dc.getWidth()) / max), dc.getHeight() / 40);
     }
+  }
+
+  // Determine the maximum font size for some text
+  function getMaxNumberFont(dc, text) {
+    var fonts = [Graphics.FONT_NUMBER_THAI_HOT, Graphics.FONT_NUMBER_HOT, Graphics.FONT_NUMBER_MEDIUM];
+    for (var i = 0; i < fonts.size(); i++) {
+      var codeWidth = dc.getTextWidthInPixels(text, fonts[i]);
+      var dcWidth = dc.getWidth();
+      // Leave some border for potential progress drawing (arc)
+      if (codeWidth < dcWidth - 5) {
+        return fonts[i];
+      }
+    }
+    return Graphics.FONT_NUMBER_MILD;
   }
 
   function getCodeY(dc) {
