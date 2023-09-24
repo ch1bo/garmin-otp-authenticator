@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.7.0 - UNRELEASED
+## 1.7.0 - 2023-09-24
 
   * Add support for Venu 3 and 3s.
   * Add support for Fenix 7 Pro, 7s Pro and 7x Pro.
