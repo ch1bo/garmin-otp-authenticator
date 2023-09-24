@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0 - UNRELEASED
+
+  * Use 80x80 base icon image. Device builds will scale down.
+
 ## 1.6.0 - 2023-07-21
 
   * Added » into the alphabet to confirm TextInput.
