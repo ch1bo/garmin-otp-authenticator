@@ -4,8 +4,9 @@
 
   * Add support for Venu 3 and 3s.
   * Add support for Fenix 7 Pro, 7s Pro and 7x Pro.
-  * Add support for Approach S70 42mm and 47mm.
   * Add support for Forerunner 255, 255s and music variants.
+  * Add support for Approach S70 42mm and 47mm.
+  * Add support for Epix Pro (Gen 2) 42, 47 and 51mm.
   * Increase code font size on old and small devices.
   * Fix confirm prompt overlapping on text input menu.
   * Gradually typed implementation to resolve compiler warnings.
