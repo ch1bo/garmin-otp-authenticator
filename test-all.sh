@@ -3,6 +3,7 @@ set -e
 
 DEVICES=(
   vivoactive3
+  vivoactive5
   vivoactive_hr
   fenix5
   fenix6
