@@ -66,7 +66,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     var subColor = Graphics.COLOR_DK_GRAY;
     var subFont = Graphics.FONT_GLANCE;
 
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     dc.clear();
 
     var provider = currentProvider();
