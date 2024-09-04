@@ -9,6 +9,7 @@ DEVICES=(
   fenix7
   venu2
   instinct2
+  fr965
 )
 
 for d in ${DEVICES[@]}; do
