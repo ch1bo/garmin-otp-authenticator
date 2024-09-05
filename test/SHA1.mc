@@ -30,7 +30,7 @@ function hashSHA1_test1(logger) {
   var digest = sha1.result();
   Test.assertEqual(digest.size(), 20);
   assertAllNumber(digest);
-  return arrayEqual(expected, digest);
+  return bytesEqual(expected, digest);
 }
 
 (:connectiq2 :test)
@@ -47,7 +47,7 @@ function hashSHA1_test2(logger) {
   var digest = sha1.result();
   Test.assertEqual(digest.size(), 20);
   assertAllNumber(digest);
-  return arrayEqual(expected, digest);
+  return bytesEqual(expected, digest);
 }
 
 // Note: This test is very slow, disable it for development
@@ -69,7 +69,7 @@ function hashSHA1_test3(logger) {
   var digest = sha1.result();
   Test.assertEqual(digest.size(), 20);
   assertAllNumber(digest);
-  return arrayEqual(expected, digest);
+  return bytesEqual(expected, digest);
 }
 
 (:connectiq2 :test)
@@ -88,5 +88,5 @@ function hashSHA1_test4(logger) {
   var digest = sha1.result();
   Test.assertEqual(digest.size(), 20);
   assertAllNumber(digest);
-  return arrayEqual(expected, digest);
+  return bytesEqual(expected, digest);
 }

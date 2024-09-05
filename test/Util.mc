@@ -30,7 +30,7 @@ function assertEqual(message, expected, actual) {
 }
 
 function assertArrayEqual(message, expected, actual) {
-  var equal = arrayEqual(expected, actual);
+  var equal = bytesEqual(expected, actual);
   Test.assertMessage(equal, message + " not equal\nexpected: " + expected + "\n but got: " + actual);
 }
 
@@ -50,7 +50,7 @@ function arrayToString(xs as Array<Object>) {
   return str + "]";
 }
 
-function arrayEqual(a as Array<Object>, b as Array<Object>) {
+function bytesEqual(a as Bytes, b as Bytes) {
   if (a.size() != b.size()) {
     return false;
   }

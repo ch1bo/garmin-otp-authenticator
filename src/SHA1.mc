@@ -29,7 +29,7 @@ class SHA1 {
   var computed = false;
 
   // 512-bit message block as 8-bit Numbers
-  var block_ as Bytes = new [64];
+  var block_ = new [64];
   var index_ = 0;
 
   var length_ = 0l;
