@@ -4,6 +4,7 @@
 
  - Add support for Forerunner 965.
  - Add support for Vivoactive 5.
+ - Add support for Marq Gen 2.
  - Fix background of glance view to be transparent.
 
 ## 1.7.0 - 2023-09-24
