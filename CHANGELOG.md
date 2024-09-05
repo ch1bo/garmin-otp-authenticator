@@ -2,6 +2,7 @@
 
 ## 1.8.0 - UNRELEASED
 
+ - Add support for Fenix 8 (all variants).
  - Add support for Forerunner 965.
  - Add support for Vivoactive 5.
  - Add support for Marq Gen 2.
