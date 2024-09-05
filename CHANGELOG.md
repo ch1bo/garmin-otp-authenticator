@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.8.0 - UNRELEASED
+## 1.8.0 - 2024-09-05
 
  - Add support for Fenix 8 (all variants).
  - Add support for Forerunner 965.
