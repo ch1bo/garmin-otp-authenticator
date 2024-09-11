@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.0 - UNRELEASED
+
+ - Add support for Forerunner 165 (with Music variant).
+
 ## 1.8.0 - 2024-09-05
 
  - Add support for Fenix 8 (all variants).

@@ -222,6 +222,15 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     if (_providers.size() == 0) {
       var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM);
       WatchUi.pushView(view, new NameInputDelegate(view), WatchUi.SLIDE_RIGHT);
+    } else if (_IsShowingCode) {
+      log(DEBUG, "Enter pressed");
+      var provider = currentProvider();
+      switch (provider) {
+      case instanceof CounterBasedProvider:
+        (provider as CounterBasedProvider).next();
+        WatchUi.requestUpdate();
+        return true;
+      }
     } else {
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
       menu.addMenuItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
@@ -233,6 +242,22 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
     return true;
+  }
+
+  function onBack() {
+    if (_IsShowingCode) {
+      _IsShowingCode = false;
+      var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
+      menu.addMenuItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("New entry", null, :new_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
+      menu.addMenuItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
+      menu.addMenuItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
+      menu.addMenuItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
+      WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return true;
+    }
+    return false;
   }
 }
 
@@ -280,6 +305,7 @@ class SelectMenuDelegate extends Menu.MenuDelegate {
 
   function onMenuItem(identifier) {
     _currentIndex = identifier;
+    _IsShowingCode = true;
     logf(DEBUG, "setting current index $1$", [_currentIndex]);
     saveProviders();
   }

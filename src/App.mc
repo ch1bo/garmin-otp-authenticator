@@ -5,6 +5,7 @@ import Toybox.WatchUi;
 
 var _providers as Array<Provider> = [];
 var _currentIndex = 0;
+var _IsShowingCode = false;
 
 (:glance)
 function currentProvider() as Provider? {
