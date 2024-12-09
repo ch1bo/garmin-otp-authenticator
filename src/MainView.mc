@@ -220,7 +220,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (_providers.size() == 0) {
-      WatchUi.pushView(new WatchUi.TextPicker("Name"), new NameInputDelegate(), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_RIGHT);
     } else {
       var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
       menu.addMenuItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
@@ -232,6 +232,69 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_RIGHT);
     }
     return true;
+  }
+}
+
+class NewItemMenu extends WatchUi.Menu2 {
+  function initialize(title, name, key, type) {
+    Menu2.initialize({:title => "New item"});
+    addItem(new MenuItem("Name", "", :name, {}));
+    addItem(new MenuItem("Key", "", :key, {}));
+    addItem(new MenuItem("Type", "Time based", :type, {}));
+    addItem(new MenuItem("Done", "", :done, {}));
+  }
+}
+
+class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
+  function initialize() {
+    Menu2InputDelegate.initialize();
+  }
+
+  function onSelect(item) {
+    logf(DEBUG, "onSelect $1$", [item.getId()]);
+    switch (item.getId()) {
+      case :name:
+        // REVIEW: use callbacks instead of passed items?
+        WatchUi.pushView(new WatchUi.TextPicker(""), new NameInputDelegate(item), WatchUi.SLIDE_RIGHT);
+        break;
+      case :key:
+        WatchUi.pushView(new WatchUi.TextPicker(""), new KeyInputDelegate(item), WatchUi.SLIDE_RIGHT);
+        break;
+      case :type:
+        WatchUi.pushView(new TypeMenu(), new TypeMenuDelegate(item), WatchUi.SLIDE_RIGHT);
+        break;
+      case :done:
+        // REVIEW: get values from items?
+        // NOTE(SN) When creating providers here, we rely on the fact, that any
+        // input provided here (as it uses the Alphabet.BASE32) can be converted to
+        // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
+        // This is possible, because base32ToBytes also accepts empty strings or
+        // strings only consisting of padding.
+        var provider = null;
+        switch (_enteredType) {
+        case :time:
+          provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
+          break;
+        case :counter:
+          provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
+          break;
+        case :steam:
+          provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
+          break;
+        }
+        // TODO: handle error?
+        if (provider != null) {
+          _providers.add(provider);
+          _currentIndex = _providers.size() - 1;
+          saveProviders();
+        }
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
+        break;
+    }
+  }
+
+  function onBack() {
+    log(DEBUG, "onBack");
   }
 }
 
@@ -248,7 +311,7 @@ class MainMenuDelegate extends Menu.MenuDelegate {
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
     case :new_entry:
-      WatchUi.pushView(new WatchUi.TextPicker("Name"), new NameInputDelegate(), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
     case :delete_entry:
       var deleteMenu = new Menu.MenuView({ :title => "Delete" });
@@ -319,69 +382,64 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
 var _enteredName = "";
 
 class NameInputDelegate extends WatchUi.TextPickerDelegate {
-  function initialize() {
+  var item_;
+
+  function initialize(item) {
     WatchUi.TextPickerDelegate.initialize();
+    item_ = item;
   }
+
   function onTextEntered(text, changed) {
     _enteredName = text;
-    // NOTE: Workaround of a bug where the following view is not shown correctly.
-    new Timer.Timer().start(method(:delay), 1, false);
+    item_.setSubLabel(text);
+    WatchUi.requestUpdate();
     return true;
-  }
-  function delay() as Void {
-    WatchUi.pushView(new WatchUi.TextPicker("Key"), new KeyInputDelegate(), WatchUi.SLIDE_IMMEDIATE);
   }
 }
 
 var _enteredKey = "";
 
 class KeyInputDelegate extends WatchUi.TextPickerDelegate {
-  function initialize() {
+  var item_;
+
+  function initialize(item) {
     WatchUi.TextPickerDelegate.initialize();
+    item_ = item;
   }
+
   function onTextEntered(text, changed) {
+    // FIXME: validate input
+    // TODO: convert to all caps
     _enteredKey = text;
-    // NOTE: Workaround of a bug where the following view is not shown correctly.
-    new Timer.Timer().start(method(:delay), 1, false);
+    item_.setSubLabel(text);
+    WatchUi.requestUpdate();
     return true;
-  }
-  function delay() as Void {
-    var menu = new Menu.MenuView({ :title => "Type" });
-    menu.addMenuItem(new Menu.MenuItem("Time based", null, :time, null));
-    menu.addMenuItem(new Menu.MenuItem("Counter based", null, :counter, null));
-    menu.addMenuItem(new Menu.MenuItem("Steam guard", null, :steam, null));
-    WatchUi.pushView(menu, new TypeMenuDelegate(), WatchUi.SLIDE_RIGHT);
   }
 }
 
-class TypeMenuDelegate extends Menu.MenuDelegate {
-  function initialize() { Menu.MenuDelegate.initialize(); }
+// REVIEW: use resource?
+class TypeMenu extends WatchUi.Menu2 {
+  function initialize() {
+    WatchUi.Menu2.initialize({ :title => "Type" });
+    addItem(new WatchUi.MenuItem("Time based", null, :time, null));
+    addItem(new WatchUi.MenuItem("Counter based", null, :counter, null));
+    addItem(new WatchUi.MenuItem("Steam guard", null, :steam, null));
+  }
+}
 
-  function onMenuItem(identifier) {
-    // NOTE(SN) When creating providers here, we rely on the fact, that any
-    // input provided here (as it uses the Alphabet.BASE32) can be converted to
-    // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
-    // This is possible, because base32ToBytes also accepts empty strings or
-    // strings only consisting of padding.
-    var provider = null;
-    switch (identifier) {
-    case:
-    time:
-      provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
-      break;
-    case:
-    counter:
-      provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
-      break;
-    case:
-    steam:
-      provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
-      break;
-    }
-    if (provider != null) {
-      _providers.add(provider);
-      _currentIndex = _providers.size() - 1;
-      saveProviders();
-    }
+var _enteredType = :time;
+
+class TypeMenuDelegate extends WatchUi.Menu2InputDelegate {
+  var item_;
+
+  function initialize(item) {
+    WatchUi.Menu2InputDelegate.initialize();
+    item_ = item;
+  }
+
+  function onSelect(item) {
+    _enteredType = item.getId();
+    item_.setSubLabel(item.getLabel());
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
