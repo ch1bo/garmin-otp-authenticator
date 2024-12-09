@@ -22,7 +22,7 @@ class MainView extends WatchUi.View {
     logf(DEBUG, "MainView onShow, update rate: $1$", [update_rate_]);
     if (update_rate_ > 0) {
       var period = 60.0 / update_rate_ * 1000;
-      timer_.start(method( : update), period, true);
+      timer_.start(method(:update), period, true);
     }
     update();
   }
@@ -246,8 +246,17 @@ class NewItemMenu extends WatchUi.Menu2 {
 }
 
 class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
+  var doneItem_ = null;
+
   function initialize() {
     Menu2InputDelegate.initialize();
+  }
+
+  function resetDoneItem() as Void {
+    if (doneItem_ != null) {
+      doneItem_.setSubLabel("");
+      WatchUi.requestUpdate();
+    }
   }
 
   function onSelect(item) {
@@ -264,7 +273,27 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
         WatchUi.pushView(new TypeMenu(), new TypeMenuDelegate(item), WatchUi.SLIDE_RIGHT);
         break;
       case :done:
-        // REVIEW: get values from items?
+        doneItem_ = item;
+        if (_enteredName == null) {
+          // Only available > CIQ 3.4
+          if (WatchUi has :showToast) {
+            WatchUi.showToast("Name required", {});
+          } else {
+            doneItem_.setSubLabel("Name required");
+            new Timer.Timer().start(method(:resetDoneItem), 2000, false);
+          }
+          return;
+        }
+        if (_enteredKey == null) {
+          // Only available > CIQ 3.4
+          if (WatchUi has :showToast) {
+            WatchUi.showToast("Key required", {});
+          } else {
+            doneItem_.setSubLabel("Key required");
+            new Timer.Timer().start(method(:resetDoneItem), 2000, false);
+          }
+          return;
+        }
         // NOTE(SN) When creating providers here, we rely on the fact, that any
         // input provided here (as it uses the Alphabet.BASE32) can be converted to
         // bytes without errors, i.e. base32ToBytes(_enteredKey) will not throw.
@@ -379,7 +408,7 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
 
 // Name, key and type input view stack
 
-var _enteredName = "";
+var _enteredName = null;
 
 class NameInputDelegate extends WatchUi.TextPickerDelegate {
   var item_;
@@ -397,7 +426,7 @@ class NameInputDelegate extends WatchUi.TextPickerDelegate {
   }
 }
 
-var _enteredKey = "";
+var _enteredKey = null;
 
 class KeyInputDelegate extends WatchUi.TextPickerDelegate {
   var item_;
