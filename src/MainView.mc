@@ -260,7 +260,6 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
-    logf(DEBUG, "onSelect $1$", [item.getId()]);
     switch (item.getId()) {
       case :name:
         // REVIEW: use callbacks instead of passed items?
@@ -335,7 +334,9 @@ class MainMenuDelegate extends Menu.MenuDelegate {
     case :select_entry:
       var selectMenu = new Menu.MenuView({ :title => "Select" });
       for (var i = 0; i < _providers.size(); i++) {
-        selectMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, i, null));
+        var p = _providers[i];
+        p.update();
+        selectMenu.addMenuItem(new Menu.MenuItem(p.name_, p.code_, i, null));
       }
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
