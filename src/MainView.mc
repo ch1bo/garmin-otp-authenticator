@@ -332,11 +332,13 @@ class MainMenuDelegate extends Menu.MenuDelegate {
   function onMenuItem(identifier) {
     switch (identifier) {
     case :select_entry:
-      var selectMenu = new Menu.MenuView({ :title => "Select" });
+      var h = System.getDeviceSettings().screenHeight;
+      logf(DEBUG, "dc height $1$", [h]);
+      var selectMenu = new WatchUi.CustomMenu(h / 3, Graphics.COLOR_BLACK, { :title => new WatchUi.Text({ :text => "Select"}) });
       for (var i = 0; i < _providers.size(); i++) {
         var p = _providers[i];
         p.update();
-        selectMenu.addMenuItem(new Menu.MenuItem(p.name_, p.code_, i, null));
+        selectMenu.addItem(new WatchUi.CustomMenuItem(i, { :drawable => new CustomEntryDrawable(p) }));
       }
       Menu.switchTo(selectMenu, new SelectMenuDelegate(), WatchUi.SLIDE_RIGHT);
       return true; // don't pop view
@@ -366,11 +368,11 @@ class MainMenuDelegate extends Menu.MenuDelegate {
   }
 }
 
-class SelectMenuDelegate extends Menu.MenuDelegate {
-  function initialize() { Menu.MenuDelegate.initialize(); }
+class SelectMenuDelegate extends WatchUi.Menu2InputDelegate {
+  function initialize() { WatchUi.Menu2InputDelegate.initialize(); }
 
-  function onMenuItem(identifier) {
-    _currentIndex = identifier;
+  function onSelect(item) {
+    _currentIndex = item.getId();
     logf(DEBUG, "setting current index $1$", [_currentIndex]);
     saveProviders();
   }

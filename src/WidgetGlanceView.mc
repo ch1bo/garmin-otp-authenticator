@@ -50,13 +50,13 @@ class WidgetGlanceView extends WatchUi.GlanceView {
   }
 
   function drawProgress(dc, value, max, codeColor) {
-      var h = dc.getHeight();
-      var w = dc.getWidth();
+    var h = dc.getHeight();
+    var w = dc.getWidth();
 
-      dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-      dc.fillRectangle(value * w / max + (h / 20), h / 2 - 1, w, h / 20);
-      dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-      dc.fillRectangle(0, h / 2 - (h / 20), value * w / max, h / 10 + 1);
+    dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
+    dc.fillRectangle(value * w / max + (h / 20), h / 2 - 1, w, h / 20);
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    dc.fillRectangle(0, h / 2 - (h / 20), value * w / max, h / 10 + 1);
   }
 
   function onUpdate(dc) {
