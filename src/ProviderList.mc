@@ -2,10 +2,10 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
-class ProviderListView extends WatchUi.CustomMenu {
+class ProviderList extends WatchUi.CustomMenu {
   function initialize(providers as Lang.Array<Provider>) {
     var h = System.getDeviceSettings().screenHeight;
-    logf(DEBUG, "ProviderListView initialize dc height $1$", [h]);
+    logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
     var title = new WatchUi.Text({
       :text => "OTP Providers",
       :locX => WatchUi.LAYOUT_HALIGN_CENTER,

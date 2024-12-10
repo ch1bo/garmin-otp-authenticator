@@ -131,7 +131,7 @@ class App extends Application.AppBase {
     if (_providers.size() == 0) {
       return [new MainMenu(), new MainMenuDelegate()];
     } else {
-      return [new ProviderListView(_providers), new ProviderListDelegate()];
+      return [new ProviderList(_providers), new ProviderListDelegate()];
     }
   }
 
