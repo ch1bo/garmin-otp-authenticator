@@ -128,7 +128,7 @@ class App extends Application.AppBase {
     loadProviders();
     importFromSettings();
     saveProviders();
-    return [new MainView(), new MainViewDelegate()];
+    return [new ProviderListView(_providers), new ProviderListDelegate()];
   }
 
   function getGlanceView() {
