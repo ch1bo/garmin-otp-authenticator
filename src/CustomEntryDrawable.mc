@@ -2,12 +2,36 @@ import Toybox.System;
 import Toybox.Timer;
 import Toybox.WatchUi;
 
-class CustomEntryDrawable extends WatchUi.Drawable {
+class CustomEntry extends WatchUi.CustomMenuItem {
   var provider_;
 
-  function initialize(provider) {
-    WatchUi.Drawable.initialize({});
+  function initialize(identifier, provider as Provider) {
+    log(DEBUG, "CustomEntryDrawable initialize");
+    WatchUi.CustomMenuItem.initialize(identifier, {});
     provider_ = provider;
+  }
+
+  function draw(dc) {
+    logf(DEBUG, "CustomEntry draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    var mainColor = Graphics.COLOR_WHITE;
+    var mainFont = Graphics.FONT_MEDIUM;
+    var subColor = Graphics.COLOR_DK_GRAY;
+    var subFont = Graphics.FONT_MEDIUM;
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    dc.clear();
+    switch (provider_) {
+    case instanceof SteamGuardProvider:
+      subFont = Graphics.FONT_GLANCE;
+    case instanceof TimeBasedProvider:
+      // Colored OTP code depending on countdown
+      var delta = (provider_ as TimeBasedProvider).next_ - Time.now().value();
+      subColor = CountdownColor.getCountdownColor(delta);
+      drawProgress(dc, delta, 30, subColor);
+    case instanceof CounterBasedProvider:
+      drawMain(dc, provider_.name_, mainFont, mainColor, 4);
+      drawSub(dc, provider_.code_, subFont, subColor, 4);
+      break;
+    }
   }
 
   function drawMain(dc, text, font, codeColor, space) {
@@ -29,30 +53,6 @@ class CustomEntryDrawable extends WatchUi.Drawable {
     dc.fillRectangle(value * w / max + (h / 20), h / 2 - 1, w, h / 20);
     dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
     dc.fillRectangle(0, h / 2 - (h / 20), value * w / max, h / 10 + 1);
-  }
-
-  function draw(dc) {
-    var mainColor = Graphics.COLOR_WHITE;
-    var mainFont = Graphics.FONT_MEDIUM;
-    var subColor = Graphics.COLOR_DK_GRAY;
-    var subFont = Graphics.FONT_MEDIUM;
-
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    dc.clear();
-
-    switch (provider_) {
-    case instanceof SteamGuardProvider:
-      subFont = Graphics.FONT_GLANCE;
-    case instanceof TimeBasedProvider:
-      // Colored OTP code depending on countdown
-      var delta = (provider_ as TimeBasedProvider).next_ - Time.now().value();
-      subColor = CountdownColor.getCountdownColor(delta);
-      drawProgress(dc, delta, 30, subColor);
-    case instanceof CounterBasedProvider:
-      drawMain(dc, provider_.name_, mainFont, mainColor, 4);
-      drawSub(dc, provider_.code_, subFont, subColor, 4);
-      break;
-    }
   }
 }
 

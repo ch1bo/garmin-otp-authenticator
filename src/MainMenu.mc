@@ -9,6 +9,23 @@ class MainMenu extends WatchUi.Menu2 {
     addItem(new MenuItem("Export", "to settings", :export_providers, null));
     addItem(new MenuItem("Import", "from settings", :import_providers, null));
   }
+
+  function onHide() {
+    log(DEBUG, "MainMenu onHide");
+  }
+
+  function onLayout(dc) {
+    logf(DEBUG, "MainMenu onLayout $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+  }
+
+  function onShow() {
+    log(DEBUG, "MainMenu onShow");
+  }
+
+  function onUpdate(dc) {
+    logf(DEBUG, "MainMenu onUpdate $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+  }
+
 }
 
 class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
