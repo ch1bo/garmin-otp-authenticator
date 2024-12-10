@@ -222,14 +222,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     if (_providers.size() == 0) {
       WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_RIGHT);
     } else {
-      var menu = new Menu.MenuView({ :title => "OTP Authenticator" });
-      menu.addMenuItem(new Menu.MenuItem("Select entry", null, :select_entry, null));
-      menu.addMenuItem(new Menu.MenuItem("New entry", null, :new_entry, null));
-      menu.addMenuItem(new Menu.MenuItem("Delete entry", null, :delete_entry, null));
-      menu.addMenuItem(new Menu.MenuItem("Delete all entries", null, :delete_all, null));
-      menu.addMenuItem(new Menu.MenuItem("Export", "to settings", :export_providers, null));
-      menu.addMenuItem(new Menu.MenuItem("Import", "from settings", :import_providers, null));
-      WatchUi.pushView(menu, new MainMenuDelegate(), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_RIGHT);
     }
     return true;
   }
@@ -322,41 +315,56 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onBack() {
-    log(DEBUG, "onBack");
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
 
-class MainMenuDelegate extends Menu.MenuDelegate {
-  function initialize() { Menu.MenuDelegate.initialize(); }
+class MainMenu extends WatchUi.Menu2 {
+  function initialize() {
+    Menu2.initialize({ :title => "OTP Authenticator" });
+    addItem(new MenuItem("New entry", null, :new_entry, null));
+    addItem(new MenuItem("Delete entry", null, :delete_entry, null));
+    addItem(new MenuItem("Delete all entries", null, :delete_all, null));
+    addItem(new MenuItem("Export", "to settings", :export_providers, null));
+    addItem(new MenuItem("Import", "from settings", :import_providers, null));
+  }
+}
 
-  function onMenuItem(identifier) {
-    switch (identifier) {
-    case :select_entry:
-      WatchUi.switchToView(new ProviderListView(_providers), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
-      return true; // don't pop view
+class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
+  function initialize() {
+    WatchUi.Menu2InputDelegate.initialize();
+  }
+
+  function onSelect(item) {
+    switch (item.getId()) {
     case :new_entry:
-      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_RIGHT);
-      return true; // don't pop view
+      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_LEFT);
+      return;
     case :delete_entry:
+      // TODO: modernize!?
       var deleteMenu = new Menu.MenuView({ :title => "Delete" });
       for (var i = 0; i < _providers.size(); i++) {
         deleteMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
       }
       Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_RIGHT);
-      return true; // don't pop view
+      return;
     case :delete_all:
       WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
                        new DeleteAllConfirmationDelegate(), WatchUi.SLIDE_RIGHT);
-      return true; // don't pop view
+      return;
     case :export_providers:
       exportToSettings();
-      break;
+      return;
     case :import_providers:
       importFromSettings();
       saveProviders();
-      break;
+      return;
     }
-    return false;
+  }
+
+  function onBack() {
+    // FIXME: update provider list
+    WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
 }
 

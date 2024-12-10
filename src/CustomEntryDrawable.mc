@@ -32,8 +32,6 @@ class CustomEntryDrawable extends WatchUi.Drawable {
   }
 
   function draw(dc) {
-    logf(DEBUG, "height $1$", [ dc.getHeight() ]);
-    logf(DEBUG, "width $1$", [ dc.getWidth() ]);
     var mainColor = Graphics.COLOR_WHITE;
     var mainFont = Graphics.FONT_MEDIUM;
     var subColor = Graphics.COLOR_DK_GRAY;
