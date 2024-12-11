@@ -3,35 +3,21 @@ import Toybox.System;
 import Toybox.WatchUi;
 
 class ProviderList extends WatchUi.CustomMenu {
-  var menuHeader_ as BitmapResource;
-
   function initialize(providers as Lang.Array<Provider>) {
-    // var h = System.getDeviceSettings().screenHeight;
-    // logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
-    // // TODO: Heights and locations taken from fenix847 simulator.json -> move to a layout per device?
-    var title = new WatchUi.Text({
-      :text => "OTP Providers",
-      :font => Graphics.FONT_AUX2, // TODO: CIQ 4.2.2
-      :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-      :locY => 109,
-      :justification => Graphics.TEXT_JUSTIFY_VCENTER
+    var h = System.getDeviceSettings().screenHeight;
+    logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
+    // // TODO: Heights and locations taken from fenix847 simulator.json -> make this a device-specific drawable
+    WatchUi.CustomMenu.initialize(h / 4, Graphics.COLOR_BLACK, {
+      :title => new TitleDrawable("OTP Providers"),
+      :titleItemHeight => (h * 0.3).toNumber(),
+      :theme => WatchUi.MENU_THEME_BLUE
     });
-    WatchUi.CustomMenu.initialize(116, Graphics.COLOR_BLACK, {
-      :title => title,
-      :titleItemHeight => 131,
-      :theme => WatchUi.MENU_THEME_PURPLE
-    });
-    // WatchUi.Menu2.initialize({
-    //   :title => "All Providers",
-    //   :theme => WatchUi.MENU_THEME_PURPLE
-    // });
 
     // FIXME: update entries continuously
     for (var i = 0; i < providers.size(); i++) {
       var p = providers[i];
       p.update();
-      // addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIconDrawable(p), {}));
-      addItem(new CustomEntry(i, p));
+      addItem(new ProviderMenuItem(i, p));
     }
 
     // var editButton = new WatchUi.Button({
@@ -45,38 +31,30 @@ class ProviderList extends WatchUi.CustomMenu {
     //   :stateHighlighted => Graphics.COLOR_WHITE
     // });
     // addItem(new WatchUi.CustomMenuItem(:edit, { :drawable => editButton }));
-
-    menuHeader_ = WatchUi.loadResource(Rez.Drawables.MenuHeaderBackground);
   }
 
   function onHide() {
-    log(DEBUG, "custom onHide");
+    log(DEBUG, "ProviderList onHide");
+    WatchUi.CustomMenu.onHide();
   }
 
   function onLayout(dc) {
-    logf(DEBUG, "custom onLayout $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    // WatchUi.Menu2.onLayout(dc);
+    logf(DEBUG, "ProviderList onLayout $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    WatchUi.CustomMenu.onLayout(dc);
   }
 
   function onShow() {
-    log(DEBUG, "custom onShow");
-    WatchUi.Menu2.onShow();
-  }
-
-  function onUpdate(dc) {
-    logf(DEBUG, "custom onUpdate $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    log(DEBUG, "ProviderList onShow");
+    WatchUi.CustomMenu.onShow();
   }
 
   function drawTitle(dc) {
-    logf(DEBUG, "custom drawTitle $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    // TODO: this is bigger than the default menu2
-    // TODO: make bitmap as part of title drawable
-    dc.drawBitmap(0, 0, menuHeader_);
+    logf(DEBUG, "ProviderList drawTitle $1$ $2$", [dc.getWidth(), dc.getHeight()]);
     WatchUi.CustomMenu.drawTitle(dc);
   }
 
   function drawForeground(dc) {
-    logf(DEBUG, "custom drawForeground $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    logf(DEBUG, "ProviderList drawForeground $1$ $2$", [dc.getWidth(), dc.getHeight()]);
     // NOTE: Using a layout to specify input hints to be able to use the
     // 'personality' builtin style
     // XXX: ordering of items in layout matters
@@ -85,42 +63,26 @@ class ProviderList extends WatchUi.CustomMenu {
   }
 }
 
-class ProviderIconDrawable extends WatchUi.Drawable {
-  var provider_;
+class TitleDrawable extends WatchUi.Drawable {
+  var titleText_ as Drawable;
+  var menuHeader_ as Bitmap;
 
-  function initialize(provider) {
+  function initialize(title as String) {
     WatchUi.Drawable.initialize({});
-    provider_ = provider;
+    titleText_ = new WatchUi.Text({
+      :text => title,
+      :font => Graphics.FONT_AUX2, // TODO: CIQ 4.2.2
+      :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+      :locY => WatchUi.LAYOUT_VALIGN_CENTER,
+      :justification => Graphics.TEXT_JUSTIFY_VCENTER
+    });
+    menuHeader_ = new WatchUi.Bitmap({ :rezId =>Rez.Drawables.MenuHeaderBackground });
   }
 
   function draw(dc) {
-    logf(DEBUG, "ProviderIconDrawable draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    var iconSize = 40;
-
-    switch (provider_) {
-    case instanceof SteamGuardProvider:
-    case instanceof TimeBasedProvider:
-      var totp = provider_ as TimeBasedProvider;
-      // Colored arc depending on countdown
-      var delta = totp.next_ - Time.now().value();
-      var iconColor = CountdownColor.getCountdownColor(delta);
-      dc.setColor(iconColor, Graphics.COLOR_TRANSPARENT);
-      dc.setPenWidth(iconSize / 2);
-      // XXX: improve this
-      dc.drawArc(
-        iconSize / 2,
-        iconSize / 2,
-        // I don't understand how the radius parameter works
-        // Apparently a quarter width works to get a complete circle
-        iconSize / 4,
-        Graphics.ARC_COUNTER_CLOCKWISE,
-        90, ((delta * 360) / totp.interval_) + 90
-      );
-      break;
-    case instanceof CounterBasedProvider:
-      // TODO: draw a counter symbol
-      break;
-    }
+    logf(DEBUG, "Fenix8Title draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    menuHeader_.draw(dc);
+    titleText_.draw(dc);
   }
 }
 

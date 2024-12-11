@@ -2,21 +2,21 @@ import Toybox.System;
 import Toybox.Timer;
 import Toybox.WatchUi;
 
-class CustomEntry extends WatchUi.CustomMenuItem {
+class ProviderMenuItem extends WatchUi.CustomMenuItem {
   var provider_;
 
   function initialize(identifier, provider as Provider) {
-    log(DEBUG, "CustomEntryDrawable initialize");
+    log(DEBUG, "ProviderMenuItem initialize");
     WatchUi.CustomMenuItem.initialize(identifier, {});
     provider_ = provider;
   }
 
   function draw(dc) {
-    logf(DEBUG, "CustomEntry draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    logf(DEBUG, "ProviderMenuItem draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
     var mainColor = Graphics.COLOR_WHITE;
-    var mainFont = Graphics.FONT_MEDIUM;
+    var mainFont = Graphics.FONT_SMALL;
     var subColor = Graphics.COLOR_DK_GRAY;
-    var subFont = Graphics.FONT_MEDIUM;
+    var subFont = Graphics.FONT_SMALL;
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     dc.clear();
     switch (provider_) {
