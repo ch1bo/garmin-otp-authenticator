@@ -10,7 +10,8 @@ class ProviderList extends WatchUi.CustomMenu {
     WatchUi.CustomMenu.initialize(h / 4, Graphics.COLOR_BLACK, {
       :title => new TitleDrawable("OTP Providers"),
       :titleItemHeight => (h * 0.3).toNumber(),
-      :theme => WatchUi.MENU_THEME_BLUE
+      :theme => WatchUi.MENU_THEME_BLUE, // XXX: CIQ >= 4.1.8
+      :dividerType => DIVIDER_TYPE_ICON // XXX: CIQ >= 5.0.1
     });
 
     // FIXME: update entries continuously
@@ -20,17 +21,7 @@ class ProviderList extends WatchUi.CustomMenu {
       addItem(new ProviderMenuItem(i, p));
     }
 
-    // var editButton = new WatchUi.Button({
-    //   :text => "Edit",
-    //   :height => 50,
-    //   :width => 300,
-    //   :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-    //   :locY => 10,
-    //   :background => Graphics.COLOR_DK_BLUE,
-    //   :stateDefault => Graphics.COLOR_DK_GRAY,
-    //   :stateHighlighted => Graphics.COLOR_WHITE
-    // });
-    // addItem(new WatchUi.CustomMenuItem(:edit, { :drawable => editButton }));
+    addItem(new ButtonMenuItem(:edit, "Edit"));
   }
 
   function onHide() {
@@ -53,6 +44,11 @@ class ProviderList extends WatchUi.CustomMenu {
     WatchUi.CustomMenu.drawTitle(dc);
   }
 
+  function drawFooter(dc) {
+    logf(DEBUG, "ProviderList drawFooter $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    WatchUi.CustomMenu.drawFooter(dc);
+  }
+
   function drawForeground(dc) {
     logf(DEBUG, "ProviderList drawForeground $1$ $2$", [dc.getWidth(), dc.getHeight()]);
     // NOTE: Using a layout to specify input hints to be able to use the
@@ -71,7 +67,7 @@ class TitleDrawable extends WatchUi.Drawable {
     WatchUi.Drawable.initialize({});
     titleText_ = new WatchUi.Text({
       :text => title,
-      :font => Graphics.FONT_AUX2, // TODO: CIQ 4.2.2
+      :font => Graphics.FONT_AUX2, // TODO: CIQ >= 4.2.2
       :locX => WatchUi.LAYOUT_HALIGN_CENTER,
       :locY => WatchUi.LAYOUT_VALIGN_CENTER,
       :justification => Graphics.TEXT_JUSTIFY_VCENTER
@@ -86,6 +82,41 @@ class TitleDrawable extends WatchUi.Drawable {
   }
 }
 
+class ButtonMenuItem extends WatchUi.CustomMenuItem {
+  var text_ as String;
+
+  function initialize(identifier, text as String) {
+    WatchUi.CustomMenuItem.initialize(identifier, {});
+
+    // Disable divider symbol on CIQ >= 5.0.1
+    setDividerIcon(null);
+
+    text_ = text;
+  }
+
+  function draw(dc) {
+    logf(DEBUG, "ButtonMenuItem draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    var w = dc.getWidth();
+    var h = dc.getHeight();
+    var xmargin = w / 4;
+    var ymargin = h / 4;
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+    if (isFocused()) {
+      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    }
+    if (isSelected()) {
+      dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_TRANSPARENT);
+    }
+    dc.drawText(w / 2,
+                h / 2,
+                Graphics.FONT_AUX2, // TODO: CIQ >= 4.2.2
+                text_,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.setPenWidth(2);
+    dc.drawRectangle(xmargin, ymargin, w - 2 * xmargin, h - 2 * ymargin);
+  }
+}
+
 class ProviderListDelegate extends WatchUi.Menu2InputDelegate {
   function initialize() {
     WatchUi.Menu2InputDelegate.initialize();
@@ -95,9 +126,10 @@ class ProviderListDelegate extends WatchUi.Menu2InputDelegate {
     switch (item.getId()) {
       case :edit:
         log(INFO, "Edit button pressed");
+        WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
         break;
       default:
-        WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
+        break;
     }
   }
 
