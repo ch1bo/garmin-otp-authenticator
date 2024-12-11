@@ -129,6 +129,7 @@ class App extends Application.AppBase {
     importFromSettings();
     saveProviders();
     if (_providers.size() == 0) {
+      // TODO: start with new entry on top of provider list
       return [new MainMenu(), new MainMenuDelegate()];
     } else {
       return [new ProviderList(_providers), new ProviderListDelegate()];

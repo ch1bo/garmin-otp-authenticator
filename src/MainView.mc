@@ -6,6 +6,7 @@ using CountdownColor;
 using Device;
 using TextInput;
 
+// TODO: pass provider instead of using global _currentIndex / currentProvider()
 class MainView extends WatchUi.View {
   var screen_shape_;
   var timer_;
