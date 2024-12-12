@@ -2,67 +2,58 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
-class ProviderList extends WatchUi.CustomMenu {
+class ProviderList extends WatchUi.Menu2 {
   var providers_ as Lang.Array<Provider>;
   var timer_;
 
   function initialize(providers as Lang.Array<Provider>) {
     var h = System.getDeviceSettings().screenHeight;
     logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
-    // // TODO: Heights and locations taken from fenix847 simulator.json -> make this a device-specific drawable
-    WatchUi.CustomMenu.initialize(h / 4, Graphics.COLOR_BLACK, {
-      :title => new CustomTitle("OTP Providers"),
-      :titleItemHeight => (h * 0.3).toNumber(),
+    WatchUi.Menu2.initialize({
+      :title => "OTP Providers",
       :theme => WatchUi.MENU_THEME_BLUE, // XXX: CIQ >= 4.1.8
-      :footer => new CustomFooter()
+      :dividerType => DIVIDER_TYPE_ICON // Ignored on CIQ < 5.0.1
     });
 
     providers_ = providers;
     for (var i = 0; i < providers.size(); i++) {
       var p = providers[i];
       p.update();
-      addItem(new ProviderMenuItem(i, p));
+      addItem(new WatchUi.MenuItem(p.name_, p.code_, i, {}));
     }
 
-    timer_ = new Timer.Timer();
-    timer_.start(method(:updateProviders), 1000, true);
-
-    addItem(new ButtonMenuItem(:edit, "Edit"));
-  }
-
-  function updateProviders() as Void {
-    for (var i = 0; i < providers_.size(); i++) {
-      providers_[i].update();
-    }
-    // FIXME: this makes scroll janky
-    WatchUi.requestUpdate();
+    // addItem(new ButtonMenuItem(:edit, "Edit"));
   }
 
   function onHide() {
     log(DEBUG, "ProviderList onHide");
-    WatchUi.CustomMenu.onHide();
+    WatchUi.Menu2.onHide();
     timer_.stop();
+    timer_ = null;
   }
 
   function onLayout(dc) {
     logf(DEBUG, "ProviderList onLayout $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    WatchUi.CustomMenu.onLayout(dc);
+    WatchUi.Menu2.onLayout(dc);
   }
 
   function onShow() {
     log(DEBUG, "ProviderList onShow");
-    WatchUi.CustomMenu.onShow();
+    WatchUi.Menu2.onShow();
+    timer_ = new Timer.Timer();
+    timer_.start(method(:onTimer), 1000, true);
   }
 
-  function drawTitle(dc) {
-    logf(DEBUG, "ProviderList drawTitle $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    WatchUi.CustomMenu.drawTitle(dc);
+  function onTimer() as Void {
+    for (var i = 0; i < providers_.size(); i++) {
+      providers_[i].update();
+      var delta = (providers_[i] as TimeBasedProvider).next_ - Time.now().value();
+      getItem(i).setSubLabel(delta.toString());
+      // updateItem(new WatchUi.MenuItem(providers_[i].name_, delta.toString(), i, {}), i);
+    }
+    WatchUi.requestUpdate();
   }
 
-  function drawFooter(dc) {
-    logf(DEBUG, "ProviderList drawFooter $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    WatchUi.CustomMenu.drawFooter(dc);
-  }
 
   function drawForeground(dc) {
     logf(DEBUG, "ProviderList drawForeground $1$ $2$", [dc.getWidth(), dc.getHeight()]);
