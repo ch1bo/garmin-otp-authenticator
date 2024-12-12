@@ -7,8 +7,6 @@ class ProviderList extends WatchUi.CustomMenu {
   var timer_;
 
   function initialize(providers as Lang.Array<Provider>) {
-    providers_ = providers;
-
     var h = System.getDeviceSettings().screenHeight;
     logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
     // // TODO: Heights and locations taken from fenix847 simulator.json -> make this a device-specific drawable
@@ -18,19 +16,25 @@ class ProviderList extends WatchUi.CustomMenu {
       :theme => WatchUi.MENU_THEME_BLUE, // XXX: CIQ >= 4.1.8
       :footer => new CustomFooter()
     });
+
+    providers_ = providers;
     for (var i = 0; i < providers.size(); i++) {
-      addItem(new ProviderMenuItem(i, providers[i]));
+      var p = providers[i];
+      p.update();
+      addItem(new ProviderMenuItem(i, p));
     }
-    addItem(new ButtonMenuItem(:edit, "Edit"));
 
     timer_ = new Timer.Timer();
     timer_.start(method(:updateProviders), 1000, true);
+
+    addItem(new ButtonMenuItem(:edit, "Edit"));
   }
 
   function updateProviders() as Void {
     for (var i = 0; i < providers_.size(); i++) {
       providers_[i].update();
     }
+    // FIXME: this makes scroll janky
     WatchUi.requestUpdate();
   }
 
@@ -62,11 +66,34 @@ class ProviderList extends WatchUi.CustomMenu {
 
   function drawForeground(dc) {
     logf(DEBUG, "ProviderList drawForeground $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+
+    // HACK: try a global progress bar
+    var delta = (providers_[0] as TimeBasedProvider).next_ - Time.now().value();
+    var codeColor = CountdownColor.getCountdownColor(delta);
+    drawProgress(dc, delta, 30, codeColor);
+
     // NOTE: Using a layout to specify input hints to be able to use the
     // 'personality' builtin style
     // XXX: ordering of items in layout matters
     var menuHint = Rez.Layouts.ProviderList(dc)[0];
     menuHint.draw(dc);
+  }
+
+  function drawProgress(dc, value, max, codeColor) {
+    // Available from 3.2.0
+    if (dc has :setAntiAlias) {
+      dc.setAntiAlias(true);
+    }
+    dc.setPenWidth(dc.getHeight() / 40);
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    // Use the whole screen to paint a clock like countdown
+    dc.drawArc(
+      dc.getWidth() / 2,
+      dc.getHeight() / 2,
+      (dc.getWidth() / 2) - 2,
+      Graphics.ARC_COUNTER_CLOCKWISE,
+      90, ((value * 360) / max) + 90
+    );
   }
 }
 
