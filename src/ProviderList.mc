@@ -48,6 +48,7 @@ class ProviderList extends WatchUi.Menu2 {
       log(DEBUG, "ProviderList starting timer");
       timer_ = new Timer.Timer();
       timer_.start(method(:onTimer), 5000, true);
+      // FIXME: refresh menu items in case providers changed
     }
   }
 

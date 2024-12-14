@@ -29,6 +29,10 @@ class Provider {
       other.name_.equals(name_) &&
       other.key_.equals(key_);
   }
+
+  function getTypeString() {
+    return "Generic";
+  }
 }
 
 (:glance)
@@ -63,6 +67,10 @@ class CounterBasedProvider extends Provider {
       other instanceof CounterBasedProvider &&
       other.counter_ == counter_;
   }
+
+  function getTypeString() {
+    return "Counter based";
+  }
 }
 
 (:glance)
@@ -91,6 +99,10 @@ class TimeBasedProvider extends Provider {
       other instanceof TimeBasedProvider &&
       other.interval_ == interval_;
   }
+
+  function getTypeString() {
+    return "Time based";
+  }
 }
 
 (:glance)
@@ -114,6 +126,10 @@ class SteamGuardProvider extends TimeBasedProvider {
   function equals(other) {
     return TimeBasedProvider.equals(other) &&
       other instanceof SteamGuardProvider;
+  }
+
+  function getTypeString() {
+    return "Steam guard";
   }
 }
 

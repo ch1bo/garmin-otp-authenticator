@@ -1,22 +1,38 @@
 import Toybox.WatchUi;
+import Toybox.Lang;
 
-// TODO: als use this as edit menu
-
-class NewItemMenu extends WatchUi.Menu2 {
-  function initialize(title, name, key, type) {
-    Menu2.initialize({:title => "New item"});
-    addItem(new MenuItem("Name", "", :name, {}));
-    addItem(new MenuItem("Key", "", :key, {}));
-    addItem(new MenuItem("Type", "Time based", :type, {}));
+// Menu to create or edit a provider entry
+class ProviderMenu extends WatchUi.Menu2 {
+  function initialize(title as String, provider as Provider or Null) {
+    Menu2.initialize({:title => title});
+    var name = "";
+    if (provider != null) {
+      name = provider.name_;
+    }
+    addItem(new MenuItem("Name", name, :name, {}));
+    var key = "";
+    if (provider != null) {
+      key = provider.key_;
+    }
+    addItem(new MenuItem("Key", key, :key, {}));
+    var type = "Time based";
+    if (provider != null) {
+      type = provider.getTypeString();
+    }
+    addItem(new MenuItem("Type", type, :type, {}));
     addItem(new MenuItem("Done", "", :done, {}));
   }
 }
 
-class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
+class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   var doneItem_ = null;
 
-  function initialize() {
+  function initialize(provider as Provider or Null) {
     Menu2InputDelegate.initialize();
+    if (provider != null) {
+      _enteredName = provider.name_;
+      _enteredKey = provider.key_;
+    }
   }
 
   function resetDoneItem() as Void {
@@ -30,17 +46,17 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
     switch (item.getId()) {
       case :name:
         // REVIEW: use callbacks instead of passed items?
-        WatchUi.pushView(new WatchUi.TextPicker(""), new NameInputDelegate(item), WatchUi.SLIDE_RIGHT);
+        WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameInputDelegate(item), WatchUi.SLIDE_RIGHT);
         break;
       case :key:
-        WatchUi.pushView(new WatchUi.TextPicker(""), new KeyInputDelegate(item), WatchUi.SLIDE_RIGHT);
+        WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_RIGHT);
         break;
       case :type:
         WatchUi.pushView(new TypeMenu(), new TypeMenuDelegate(item), WatchUi.SLIDE_RIGHT);
         break;
       case :done:
         doneItem_ = item;
-        if (_enteredName == null) {
+        if (_enteredName.equals("")) {
           // Only available > CIQ 3.4
           if (WatchUi has :showToast) {
             WatchUi.showToast("Name required", {});
@@ -50,7 +66,7 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
           }
           return;
         }
-        if (_enteredKey == null) {
+        if (_enteredKey.equals("")) {
           // Only available > CIQ 3.4
           if (WatchUi has :showToast) {
             WatchUi.showToast("Key required", {});
@@ -67,13 +83,13 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
         // strings only consisting of padding.
         var provider = null;
         switch (_enteredType) {
-        case :time:
+        case "Time based":
           provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
           break;
-        case :counter:
+        case "Counter based":
           provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
           break;
-        case :steam:
+        case "Steam guard":
           provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
           break;
         }
@@ -89,13 +105,13 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onBack() {
-    WatchUi.pushView(new WatchUi.Confirmation("Discard?"),
-                     new DiscardConfirmationDelegate(),
+    WatchUi.pushView(new WatchUi.Confirmation("Abort?"),
+                     new AbortConfirmationDelegate(),
                      WatchUi.SLIDE_LEFT);
   }
 }
 
-class DiscardConfirmationDelegate extends WatchUi.ConfirmationDelegate {
+class AbortConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   function initialize() {
     WatchUi.ConfirmationDelegate.initialize();
   }
@@ -114,7 +130,7 @@ class DiscardConfirmationDelegate extends WatchUi.ConfirmationDelegate {
 
 // Name, key and type input view stack
 
-var _enteredName = null;
+var _enteredName = "";
 
 class NameInputDelegate extends WatchUi.TextPickerDelegate {
   var item_;
@@ -132,7 +148,7 @@ class NameInputDelegate extends WatchUi.TextPickerDelegate {
   }
 }
 
-var _enteredKey = null;
+var _enteredKey = "";
 
 class KeyInputDelegate extends WatchUi.TextPickerDelegate {
   var item_;
@@ -156,13 +172,13 @@ class KeyInputDelegate extends WatchUi.TextPickerDelegate {
 class TypeMenu extends WatchUi.Menu2 {
   function initialize() {
     WatchUi.Menu2.initialize({ :title => "Type" });
-    addItem(new WatchUi.MenuItem("Time based", null, :time, null));
-    addItem(new WatchUi.MenuItem("Counter based", null, :counter, null));
-    addItem(new WatchUi.MenuItem("Steam guard", null, :steam, null));
+    addItem(new WatchUi.MenuItem("Time based", null, "Time based", null));
+    addItem(new WatchUi.MenuItem("Counter based", null, "Counter based", null));
+    addItem(new WatchUi.MenuItem("Steam guard", null, "Steam guard", null));
   }
 }
 
-var _enteredType = :time;
+var _enteredType = "Time based";
 
 class TypeMenuDelegate extends WatchUi.Menu2InputDelegate {
   var item_;

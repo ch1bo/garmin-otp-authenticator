@@ -35,7 +35,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
   function onSelect(item) {
     switch (item.getId()) {
     case :new_entry:
-      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_LEFT);
+      WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
       return;
     case :delete_entry:
       // TODO: modernize!?
