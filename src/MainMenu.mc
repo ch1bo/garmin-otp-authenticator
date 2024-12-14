@@ -6,8 +6,7 @@ class MainMenu extends WatchUi.Menu2 {
     addItem(new MenuItem("New entry", null, :new_entry, null));
     addItem(new MenuItem("Delete entry", null, :delete_entry, null));
     addItem(new MenuItem("Delete all entries", null, :delete_all, null));
-    addItem(new MenuItem("Export", "to settings", :export_providers, null));
-    addItem(new MenuItem("Import", "from settings", :import_providers, null));
+    addItem(new MenuItem("Export to settings", null, :export_providers, null));
   }
 
   function onHide() {
@@ -44,25 +43,22 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
       for (var i = 0; i < _providers.size(); i++) {
         deleteMenu.addMenuItem(new Menu.MenuItem(_providers[i].name_, null, _providers[i], null));
       }
-      Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_RIGHT);
+      Menu.switchTo(deleteMenu, new DeleteMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
     case :delete_all:
       WatchUi.pushView(new WatchUi.Confirmation("Really delete?"),
-                       new DeleteAllConfirmationDelegate(), WatchUi.SLIDE_RIGHT);
+                       new DeleteAllConfirmationDelegate(), WatchUi.SLIDE_LEFT);
       return;
     case :export_providers:
       exportToSettings();
-      return;
-    case :import_providers:
-      importFromSettings();
-      saveProviders();
       return;
     }
   }
 
   function onBack() {
-    // FIXME: update provider list
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    // Pop twice to update provider list
+    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+    WatchUi.switchToView(new ProviderList(_providers), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
   }
 }
 
@@ -80,7 +76,9 @@ class DeleteMenuDelegate extends Menu.MenuDelegate {
 }
 
 class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
-  function initialize() { WatchUi.ConfirmationDelegate.initialize(); }
+  function initialize() {
+    WatchUi.ConfirmationDelegate.initialize();
+  }
 
   function onResponse(response) {
     switch (response) {

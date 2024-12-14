@@ -221,9 +221,9 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     if (_providers.size() == 0) {
-      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_LEFT);
     } else {
-      WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
     return true;
   }
