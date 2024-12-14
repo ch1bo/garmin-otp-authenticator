@@ -23,7 +23,10 @@ class ProviderActionMenuDelegate extends WatchUi.ActionMenuDelegate {
       WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
       return;
     case :edit_entry:
-      WatchUi.pushView(new ProviderMenu("Edit provider", provider_), new ProviderMenuDelegate(provider_), WatchUi.SLIDE_LEFT);
+      var index = _providers.indexOf(provider_);
+      if (index >= 0) {
+        WatchUi.pushView(new ProviderMenu("Edit provider", index), new ProviderMenuDelegate(index), WatchUi.SLIDE_LEFT);
+      }
       return;
     case :delete_entry:
       WatchUi.pushView(new WatchUi.Confirmation("Delete " + provider_.name_ + "?"),

@@ -3,22 +3,19 @@ import Toybox.Lang;
 
 // Menu to create or edit a provider entry
 class ProviderMenu extends WatchUi.Menu2 {
-  function initialize(title as String, provider as Provider or Null) {
+  function initialize(title as String, editIndex as Number or Null) {
     Menu2.initialize({:title => title});
     var name = "";
-    if (provider != null) {
-      name = provider.name_;
-    }
-    addItem(new MenuItem("Name", name, :name, {}));
     var key = "";
-    if (provider != null) {
-      key = provider.key_;
-    }
-    addItem(new MenuItem("Key", key, :key, {}));
     var type = "Time based";
-    if (provider != null) {
+    if (editIndex != null && editIndex < _providers.size()) {
+      var provider = _providers[editIndex];
+      name = provider.name_;
+      key = provider.key_;
       type = provider.getTypeString();
     }
+    addItem(new MenuItem("Name", name, :name, {}));
+    addItem(new MenuItem("Key", key, :key, {}));
     addItem(new MenuItem("Type", type, :type, {}));
     addItem(new MenuItem("Done", "", :done, {}));
   }
@@ -26,10 +23,13 @@ class ProviderMenu extends WatchUi.Menu2 {
 
 class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   var doneItem_ = null;
+  var editIndex_ = null;
 
-  function initialize(provider as Provider or Null) {
+  function initialize(editIndex as Number or Null) {
     Menu2InputDelegate.initialize();
-    if (provider != null) {
+    if (editIndex != null && editIndex < _providers.size()) {
+      editIndex_ = editIndex;
+      var provider = _providers[editIndex];
       _enteredName = provider.name_;
       _enteredKey = provider.key_;
     }
@@ -95,8 +95,13 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
         }
         // TODO: handle error?
         if (provider != null) {
-          _providers.add(provider);
-          _currentIndex = _providers.size() - 1;
+          if (editIndex_ != null) {
+            _providers[editIndex_] = provider;
+            _currentIndex = editIndex_;
+          } else {
+            _providers.add(provider);
+            _currentIndex = _providers.size() - 1;
+          }
           saveProviders();
         }
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
