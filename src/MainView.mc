@@ -1,9 +1,12 @@
 import Toybox.System;
 import Toybox.Timer;
 import Toybox.WatchUi;
+import Toybox.Lang;
 
 using CountdownColor;
 using Device;
+
+// FIXME: make this available through settings again
 using TextInput;
 
 // TODO: pass provider instead of using global _currentIndex / currentProvider()
@@ -17,6 +20,11 @@ class MainView extends WatchUi.View {
     screen_shape_ = System.getDeviceSettings().screenShape;
     timer_ = new Timer.Timer();
     update_rate_ = Application.Properties.getValue("mainRate");
+  }
+
+  function onLayout(dc) {
+    log(DEBUG, "MainView onLayout");
+    setLayout(Rez.Layouts.MainView(dc));
   }
 
   function onShow() {
@@ -46,8 +54,8 @@ class MainView extends WatchUi.View {
   // Create a device specific layout to also avoid conditionals in the rendering
   // logic.
   function onUpdate(dc) {
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-    dc.clear();
+    View.onUpdate(dc);
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     var provider = currentProvider();
     if (provider == null) {
       dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_MEDIUM,
@@ -160,27 +168,27 @@ class MainView extends WatchUi.View {
   }
 
   function drawCode(dc, codeColor, codeFont, code) {
-    dc.setColor(codeColor, Graphics.COLOR_BLACK);
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
     dc.drawText(dc.getWidth() / 2, getCodeY(dc), codeFont, code,
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawAboveCode(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     var fh = dc.getFontHeight(font);
     dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
     var fh = dc.getFontHeight(font);
     dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2 + fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawTopLeftOfSubscreen(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLACK);
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
     var subscreen = Device.getSubscreen();
     // Don't center exactly in the middle because instinct subscreen is round
     var x = (dc.getWidth() - subscreen.width) / 2.3;
@@ -195,7 +203,9 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   function onKey(event) {
     var key = event.getKey();
     logf(DEBUG, "onKey $1$", [key]);
-    if (key == KEY_MENU || key == KEY_ENTER) {
+    if (isActionButton(key)) {
+      return onAction();
+    } else if (key == KEY_MENU || key == KEY_ENTER) {
       var provider = currentProvider();
       switch (provider) {
       case instanceof CounterBasedProvider:
@@ -219,12 +229,52 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     return BehaviorDelegate.onKey(event);
   }
 
-  function onSelect() {
-    if (_providers.size() == 0) {
-      WatchUi.pushView(new NewItemMenu("New item", null, null, :time), new NewItemMenuDelegate(), WatchUi.SLIDE_LEFT);
-    } else {
-      WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
+  function onTap(event as ClickEvent) as Boolean {
+    logf(DEBUG, "onTap $1$", [event.getCoordinates()]);
+    if (isInActionArea(event.getCoordinates())) {
+      return onAction();
+    }
+    return false;
+  }
+
+  // Action menu selected
+  function onAction() as Lang.Boolean {
+    log(DEBUG, "MainView onAction");
+    // TODO: handle CIQ < 3.4
+    if (WatchUi has :showActionMenu) {
+      var provider = currentProvider();
+      showProviderActionMenu(provider);
     }
     return true;
   }
+}
+
+function isActionButton(button as WatchUi.Key) as Lang.Boolean {
+  return Rez.Styles.system_input__action_menu has :button &&
+    button == Rez.Styles.system_input__action_menu.button;
+}
+
+//! Function to see if a tap falls within the touch area for
+//! a action menu.
+//! @param x X coord of tap
+//! @param y Y coord of tap
+//! @return true if tapped, false otherwise
+// FIXME: tap on fenix8 not working like native (system_input__action_menu has no x1, y1, x2, y2)
+function isInActionArea(coord as Array<Numeric>) as Boolean {
+  if (Rez.Styles.system_input__action_menu has :x1 &&
+      Rez.Styles.system_input__action_menu has :y1 &&
+      Rez.Styles.system_input__action_menu has :x2 &&
+      Rez.Styles.system_input__action_menu has :y2) {
+
+    var x = coord[0];
+    var y = coord[1];
+
+    if (x >= Rez.Styles.system_input__action_menu.x1 &&
+        x <= Rez.Styles.system_input__action_menu.x2 &&
+        y >= Rez.Styles.system_input__action_menu.y1 &&
+        y <= Rez.Styles.system_input__action_menu.y2) {
+      return true;
+    }
+  }
+  return false;
 }

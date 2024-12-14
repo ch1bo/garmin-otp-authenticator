@@ -26,13 +26,19 @@
 
     <bitmap id="WarningToastIcon" personality="
       system_icon_destructive__warning
-      system_size__toast_icon
-    "/>
+      system_size__toast_icon" />
     <bitmap id="InfoToastIcon" personality="
       system_icon_dark__about
-      system_size__toast_icon
-    "/>
+      system_size__toast_icon" />
   </drawables>
+
+  <layouts>
+    <layout id="MainView" >
+      <bitmap id="actionMenu" personality="
+        system_icon_dark__hint_action_menu
+        system_loc__hint_action_menu" />
+    </layout>
+  </layouts>
 
   <properties>
     <property id="mainRate" type="number">60</property>
