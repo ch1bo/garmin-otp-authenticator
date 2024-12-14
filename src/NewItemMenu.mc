@@ -89,7 +89,26 @@ class NewItemMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onBack() {
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    WatchUi.pushView(new WatchUi.Confirmation("Discard?"),
+                     new DiscardConfirmationDelegate(),
+                     WatchUi.SLIDE_LEFT);
+  }
+}
+
+class DiscardConfirmationDelegate extends WatchUi.ConfirmationDelegate {
+  function initialize() {
+    WatchUi.ConfirmationDelegate.initialize();
+  }
+
+  function onResponse(response) {
+    switch (response) {
+      case WatchUi.CONFIRM_YES:
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
+        break;
+      case WatchUi.CONFIRM_NO:
+        break;
+    }
+    return true;
   }
 }
 
