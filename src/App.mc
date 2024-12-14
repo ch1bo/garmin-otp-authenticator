@@ -62,6 +62,20 @@ function exportToSettings() {
   log(INFO, "exported");
 }
 
+// Returns true if we could add/import entries using importFromSettings
+function canImportFromSettings() as Boolean {
+  var addType = Application.Properties.getValue("addType");
+  var addName = Application.Properties.getValue("addName");
+  var addKey = Application.Properties.getValue("addKey");
+  var exportData = Application.Properties.getValue("exportData");
+  var canAdd =
+    addType != null &&
+    addName != null && !addName.equals("") &&
+    addKey != null && !addKey.equals("");
+  var canImport = exportData != null && !exportData.equals("");
+  return canAdd || canImport;
+}
+
 function importFromSettings() {
   var addType = Application.Properties.getValue("addType");
   var addName = Application.Properties.getValue("addName");
@@ -81,10 +95,16 @@ function importFromSettings() {
       log(INFO, "added: " + type + "/" + addName);
       Application.Properties.setValue("addName", "");
       Application.Properties.setValue("addKey", "");
+      if (WatchUi has :showToast) {
+        WatchUi.showToast("Added " + addName, { :icon => Rez.Drawables.InfoToastIcon });
+      }
     } catch (exception) {
       var msg = exception.getErrorMessage();
       log(ERROR, "error adding from settings (" + type + "/" + addName + "): " + msg);
       Application.Properties.setValue("addKey", "error: " + msg);
+      if (WatchUi has :showToast) {
+        WatchUi.showToast("Import failed, details in addKey", { :icon => Rez.Drawables.WarningToastIcon });
+      }
     }
   }
 
@@ -96,14 +116,21 @@ function importFromSettings() {
       for (var i = 0; i < ps.size(); i++) {
         if(_providers.indexOf(ps[i]) < 0) {
           _providers.add(ps[i]);
+          // TODO: report success using toast on CIQ >= 3.4
           log(INFO, "imported: " + ps[i].name_);
         }
       }
       Application.Properties.setValue("exportData", "");
+      if (WatchUi has :showToast) {
+        WatchUi.showToast("Imported " + ps.size() + " entries", { :icon => Rez.Drawables.InfoToastIcon });
+      }
     } catch (exception) {
       var msg = exception.getErrorMessage();
       log(ERROR, "error importing from settings: " + msg);
       Application.Properties.setValue("exportData", "error: " + msg);
+      if (WatchUi has :showToast) {
+        WatchUi.showToast("Import failed, details in exportData", { :icon => Rez.Drawables.WarningToastIcon });
+      }
     }
   }
 }
@@ -126,26 +153,44 @@ class App extends Application.AppBase {
   function getInitialView() {
     log(DEBUG, "App getInitialView");
     loadProviders();
-    importFromSettings();
-    saveProviders();
-    if (_providers.size() == 0) {
-      // TODO: start with new entry on top of provider list
-      return [new MainMenu(), new MainMenuDelegate()];
-    } else {
-      return [new ProviderList(_providers), new ProviderListDelegate()];
-    }
+    return [new ProviderList(_providers), new ProviderListDelegate()];
   }
 
   function getGlanceView() {
     log(DEBUG, "App getGlanceView");
     loadProviders();
-    return [ new WidgetGlanceView() ];
+    return [new WidgetGlanceView()];
   }
 
   function onSettingsChanged() {
     log(DEBUG, "App onSettingsChanged");
-    importFromSettings();
-    saveProviders();
-    WatchUi.requestUpdate();
+    // TODO: Test this
+    if (canImportFromSettings()) {
+      askImportConfirmation();
+    }
+  }
+}
+
+function askImportConfirmation() {
+  WatchUi.pushView(new WatchUi.Confirmation("Import from settings?"),
+                   new ImportConfirmationDelegate(), WatchUi.SLIDE_IMMEDIATE);
+}
+
+class ImportConfirmationDelegate extends WatchUi.ConfirmationDelegate {
+  function initialize() {
+    WatchUi.ConfirmationDelegate.initialize();
+  }
+
+  function onResponse(response) {
+    switch (response) {
+      case WatchUi.CONFIRM_YES:
+        importFromSettings();
+        saveProviders();
+        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+        break;
+      case WatchUi.CONFIRM_NO:
+        break;
+    }
+    return true;
   }
 }

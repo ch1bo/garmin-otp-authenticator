@@ -28,15 +28,27 @@ class ProviderList extends WatchUi.Menu2 {
   function onHide() {
     log(DEBUG, "ProviderList onHide");
     WatchUi.Menu2.onHide();
-    timer_.stop();
-    timer_ = null;
+    if (timer_) {
+      timer_.stop();
+      timer_ = null;
+    }
   }
 
   function onShow() {
     log(DEBUG, "ProviderList onShow");
     WatchUi.Menu2.onShow();
-    timer_ = new Timer.Timer();
-    timer_.start(method(:onTimer), 5000, true);
+    // TODO: Test this
+    if (canImportFromSettings()) {
+      log(DEBUG, "ProviderList can import");
+      askImportConfirmation();
+    } else if (providers_.size() == 0) {
+      log(DEBUG, "ProviderList emtpy providers");
+      WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
+    } else {
+      log(DEBUG, "ProviderList starting timer");
+      timer_ = new Timer.Timer();
+      timer_.start(method(:onTimer), 5000, true);
+    }
   }
 
   function onTimer() as Void {

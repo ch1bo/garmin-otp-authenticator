@@ -14,8 +14,6 @@
   <drawables>
     <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
     <bitmap id="LauncherIcon" filename="icon.png" />
-    <!-- TODO: style per device!? -->
-    <bitmap id="MenuHeaderBackground" filename="nlist_header_glow.png" />
     <!-- https://www.flaticon.com/free-icon/time-left_66163 -->
     <bitmap id="TimeBased" filename="time-based.png" />
     <bitmap id="TimeBasedRed" filename="time-based-red.png" />
@@ -25,6 +23,15 @@
     <bitmap id="CounterBased" filename="counter.png" />
     <!-- https://www.flaticon.com/free-icon/steam_1241011 -->
     <bitmap id="SteamGuard" filename="steam.png" />
+
+    <bitmap id="WarningToastIcon" personality="
+      system_icon_destructive__warning
+      system_size__toast_icon
+    "/>
+    <bitmap id="InfoToastIcon" personality="
+      system_icon_dark__about
+      system_size__toast_icon
+    "/>
   </drawables>
 
   <properties>
