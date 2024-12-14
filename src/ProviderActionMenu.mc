@@ -20,7 +20,7 @@ class ProviderActionMenuDelegate extends WatchUi.ActionMenuDelegate {
   function onSelect(item) {
     switch (item.getId()) {
     case :new_entry:
-      WatchUi.pushView(new ProviderMenu("New provider", provider_), new ProviderMenuDelegate(provider_), WatchUi.SLIDE_LEFT);
+      WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
       return;
     case :edit_entry:
       WatchUi.pushView(new ProviderMenu("Edit provider", provider_), new ProviderMenuDelegate(provider_), WatchUi.SLIDE_LEFT);

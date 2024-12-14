@@ -11,7 +11,6 @@ class ProviderList extends WatchUi.Menu2 {
     logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
     WatchUi.Menu2.initialize({
       :title => "OTP Providers",
-      :theme => WatchUi.MENU_THEME_BLUE, // XXX: CIQ >= 4.1.8
       :dividerType => DIVIDER_TYPE_ICON // Ignored on CIQ < 5.0.1
     });
 
@@ -41,9 +40,6 @@ class ProviderList extends WatchUi.Menu2 {
     if (canImportFromSettings()) {
       log(DEBUG, "ProviderList can import");
       askImportConfirmation();
-    } else if (providers_.size() == 0) {
-      log(DEBUG, "ProviderList emtpy providers");
-      WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     } else {
       log(DEBUG, "ProviderList starting timer");
       timer_ = new Timer.Timer();
