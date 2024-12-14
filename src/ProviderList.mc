@@ -84,7 +84,7 @@ class ProviderIcon extends WatchUi.Drawable {
         var delta = (provider_ as TimeBasedProvider).next_ - Time.now().value();
         if (delta < 5) {
           ICON_TIME_BASED_RED.draw(dc);
-        } else if (delta < 15) {
+        } else if (delta <= 10) {
           ICON_TIME_BASED_ORANGE.draw(dc);
         } else {
           ICON_TIME_BASED_GREEN.draw(dc);

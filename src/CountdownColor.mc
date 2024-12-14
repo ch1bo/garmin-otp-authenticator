@@ -7,7 +7,7 @@ module CountdownColor {
 function getCountdownColor(delta) {
   if (delta < 5) {
     return Graphics.COLOR_RED;
-  } else if (delta < 15) {
+  } else if (delta <= 10) {
     return Graphics.COLOR_ORANGE;
   }
 
