@@ -1,6 +1,6 @@
 # garmin-otp-authenticator
 
-[Garmin ConnectIQ Store Link][connectiq-store]
+[Garmin ConnectIQ Store Link](https://apps.garmin.com/en-US/apps/c601e351-9fa8-4303-aead-441251559064)
 
 Garmin ConnectIQ Widget for One-Time Passwords as Second Factor Authentication (2FA) similar to Google Authenticator. Multiple OTP formats are supported.
 
@@ -132,12 +132,10 @@ devices and their capabilities
 
 The source code for garmin-otp-authenticator is released under the [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/).
 
-Launcher icon made by [Roundicons][roundicons] from [www.flaticon.com][flaticon]
-is licensed by [Creative Commns BY 3.0][cc30by].
+<a href="https://www.flaticon.com/free-icons/lock" title="lock icons">Lock icons created by Roundicons - Flaticon</a>
 
-[connectiq-store]: https://apps.garmin.com/en-US/apps/c601e351-9fa8-4303-aead-441251559064
-[roundicons]: https://www.flaticon.com/authors/roundicons
-[flaticon]: https://www.flaticon.com
-[cc30by]: http://creativecommons.org/licenses/by/3.0/
+<a href="https://www.flaticon.com/free-icons/time" title="time icons">Time icons created by Freepik - Flaticon</a>
 
+<a href="https://www.flaticon.com/free-icons/counter" title="counter icons">Counter icons created by Freepik - Flaticon</a>
 
+<a href="https://www.flaticon.com/free-icons/brands-and-logotypes" title="brands and logotypes icons">Brands and logotypes icons created by pictogramer - Flaticon</a>

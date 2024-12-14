@@ -11,10 +11,21 @@
   <string id="SteamGuardProvider">Steam guard</string>
   <string id="exportData">Exported data</string>
 
-  <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
-  <bitmap id="LauncherIcon" filename="icon.png" />
-  <!-- TODO: style per device!? -->
-  <bitmap id="MenuHeaderBackground" filename="nlist_header_glow.png" />
+  <drawables>
+    <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
+    <bitmap id="LauncherIcon" filename="icon.png" />
+    <!-- TODO: style per device!? -->
+    <bitmap id="MenuHeaderBackground" filename="nlist_header_glow.png" />
+    <!-- https://www.flaticon.com/free-icon/time-left_66163 -->
+    <bitmap id="TimeBased" filename="time-based.png" />
+    <bitmap id="TimeBasedRed" filename="time-based-red.png" />
+    <bitmap id="TimeBasedOrange" filename="time-based-orange.png" />
+    <bitmap id="TimeBasedGreen" filename="time-based-green.png" />
+    <!-- https://www.flaticon.com/free-icon/counter_7207766 -->
+    <bitmap id="CounterBased" filename="counter.png" />
+    <!-- https://www.flaticon.com/free-icon/steam_1241011 -->
+    <bitmap id="SteamGuard" filename="steam.png" />
+  </drawables>
 
   <properties>
     <property id="mainRate" type="number">60</property>
