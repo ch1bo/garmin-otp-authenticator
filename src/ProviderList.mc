@@ -13,15 +13,13 @@ class ProviderList extends WatchUi.Menu2 {
       :title => "OTP Providers",
       :dividerType => DIVIDER_TYPE_ICON // Ignored on CIQ < 5.0.1
     });
+    timer_ = new Timer.Timer();
   }
 
   function onHide() {
     log(DEBUG, "ProviderList onHide");
     WatchUi.Menu2.onHide();
-    if (timer_) {
-      timer_.stop();
-      timer_ = null;
-    }
+    timer_.stop();
   }
 
   function onShow() {
@@ -39,10 +37,13 @@ class ProviderList extends WatchUi.Menu2 {
         addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
       }
       addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
-      log(DEBUG, "ProviderList starting timer");
-      // TODO: use update rate from settings
-      timer_ = new Timer.Timer();
-      timer_.start(method(:onTimer), 5000, true);
+
+      var updateRate = Application.Properties.getValue("glanceRate");
+      logf(DEBUG, "ProviderList update rate: $1$", [updateRate]);
+      if (updateRate > 0) {
+        var period = 60.0 / updateRate * 1000;
+        timer_.start(method(:onTimer), period, true);
+      }
     }
   }
 

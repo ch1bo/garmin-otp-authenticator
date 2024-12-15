@@ -2,27 +2,25 @@ import Toybox.System;
 import Toybox.Timer;
 import Toybox.WatchUi;
 
-using TextInput;
 using CountdownColor;
 
 (:glance)
 class WidgetGlanceView extends WatchUi.GlanceView {
   var timer_;
-  var update_rate_;
 
   function initialize() {
     GlanceView.initialize();
     timer_ = new Timer.Timer();
-    update_rate_ = Application.Properties.getValue("glanceRate");
   }
 
   function onShow() {
-    logf(DEBUG, "GlanceView onShow, update rate: $1$", [update_rate_]);
-    if (update_rate_ > 0) {
-      var period = 60.0 / update_rate_ * 1000;
-      timer_.start(method( : update), period, true);
+    var updateRate = Application.Properties.getValue("glanceRate");
+    logf(DEBUG, "GlanceView onShow, update rate: $1$", [updateRate]);
+    if (updateRate > 0) {
+      var period = 60.0 / updateRate * 1000;
+      timer_.start(method(:onTimer), period, true);
     }
-    update();
+    onTimer();
   }
 
   function onHide() {
@@ -30,7 +28,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     timer_.stop();
   }
 
-  function update() {
+  function onTimer() {
     var provider = currentProvider();
     if (provider != null) {
       provider.update();
@@ -38,33 +36,10 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     WatchUi.requestUpdate();
   }
 
-  function drawMain(dc, text, font, codeColor, space) {
-    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-    dc.drawText(0, dc.getHeight() / 2 - dc.getFontHeight(font) / 2 - space, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-  }
-
-  function drawSub(dc, text, font, codeColor, space) {
-    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-    dc.drawText(0, dc.getHeight() / 2 + dc.getFontHeight(font) / 2 + space, font, 
-                text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-  }
-
-  function drawProgress(dc, value, max, codeColor) {
-    var h = dc.getHeight();
-    var w = dc.getWidth();
-
-    dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-    dc.fillRectangle(value * w / max + (h / 20), h / 2 - 1, w, h / 20);
-    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
-    dc.fillRectangle(0, h / 2 - (h / 20), value * w / max, h / 10 + 1);
-  }
-
   function onUpdate(dc) {
     log(DEBUG, "GlanceView onUpdate");
-    var mainColor = Graphics.COLOR_WHITE;
+    var mainColor = Graphics.COLOR_LT_GRAY;
     var mainFont = Graphics.FONT_GLANCE;
-    var subColor = Graphics.COLOR_DK_GRAY;
-    var subFont = Graphics.FONT_GLANCE;
 
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     dc.clear();
@@ -72,12 +47,12 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     var provider = currentProvider();
     if (provider == null) {
       drawMain(dc, "OTP Authenticator", mainFont, mainColor, 0);
-      drawSub(dc, "ENTER to start", subFont, subColor, 0);
+      drawSub(dc, "Open to start", Graphics.FONT_GLANCE, Graphics.COLOR_WHITE, 0);
       return;
     }
 
-    subFont = Graphics.FONT_GLANCE_NUMBER;
-
+    var subFont = Graphics.FONT_GLANCE_NUMBER;
+    var subColor = Graphics.COLOR_WHITE;
     switch (provider) {
     case instanceof SteamGuardProvider:
       subFont = Graphics.FONT_GLANCE;
@@ -91,6 +66,27 @@ class WidgetGlanceView extends WatchUi.GlanceView {
       drawSub(dc, provider.code_, subFont, subColor, 4);
       break;
     }
+  }
+
+  function drawMain(dc, text, font, codeColor, space) {
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    dc.drawText(0, dc.getHeight() / 2 - dc.getFontHeight(font) / 2 - space, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+  }
+
+  function drawSub(dc, text, font, codeColor, space) {
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    dc.drawText(0, dc.getHeight() / 2 + dc.getFontHeight(font) / 2 + space, font,
+                text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+  }
+
+  function drawProgress(dc, value, max, codeColor) {
+    var h = dc.getHeight();
+    var w = dc.getWidth();
+
+    dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
+    dc.fillRectangle(value * w / max + (h / 20), h / 2 - 1, w, h / 20);
+    dc.setColor(codeColor, Graphics.COLOR_TRANSPARENT);
+    dc.fillRectangle(0, h / 2 - (h / 20), value * w / max, h / 10 + 1);
   }
 }
 

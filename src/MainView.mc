@@ -9,17 +9,14 @@ using Device;
 // FIXME: make this available through settings again
 using TextInput;
 
-// TODO: pass provider instead of using global _currentIndex / currentProvider()
 class MainView extends WatchUi.View {
-  var screen_shape_;
+  var screenShape_;
   var timer_;
-  var update_rate_;
 
   function initialize() {
     View.initialize();
-    screen_shape_ = System.getDeviceSettings().screenShape;
+    screenShape_ = System.getDeviceSettings().screenShape;
     timer_ = new Timer.Timer();
-    update_rate_ = Application.Properties.getValue("mainRate");
   }
 
   function onLayout(dc) {
@@ -40,12 +37,13 @@ class MainView extends WatchUi.View {
   }
 
   function onShow() {
-    logf(DEBUG, "MainView onShow, update rate: $1$", [update_rate_]);
-    if (update_rate_ > 0) {
-      var period = 60.0 / update_rate_ * 1000;
-      timer_.start(method(:update), period, true);
+    var updateRate = Application.Properties.getValue("mainRate");
+    logf(DEBUG, "MainView onShow, update rate: $1$", [updateRate]);
+    if (updateRate > 0) {
+      var period = 60.0 / updateRate * 1000;
+      timer_.start(method(:onTimer), period, true);
     }
-    update();
+    onTimer();
   }
 
   function onHide() {
@@ -53,7 +51,7 @@ class MainView extends WatchUi.View {
     timer_.stop();
   }
 
-  function update() {
+  function onTimer() {
     var provider = currentProvider();
     if (provider != null) {
       provider.update();
@@ -136,7 +134,7 @@ class MainView extends WatchUi.View {
         Graphics.ARC_COUNTER_CLOCKWISE,
         90, ((value * 360) / max) + 90
       );
-    } else if (screen_shape_== System.SCREEN_SHAPE_ROUND) {
+    } else if (screenShape_== System.SCREEN_SHAPE_ROUND) {
       // Use the whole screen to paint a clock like countdown
       dc.drawArc(
         dc.getWidth() / 2,
