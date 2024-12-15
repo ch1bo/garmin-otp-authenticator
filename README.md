@@ -42,7 +42,7 @@ Less secure, but more convenient: key data can be also added, exported and impor
 
 ## Backup / Restore
 
-Keys are stored encrypted using Garmin's application storage on the Device. In the past the application storage was not retained when updating a widget to a newer version, but this seems to be no isuse anymore (since CIQ 3.0.0?). However, entered provider data along with secret keys are quite naturally wiped when removing or reinstalling the App.
+Keys are stored encrypted using Garmin's application storage on the Device. In the past the application storage was not retained when updating a widget to a newer version, but this seems to be no issue anymore (since CIQ 3.0.0?). However, entered provider data along with secret keys are quite naturally wiped when removing or reinstalling the App.
 
 To provide an easy way of data migration, e.g. when switching Garmin devices an export/import mechanism was added!
 

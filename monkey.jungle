@@ -1,21 +1,15 @@
 project.manifest = manifest.xml
 base.sourcePath = src;test
 
-# Exclude connectiq 2.x and black-and-white display code by default
-base.excludeAnnotations = connectiq2;isBlackAndWhite
-
-# Exclude connectiq 3.x code for some devices
-vivoactive_hr.excludeAnnotations = connectiq3;isBlackAndWhite
-fr735xt.excludeAnnotations = connectiq3;isBlackAndWhite
+# Exclude black-and-white display code by default
+base.excludeAnnotations = isBlackAndWhite
 
 # Re-use resources-vivoactive3 for the 40x33 icon
-vivoactive_hr.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
 vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
 
 # Re-use resources-instinct2 for the 62x62 bw icon
 instinct2x.resourcePath = $(instinct2.resourcePath)
-
-instinct2.excludeAnnotations = connectiq2;isColor
-instinct2x.excludeAnnotations = connectiq2;isColor
-instinct2s.excludeAnnotations = connectiq2;isColor
+instinct2.excludeAnnotations = isColor
+instinct2x.excludeAnnotations = isColor
+instinct2s.excludeAnnotations = isColor

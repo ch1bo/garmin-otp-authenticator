@@ -4,7 +4,9 @@
 
 - New UX flow including full list of providers with otp codes.
 - Native text input, menus and action menus.
-- **BREAKING** Dropped support for CIQ < 3.0.0
+- **BREAKING** Dropped support of old devices (CIQ < 3.0.0):
+  - Vivoactive HR
+  - Forerunner 735xt
 - Add possibility to edit OTP providers.
 
 ## 1.8.0 - 2024-09-05

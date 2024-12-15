@@ -22,7 +22,7 @@ function hmacSHA1(key as Bytes, message as Bytes) as Bytes {
 }
 
 // Native SHA1 cryptography available as of connect iq 3.0.0
-(:connectiq3,:glance)
+(:glance)
 function hashSHA1(data as Bytes) as Bytes {
   log(DEBUG, "SHA1 using native cryptography");
   // Use native implementation of SHA1, this requires conversion to/from the
@@ -34,29 +34,18 @@ function hashSHA1(data as Bytes) as Bytes {
   return res;
 }
 
-(:connectiq3,:glance)
+(:glance)
 function fromArray(arr as Bytes) as ByteArray {
   var bytes = []b;
   bytes.addAll(arr);
   return bytes;
 }
 
-(:connectiq3,:glance)
+(:glance)
 function toArray(bytes as ByteArray) as Bytes {
   var arr = new [bytes.size()];
   for (var i=0; i < arr.size(); i++) {
     arr[i] = bytes[i];
   }
   return arr;
-}
-
-// Polyfilled SHA1 implementation as required pre connect iq 3.0.0
-(:connectiq2)
-function hashSHA1(data as Bytes) as Bytes {
-  log(DEBUG, "SHA1 using legacy cryptography");
-  var sha1 = new SHA1();
-  sha1.input(data);
-  var res = sha1.result();
-  log(DEBUG, "SHA1 done");
-  return res;
 }
