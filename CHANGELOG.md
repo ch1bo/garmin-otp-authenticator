@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.0 - UNRELEASED
+
+- New UX flow including full list of providers with otp codes.
+- Native text input, menus and action menus.
+- **BREAKING** Dropped support for CIQ < 3.0.0
+- Add possibility to edit OTP providers.
+
 ## 1.8.0 - 2024-09-05
 
  - Add support for Fenix 8 (all variants).

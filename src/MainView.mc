@@ -59,7 +59,7 @@ class MainView extends WatchUi.View {
     var provider = currentProvider();
     if (provider == null) {
       dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_MEDIUM,
-                  "ENTER to start",
+                  "Press MENU to start",
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       return;
     } else {
@@ -98,7 +98,7 @@ class MainView extends WatchUi.View {
         drawCode(dc, codeColor, codeFont, provider.code_);
         // Instructions
         drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
-                      "ENTER for next code");
+                      "Press MENU for next");
         break;
       }
     }
@@ -198,11 +198,20 @@ class MainView extends WatchUi.View {
 }
 
 class MainViewDelegate extends WatchUi.BehaviorDelegate {
-  function initialize() { BehaviorDelegate.initialize(); }
+  function initialize() {
+    BehaviorDelegate.initialize();
+  }
+
+  function onBack() {
+    log(DEBUG, "MainView onBack");
+    // Explicit switch to view to re-create provider list
+    WatchUi.switchToView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    return true;
+  }
 
   function onKey(event) {
     var key = event.getKey();
-    logf(DEBUG, "onKey $1$", [key]);
+    logf(DEBUG, "MainView onKey $1$", [key]);
     if (isActionButton(key)) {
       return onAction();
     } else if (key == KEY_MENU || key == KEY_ENTER) {
@@ -214,6 +223,8 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
         return true;
       }
     } else if (key == KEY_DOWN || key == KEY_UP) {
+      // TODO: why not use behavior onNextMode/onPreviousMode callbacks?
+      // TODO: or use a page loop?
       var delta = key == KEY_DOWN ? 1 : -1;
       _currentIndex += delta;
       if (_currentIndex < 0) {
@@ -226,7 +237,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       WatchUi.requestUpdate();
       return true;
     }
-    return BehaviorDelegate.onKey(event);
+    return false;
   }
 
   function onTap(event as ClickEvent) as Boolean {

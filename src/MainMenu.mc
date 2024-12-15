@@ -56,9 +56,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onBack() {
-    // Pop twice to update provider list
-    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-    WatchUi.switchToView(new ProviderList(_providers), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    WatchUi.switchToView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
   }
 }
 

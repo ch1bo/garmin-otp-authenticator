@@ -153,7 +153,7 @@ class App extends Application.AppBase {
   function getInitialView() {
     log(DEBUG, "App getInitialView");
     loadProviders();
-    return [new ProviderList(_providers), new ProviderListDelegate()];
+    return [new ProviderList(), new ProviderListDelegate()];
   }
 
   function getGlanceView() {

@@ -2,26 +2,17 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
+// Render global _providers as a Menu2
 class ProviderList extends WatchUi.Menu2 {
-  var providers_ as Lang.Array<Provider>;
   var timer_;
 
-  function initialize(providers as Lang.Array<Provider>) {
+  function initialize() {
     var h = System.getDeviceSettings().screenHeight;
     logf(DEBUG, "ProviderList initialize dc height $1$", [h]);
     WatchUi.Menu2.initialize({
       :title => "OTP Providers",
       :dividerType => DIVIDER_TYPE_ICON // Ignored on CIQ < 5.0.1
     });
-
-    providers_ = providers;
-    for (var i = 0; i < providers.size(); i++) {
-      var p = providers[i];
-      p.update();
-      addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
-    }
-
-    addItem(new WatchUi.MenuItem("Configure", null, :edit, {}));
   }
 
   function onHide() {
@@ -41,19 +32,25 @@ class ProviderList extends WatchUi.Menu2 {
       log(DEBUG, "ProviderList can import");
       askImportConfirmation();
     } else {
+      log(DEBUG, "ProviderList creating menu items");
+      for (var i = 0; i < _providers.size(); i++) {
+        var p = _providers[i];
+        p.update();
+        addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
+      }
+      addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
       log(DEBUG, "ProviderList starting timer");
+      // TODO: use update rate from settings
       timer_ = new Timer.Timer();
       timer_.start(method(:onTimer), 5000, true);
-      // FIXME: refresh menu items in case providers changed
     }
   }
 
   function onTimer() as Void {
-    for (var i = 0; i < providers_.size(); i++) {
-      var p = providers_[i];
+    for (var i = 0; i < _providers.size(); i++) {
+      var p = _providers[i];
       p.update();
-      var delta = (p as TimeBasedProvider).next_ - Time.now().value();
-      getItem(i).setSubLabel(p.code_ + " - " + delta.toString());
+      getItem(i).setSubLabel(p.code_);
     }
     WatchUi.requestUpdate();
   }
@@ -113,15 +110,14 @@ class ProviderListDelegate extends WatchUi.Menu2InputDelegate {
 
   function onSelect(item) {
     switch (item.getId()) {
-      case :edit:
-        log(INFO, "Edit button pressed");
-        WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
+      case :configure:
+        WatchUi.switchToView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
         break;
       default:
         _currentIndex = item.getId();
         logf(DEBUG, "Setting current index $1$", [_currentIndex]);
         saveProviders();
-        WatchUi.pushView(new MainView(), new MainViewDelegate(), WatchUi.SLIDE_LEFT);
+        WatchUi.switchToView(new MainView(), new MainViewDelegate(), WatchUi.SLIDE_LEFT);
         break;
     }
   }
