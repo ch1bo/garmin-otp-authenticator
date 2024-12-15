@@ -68,6 +68,7 @@ function loadProviderIcon(resourceId) {
 class ProviderIcon extends WatchUi.Drawable {
   var provider_ as Provider;
 
+  // FIXME: too big for fenix7 and surely other devices
   const ICON_TIME_BASED_GREEN = loadProviderIcon($.Rez.Drawables.TimeBasedGreen);
   const ICON_TIME_BASED_ORANGE = loadProviderIcon($.Rez.Drawables.TimeBasedOrange);
   const ICON_TIME_BASED_RED = loadProviderIcon($.Rez.Drawables.TimeBasedRed);

@@ -56,18 +56,6 @@ To export keys from the encrypted application storage, open the menu in the "OTP
 
 Using the same approach as above, previously exported key data can be imported again via the Widget settings. On every widget start, all available data is loaded and cleared from the corresponding settings entry.
 
-## Planned features
-
-* Rotating code colors for counter-based OTP.
-* Edit name, key and code type and lexical sorted entries
-* Encrypt on export with AES
-* Other device support - on demand
-* Choosable interval and code length for Time-based
-* Better touch UX on text input - scroll momentum
-* Bigger font for Steam-Guard codes (requires custom font)
-* Optional master password/PIN
-* Other UI/UX improvements - feedback welcome!
-
 ## Steam guard
 
 This app does support the steam guard authentication code scheme. However,
@@ -110,15 +98,15 @@ while the interface needs to be tested manually with the simulator using `make
 start`.
 
 Testing with all supported devices on every change is obviously infeasible, but
-the following list of devices should be considered as they are in way or the
-other special or representative:
+the following list of devices should be considered as they are in a way special
+or representative:
 
-- `vivoactive3`: the device of the creator of this widget (still), touch screen
-- `vivoactive_hr`: an old api level 2.4.0 device with square screen, touch screen
-- `fenix5`: good representative for api level 3.1.0, buttons only
-- `fenix6`: good representative for api level 3.4.0, buttons only
-- `fenix7`: good representative for api level 4.2.0, touch screen
-- `venu2`: amoled (full color) higher resolution screen
+- `fenix847mm`: flagship model, ciq 5.0, amoled, touch, buttons, round
+- `fenix8solar51mm`: bigger, mip screen, solar bezel
+- `fenix6spro`: ciq 3.4, smaller, mip, buttons only, fenix 6 most popular (> 40%)
+- `vivoactive4`: ciq 3.3, touch, less buttons, popular (> 13%)
+- `venu3`: touch, less buttons, different action view
+- `venusq2m`: rectangular shape
 - `instinct2`: semi-octagon shape with subscreen, black-white screen
 
 To run all of these in sequence, use `./run-in-docker.sh ./test-all.sh`. To
@@ -127,6 +115,17 @@ gracefully, e.g. using the back button.
 
 [Full list](https://developer.garmin.com/connect-iq/compatible-devices/) of
 devices and their capabilities
+
+## Future work / feature ideas
+
+* Rotating code colors for counter-based OTP.
+* Sort entries on demand
+* Encrypt on export with AES
+* Other device support - on demand
+* Choosable interval and code length for Time-based
+* Bigger font for Steam-Guard codes (requires custom font)
+* Optional master password/PIN
+* Other UI/UX improvements - feedback welcome!
 
 ## License
 
