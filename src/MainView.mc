@@ -3,7 +3,6 @@ import Toybox.Timer;
 import Toybox.WatchUi;
 import Toybox.Lang;
 
-using CountdownColor;
 using Device;
 
 // FIXME: make this available through settings again
@@ -88,7 +87,7 @@ class MainView extends WatchUi.View {
         var delta = (provider as TimeBasedProvider).next_ - Time.now().value();
         var deltaText = delta < 0 ? "--" : delta.toString();
         delta = delta < 0 ? 0 : delta;
-        codeColor = CountdownColor.getCountdownColor(delta);
+        codeColor = Device.getCountdownColor(delta);
         drawCode(dc, codeColor, codeFont, provider.code_);
         if (subscreenIsTopRight) {
           // Provider name

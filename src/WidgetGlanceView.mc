@@ -2,8 +2,6 @@ import Toybox.System;
 import Toybox.Timer;
 import Toybox.WatchUi;
 
-using CountdownColor;
-
 (:glance)
 class WidgetGlanceView extends WatchUi.GlanceView {
   var timer_;
@@ -59,7 +57,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     case instanceof TimeBasedProvider:
       // Colored OTP code depending on countdown
       var delta = (provider as TimeBasedProvider).next_ - Time.now().value();
-      subColor = CountdownColor.getCountdownColor(delta);
+      subColor = Device.getCountdownColor(delta);
       drawProgress(dc, delta, 30, subColor);
     case instanceof CounterBasedProvider:
       drawMain(dc, provider.name_, mainFont, mainColor, 4);
