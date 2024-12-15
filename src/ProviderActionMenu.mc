@@ -3,9 +3,8 @@ import Toybox.WatchUi;
 function showProviderActionMenu(provider as Provider) {
   log(DEBUG, "showProviderActionMenu");
   var menu = new WatchUi.ActionMenu({});
-  menu.addItem(new ActionMenuItem({ :label => "New" }, :new_entry));
-  menu.addItem(new ActionMenuItem({ :label => "Edit" }, :edit_entry));
-  menu.addItem(new ActionMenuItem({ :label => "Delete" }, :delete_entry));
+  menu.addItem(new ActionMenuItem({ :label => "Edit" }, :edit));
+  menu.addItem(new ActionMenuItem({ :label => "Delete" }, :delete));
   WatchUi.showActionMenu(menu, new ProviderActionMenuDelegate(provider));
 }
 
@@ -19,16 +18,13 @@ class ProviderActionMenuDelegate extends WatchUi.ActionMenuDelegate {
 
   function onSelect(item) {
     switch (item.getId()) {
-    case :new_entry:
-      WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
-      return;
-    case :edit_entry:
+    case :edit:
       var index = _providers.indexOf(provider_);
       if (index >= 0) {
         WatchUi.pushView(new ProviderMenu("Edit provider", index), new ProviderMenuDelegate(index), WatchUi.SLIDE_LEFT);
       }
       return;
-    case :delete_entry:
+    case :delete:
       WatchUi.pushView(new WatchUi.Confirmation("Delete " + provider_.name_ + "?"),
                        new DeleteConfirmationDelegate(provider_),
                        WatchUi.SLIDE_LEFT);
