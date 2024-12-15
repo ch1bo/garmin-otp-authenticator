@@ -92,19 +92,14 @@ function importFromSettings() {
       });
       p.update();
       _providers.add(p);
-      log(INFO, "added: " + type + "/" + addName);
       Application.Properties.setValue("addName", "");
       Application.Properties.setValue("addKey", "");
-      if (WatchUi has :showToast) {
-        WatchUi.showToast("Added " + addName, { :icon => Rez.Drawables.InfoToastIcon });
-      }
+      Device.infoToast("Added " + addName);
     } catch (exception) {
       var msg = exception.getErrorMessage();
       log(ERROR, "error adding from settings (" + type + "/" + addName + "): " + msg);
       Application.Properties.setValue("addKey", "error: " + msg);
-      if (WatchUi has :showToast) {
-        WatchUi.showToast("Import failed, details in addKey", { :icon => Rez.Drawables.WarningToastIcon });
-      }
+      Device.warnToast("Import failed, details in addKey");
     }
   }
 
@@ -116,21 +111,16 @@ function importFromSettings() {
       for (var i = 0; i < ps.size(); i++) {
         if(_providers.indexOf(ps[i]) < 0) {
           _providers.add(ps[i]);
-          // TODO: report success using toast on CIQ >= 3.4
           log(INFO, "imported: " + ps[i].name_);
         }
       }
       Application.Properties.setValue("exportData", "");
-      if (WatchUi has :showToast) {
-        WatchUi.showToast("Imported " + ps.size() + " entries", { :icon => Rez.Drawables.InfoToastIcon });
-      }
+      Device.infoToast("Imported " + ps.size() + " entries");
     } catch (exception) {
       var msg = exception.getErrorMessage();
-      log(ERROR, "error importing from settings: " + msg);
       Application.Properties.setValue("exportData", "error: " + msg);
-      if (WatchUi has :showToast) {
-        WatchUi.showToast("Import failed, details in exportData", { :icon => Rez.Drawables.WarningToastIcon });
-      }
+      Device.warnToast("Import failed, details in exportData");
+      log(ERROR, "error importing from settings: " + msg);
     }
   }
 }

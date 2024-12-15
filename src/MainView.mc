@@ -270,7 +270,8 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
 }
 
 function isActionButton(button as WatchUi.Key) as Lang.Boolean {
-  return Rez.Styles.system_input__action_menu has :button &&
+  return Rez.Styles has :system_input__action_menu &&
+    Rez.Styles.system_input__action_menu has :button &&
     button == Rez.Styles.system_input__action_menu.button;
 }
 
@@ -281,7 +282,8 @@ function isActionButton(button as WatchUi.Key) as Lang.Boolean {
 //! @return true if tapped, false otherwise
 // FIXME: tap on fenix8 not working like native (system_input__action_menu has no x1, y1, x2, y2)
 function isInActionArea(coord as Array<Numeric>) as Boolean {
-  if (Rez.Styles.system_input__action_menu has :x1 &&
+  if (Rez.Styles has :system_input__action_menu &&
+      Rez.Styles.system_input__action_menu has :x1 &&
       Rez.Styles.system_input__action_menu has :y1 &&
       Rez.Styles.system_input__action_menu has :x2 &&
       Rez.Styles.system_input__action_menu has :y2) {

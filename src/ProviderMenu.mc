@@ -56,20 +56,16 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
       case :done:
         doneItem_ = item;
         if (_enteredName.equals("")) {
-          // Only available > CIQ 3.4
-          if (WatchUi has :showToast) {
-            WatchUi.showToast("Name required", {});
-          } else {
+          var shown = Device.showToast("Name required");
+          if (!shown) {
             doneItem_.setSubLabel("Name required");
             new Timer.Timer().start(method(:resetDoneItem), 2000, false);
           }
           return;
         }
         if (_enteredKey.equals("")) {
-          // Only available > CIQ 3.4
-          if (WatchUi has :showToast) {
-            WatchUi.showToast("Key required", {});
-          } else {
+          var shown = Device.showToast("Key required");
+          if (!shown) {
             doneItem_.setSubLabel("Key required");
             new Timer.Timer().start(method(:resetDoneItem), 2000, false);
           }
