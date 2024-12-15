@@ -1,4 +1,4 @@
-// Mocked style classes used in resources/resources.xml
+// Mocked style classes used in resources/resources.xml for devices that do not support personality
 // Excluding layouts / drawables was harder than to mock these.
 
 system_icon_destructive__warning {

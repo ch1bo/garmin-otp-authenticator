@@ -13,3 +13,32 @@ instinct2x.resourcePath = $(instinct2.resourcePath)
 instinct2.excludeAnnotations = isColor
 instinct2x.excludeAnnotations = isColor
 instinct2s.excludeAnnotations = isColor
+
+# Devices that do not support personality classes and need them polyfilled
+# TODO: support these even?
+# TODO: test these at least once!
+nopersonality = $(base.personality);nopersonality
+venu.personality = $(nopersonality)
+venud.personality = $(nopersonality)
+venusq.personality = $(nopersonality)
+venusqm.personality = $(nopersonality)
+fenix5.personality = $(nopersonality)
+fenix5plus.personality = $(nopersonality)
+fenix5s.personality = $(nopersonality)
+fenix5splus.personality = $(nopersonality)
+fenix5x.personality = $(nopersonality)
+fenix5xplus.personality = $(nopersonality)
+fr245.personality = $(nopersonality)
+fr245m.personality = $(nopersonality)
+fr645.personality = $(nopersonality)
+fr645m.personality = $(nopersonality)
+fr745.personality = $(nopersonality)
+fr935.personality = $(nopersonality)
+fr945.personality = $(nopersonality)
+descentmk2.personality = $(nopersonality)
+descentmk2s.personality = $(nopersonality)
+vivoactive3.personality = $(nopersonality)
+vivoactive3m.personality = $(nopersonality)
+vivoactive3mlte.personality = $(nopersonality)
+vivoactive4.personality = $(nopersonality)
+vivoactive4s.personality = $(nopersonality)

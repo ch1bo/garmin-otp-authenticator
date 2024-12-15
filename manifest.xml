@@ -48,6 +48,8 @@
             <iq:product id="instinct2"/>
             <iq:product id="instinct2s"/>
             <iq:product id="instinct2x"/>
+            <iq:product id="marq2"/>
+            <iq:product id="marq2aviator"/>
             <iq:product id="marqadventurer"/>
             <iq:product id="marqathlete"/>
             <iq:product id="marqaviator"/>
@@ -56,8 +58,6 @@
             <iq:product id="marqdriver"/>
             <iq:product id="marqexpedition"/>
             <iq:product id="marqgolfer"/>
-            <iq:product id="marq2"/>
-            <iq:product id="marq2aviator"/>
             <iq:product id="venu"/>
             <iq:product id="venu2"/>
             <iq:product id="venu2plus"/>
@@ -66,8 +66,8 @@
             <iq:product id="venu3s"/>
             <iq:product id="venud"/>
             <iq:product id="venusq"/>
-            <iq:product id="venusqm"/>
             <iq:product id="venusq2m"/>
+            <iq:product id="venusqm"/>
             <iq:product id="vivoactive3"/>
             <iq:product id="vivoactive3m"/>
             <iq:product id="vivoactive3mlte"/>
