@@ -14,9 +14,17 @@ instinct2.excludeAnnotations = isColor
 instinct2x.excludeAnnotations = isColor
 instinct2s.excludeAnnotations = isColor
 
+# Venu needs a special layout (menu on top right)
+venu2.resourcePath = $(venu2.resourcePath);resources-venu
+venu2plus.resourcePath = $(venu2plus.resourcePath);resources-venu
+venu2s.resourcePath = $(venu2s.resourcePath);resources-venu
+venusq2m.resourcePath = $(venusq2m.resourcePath);resources-venu
+venu3.resourcePath = $(venu3.resourcePath);resources-venu
+venu3s.resourcePath = $(venu3s.resourcePath);resources-venu
+
 # Devices that do not support personality classes and need them polyfilled
 # TODO: support these even?
-# TODO: test these at least once!
+# FIXME: test these -> crash on start
 nopersonality = $(base.personality);nopersonality
 venu.personality = $(nopersonality)
 venud.personality = $(nopersonality)

@@ -42,7 +42,6 @@
       <bitmap id="actionMenu" personality="
         system_icon_dark__hint_action_menu
         system_loc__hint_action_menu" />
-      <!-- TODO: menu left middle on which devices? -->
       <bitmap id="menuInputHint" personality="
         system_icon_dark__hint_button_left_middle
         system_loc__hint_button_left_middle" />

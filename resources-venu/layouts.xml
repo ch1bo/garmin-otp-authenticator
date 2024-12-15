@@ -1,0 +1,10 @@
+<layouts>
+  <layout id="MainViewWithMenuHint" >
+    <bitmap id="actionMenu" personality="
+      system_icon_dark__hint_action_menu
+      system_loc__hint_action_menu" />
+    <bitmap id="menuInputHint" personality="
+      system_icon_dark__hint_button_right_top
+      system_loc__hint_button_right_top" />
+  </layout>
+</layouts>

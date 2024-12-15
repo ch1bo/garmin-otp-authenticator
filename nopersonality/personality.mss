@@ -9,14 +9,6 @@ system_icon_dark__about {
     exclude: true;
 }
 
-system_icon_dark__hint_action_menu {
-    exclude: true;
-}
-
-system_icon_dark__hint_button_left_middle {
-    exclude: true;
-}
-
 system_size__toast_icon {
     exclude: true;
 }
@@ -25,6 +17,22 @@ system_loc__hint_action_menu {
     exclude: true;
 }
 
+system_icon_dark__hint_action_menu {
+    exclude: true;
+}
+
+system_icon_dark__hint_button_left_middle {
+    exclude: true;
+}
+
 system_loc__hint_button_left_middle {
+    exclude: true;
+}
+
+system_icon_dark__hint_button_right_top {
+    exclude: true;
+}
+
+system_loc__hint_button_right_top {
     exclude: true;
 }

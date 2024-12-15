@@ -6,6 +6,7 @@ class MainMenu extends WatchUi.Menu2 {
     addItem(new MenuItem("New provider", null, :new_provider, null));
     addItem(new MenuItem("Delete all", null, :delete_all, null));
     addItem(new MenuItem("Export to settings", null, :export_providers, null));
+    // TODO: Add "Import from settings" screen with instructions
   }
 }
 

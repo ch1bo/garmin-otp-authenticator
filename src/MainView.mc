@@ -97,8 +97,6 @@ class MainView extends WatchUi.View {
         } else {
           // Provider name
           drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-          // Countdown text
-          drawBelowCode(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
         }
         drawProgress(dc, delta, 30, codeColor);
         break;
@@ -107,7 +105,7 @@ class MainView extends WatchUi.View {
         drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
         drawCode(dc, codeColor, codeFont, provider.code_);
         // Instructions
-        drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "MENU for next");
+        drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "MENU for next code");
         break;
       }
     }
@@ -184,15 +182,14 @@ class MainView extends WatchUi.View {
 
   function drawAboveCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - fh / 2,
+    // TODO: use TextArea to wrap text?
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - 10,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-    var fh = dc.getFontHeight(font);
-    dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2 + fh / 2,
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
