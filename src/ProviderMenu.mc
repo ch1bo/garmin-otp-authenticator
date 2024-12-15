@@ -45,14 +45,13 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   function onSelect(item) {
     switch (item.getId()) {
       case :name:
-        // REVIEW: use callbacks instead of passed items?
-        WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameInputDelegate(item), WatchUi.SLIDE_RIGHT);
+        WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameInputDelegate(item), WatchUi.SLIDE_LEFT);
         break;
       case :key:
-        WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_RIGHT);
+        WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_LEFT);
         break;
       case :type:
-        WatchUi.pushView(new TypeMenu(), new TypeMenuDelegate(item), WatchUi.SLIDE_RIGHT);
+        WatchUi.pushView(new TypeMenu(), new TypeMenuDelegate(item), WatchUi.SLIDE_LEFT);
         break;
       case :done:
         doneItem_ = item;

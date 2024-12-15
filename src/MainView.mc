@@ -24,7 +24,19 @@ class MainView extends WatchUi.View {
 
   function onLayout(dc) {
     log(DEBUG, "MainView onLayout");
-    setLayout(Rez.Layouts.MainView(dc));
+    var provider = currentProvider();
+    if (provider == null) {
+      setLayout(Rez.Layouts.MainViewWithMenuHint(dc));
+    } else {
+      switch (provider) {
+      case instanceof CounterBasedProvider:
+        setLayout(Rez.Layouts.MainViewWithMenuHint(dc));
+        break;
+      default:
+        setLayout(Rez.Layouts.MainView(dc));
+        break;
+      }
+    }
   }
 
   function onShow() {
@@ -54,6 +66,7 @@ class MainView extends WatchUi.View {
   // Create a device specific layout to also avoid conditionals in the rendering
   // logic.
   function onUpdate(dc) {
+    // XXX: input hints are drawn behind progress arc
     View.onUpdate(dc);
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     var provider = currentProvider();
@@ -97,8 +110,7 @@ class MainView extends WatchUi.View {
         drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
         drawCode(dc, codeColor, codeFont, provider.code_);
         // Instructions
-        drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL,
-                      "Press MENU for next");
+        drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "MENU for next");
         break;
       }
     }
