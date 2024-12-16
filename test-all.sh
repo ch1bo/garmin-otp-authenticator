@@ -4,7 +4,7 @@ set -e
 # A few interesting devices to test
 DEVICES=(
   fenix847mm # ciq 5.0, amoled, touch, buttons, round
-  fenix8solar51mm # bigger, mip, solar
+  fenix7xpro # bigger, mip, solar
   fenix6spro # ciq 3.4, smaller, mip, buttons only
   vivoactive4 # ciq 3.3, touch, less buttons
   vivoactive3 # ciq 3.1, no glance view

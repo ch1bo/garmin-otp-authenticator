@@ -102,7 +102,7 @@ the following list of devices should be considered as they are in a way special
 or representative:
 
 - `fenix847mm`: flagship model, ciq 5.0, amoled, touch, buttons, round
-- `fenix8solar51mm`: bigger, mip screen, solar bezel
+- `fenix7xpro`: ciq 5.0, bigger, mip screen, solar bezel
 - `fenix6spro`: ciq 3.4, smaller, mip, buttons only, fenix 6 most popular (> 40%)
 - `vivoactive4`: ciq 3.3, touch, less buttons, popular (> 13%)
 - `vivoactive3`: ciq 3.1, no glance, different navigation

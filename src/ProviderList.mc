@@ -71,6 +71,8 @@ class ProviderListDelegate extends WatchUi.Menu2InputDelegate {
         _currentIndex = item.getId();
         logf(DEBUG, "Setting current index $1$", [_currentIndex]);
         saveProviders();
+        // TODO: check whether we are not creating an infinitely growing view
+        // stack in case we enter ProviderList from MainView already
         WatchUi.switchToView(new MainView(), new MainViewDelegate(), WatchUi.SLIDE_LEFT);
         break;
     }

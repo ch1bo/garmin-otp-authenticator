@@ -7,16 +7,7 @@ base.excludeAnnotations = isBlackAndWhite;noIcons
 vivoactive3.excludeAnnotations = isBlackAndWhite;icons
 fenix5.excludeAnnotations = isBlackAndWhite;icons
 fenix5s.excludeAnnotations = isBlackAndWhite;icons
-
-# Re-use resources-vivoactive3 for the 40x33 icon
-vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
-vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
-
-# Re-use resources-instinct2 for the 62x62 bw icon
-instinct2x.resourcePath = $(instinct2.resourcePath)
-instinct2.excludeAnnotations = isColor
-instinct2x.excludeAnnotations = isColor
-instinct2s.excludeAnnotations = isColor
+fr55.excludeAnnotations = isBlackAndWhite;icons
 
 # Venu needs a special layout (menu on top right)
 venu2.resourcePath = $(venu2.resourcePath);resources-venu
@@ -39,7 +30,6 @@ fenix5x.personality = $(nopersonality)
 fenix5plus.personality = $(nopersonality)
 fenix5splus.personality = $(nopersonality)
 fenix5xplus.personality = $(nopersonality)
-# FIXME: test all below
 venu.personality = $(nopersonality)
 venud.personality = $(nopersonality)
 venusq.personality = $(nopersonality)
@@ -53,3 +43,20 @@ fr935.personality = $(nopersonality)
 fr945.personality = $(nopersonality)
 descentmk2.personality = $(nopersonality)
 descentmk2s.personality = $(nopersonality)
+# The following devices seem to have personality, but no action view, so disable nontheless
+fr55.personality = $(nopersonality)
+fenix6.personality = $(nopersonality)
+fenix6pro.personality = $(nopersonality)
+fenix6s.personality = $(nopersonality)
+fenix6spro.personality = $(nopersonality)
+fenix6xpro.personality = $(nopersonality)
+
+# Re-use resources-vivoactive3 for the 40x33 icon
+vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
+vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
+
+# Re-use resources-instinct2 for the 62x62 bw icon
+instinct2x.resourcePath = $(instinct2.resourcePath)
+instinct2.excludeAnnotations = isColor
+instinct2x.excludeAnnotations = isColor
+instinct2s.excludeAnnotations = isColor
