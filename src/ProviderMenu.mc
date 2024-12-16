@@ -45,10 +45,22 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   function onSelect(item) {
     switch (item.getId()) {
       case :name:
-        WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameInputDelegate(item), WatchUi.SLIDE_LEFT);
+        // TODO: Opt-in to old txt input
+        if (WatchUi has :TextPicker) {
+          WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameTextPickerDelegate(item), WatchUi.SLIDE_LEFT);
+        } else {
+          var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, _enteredName);
+          WatchUi.pushView(view, new NameTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
+        }
         break;
       case :key:
-        WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_LEFT);
+        // TODO: Opt-in to old txt input
+        if (WatchUi has :TextPicker) {
+          WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_LEFT);
+        } else {
+          var view = new TextInput.TextInputView("Enter Key", Alphabet.BASE32, _enteredKey);
+          WatchUi.pushView(view, new KeyTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
+        }
         break;
       case :type:
         WatchUi.pushView(new TypeMenu(), new TypeMenuDelegate(item), WatchUi.SLIDE_LEFT);
@@ -132,7 +144,7 @@ class AbortConfirmationDelegate extends WatchUi.ConfirmationDelegate {
 
 var _enteredName = "";
 
-class NameInputDelegate extends WatchUi.TextPickerDelegate {
+class NameTextPickerDelegate extends WatchUi.TextPickerDelegate {
   var item_;
 
   function initialize(item) {
@@ -141,6 +153,22 @@ class NameInputDelegate extends WatchUi.TextPickerDelegate {
   }
 
   function onTextEntered(text, changed) {
+    _enteredName = text;
+    item_.setSubLabel(text);
+    WatchUi.requestUpdate();
+    return true;
+  }
+}
+
+class NameTextInputDelegate extends TextInput.TextInputDelegate {
+  var item_;
+
+  function initialize(view, item) {
+    TextInput.TextInputDelegate.initialize(view);
+    item_ = item;
+  }
+
+  function onTextEntered(text) {
     _enteredName = text;
     item_.setSubLabel(text);
     WatchUi.requestUpdate();
@@ -161,6 +189,22 @@ class KeyInputDelegate extends WatchUi.TextPickerDelegate {
   function onTextEntered(text, changed) {
     // FIXME: validate input
     // TODO: convert to all caps
+    _enteredKey = text;
+    item_.setSubLabel(text);
+    WatchUi.requestUpdate();
+    return true;
+  }
+}
+
+class KeyTextInputDelegate extends TextInput.TextInputDelegate {
+  var item_;
+
+  function initialize(view, item) {
+    TextInput.TextInputDelegate.initialize(view);
+    item_ = item;
+  }
+
+  function onTextEntered(text) {
     _enteredKey = text;
     item_.setSubLabel(text);
     WatchUi.requestUpdate();

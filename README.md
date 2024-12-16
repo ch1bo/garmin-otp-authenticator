@@ -105,6 +105,7 @@ or representative:
 - `fenix8solar51mm`: bigger, mip screen, solar bezel
 - `fenix6spro`: ciq 3.4, smaller, mip, buttons only, fenix 6 most popular (> 40%)
 - `vivoactive4`: ciq 3.3, touch, less buttons, popular (> 13%)
+- `vivoactive3`: ciq 3.1, no glance, different navigation
 - `venu3`: touch, less buttons, different action view
 - `venusq2m`: rectangular shape
 - `instinct2`: semi-octagon shape with subscreen, black-white screen

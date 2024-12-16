@@ -19,7 +19,7 @@ class TextInputView extends WatchUi.View {
   var text_;
   var title_;
 
-  function initialize(title, alphabet) {
+  function initialize(title, alphabet, text as String or Null) {
     View.initialize();
     title_ = title;
     alphabet_ = new [0];
@@ -27,6 +27,9 @@ class TextInputView extends WatchUi.View {
     alphabet_.add(CHECKMARK);
     cursor_ = 0;
     text_ = "";
+    if (text != null) {
+      text_ = text;
+    }
   }
 
   // XXX: This layout is suboptimal for the instinct2: The prompt text should
@@ -90,7 +93,7 @@ class TextInputView extends WatchUi.View {
 
   // Action handlers
 
-  // TOD(SN): move logic to delegate, hold state in common object?
+  // XXX: move logic to delegate, hold state in common object?
   function onUp() {
     cursor_ = limit(cursor_ + 1, alphabet_.size());
     confirm_ = false;
@@ -173,10 +176,12 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
 
   function onSelect() {
     log(DEBUG, "onSelect");
-    // TODO(SN): smelly access on view state
+    // XXX: smelly access on view state
     if (view_.confirm_) {
       view_.confirm_ = false;
+      log(DEBUG, "onTextEntered");
       onTextEntered(view_.text_);
+      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
     } else {
       view_.enter();
     }
@@ -185,7 +190,7 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
 
   function onBack() {
     log(DEBUG, "onBack");
-    // TODO(SN): hold state here or in view?
+    // XXX: hold state here or in view?
     if (view_.text_.length() > 0) {
       view_.backspace();
     } else {
@@ -196,9 +201,11 @@ class TextInputDelegate extends WatchUi.BehaviorDelegate {
 
   function onMenu() {
     log(DEBUG, "onMenu");
-    // TODO(SN): another hack
+    // XXX: another hack
     if (view_.confirm_) {
+      log(DEBUG, "onTextEntered");
       onTextEntered(view_.text_);
+      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
     } else {
       view_.confirm(true);
     }

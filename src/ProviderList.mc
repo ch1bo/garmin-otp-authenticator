@@ -34,7 +34,9 @@ class ProviderList extends WatchUi.Menu2 {
       for (var i = 0; i < _providers.size(); i++) {
         var p = _providers[i];
         p.update();
-        addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
+        // FIXME: check memory consumption on vivoactive3
+        // addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
+        addItem(new WatchUi.MenuItem(p.name_, p.code_, i, {}));
       }
       addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
 
@@ -69,6 +71,7 @@ class ProviderIcon extends WatchUi.Drawable {
   var provider_ as Provider;
 
   // FIXME: too big for fenix7 and surely other devices
+  // FIXME: icons for white background menus
   const ICON_TIME_BASED_GREEN = loadProviderIcon($.Rez.Drawables.TimeBasedGreen);
   const ICON_TIME_BASED_ORANGE = loadProviderIcon($.Rez.Drawables.TimeBasedOrange);
   const ICON_TIME_BASED_RED = loadProviderIcon($.Rez.Drawables.TimeBasedRed);

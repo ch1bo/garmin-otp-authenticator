@@ -208,13 +208,6 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     BehaviorDelegate.initialize();
   }
 
-  function onBack() {
-    log(DEBUG, "MainView onBack");
-    // Explicit switch to view to re-create provider list
-    WatchUi.switchToView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
-    return true;
-  }
-
   function onKey(event) {
     var key = event.getKey();
     logf(DEBUG, "MainView onKey $1$", [key]);
@@ -247,18 +240,37 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   }
 
   function onTap(event as ClickEvent) as Boolean {
-    logf(DEBUG, "onTap $1$", [event.getCoordinates()]);
+    logf(DEBUG, "MainView onTap $1$", [event.getCoordinates()]);
     if (isInActionArea(event.getCoordinates())) {
       return onAction();
     }
     return false;
   }
 
+  // Menu for devices without action menu / glance
+  function onSelect() {
+    log(DEBUG, "MainView onSelect");
+    if (_providers.size() == 0) {
+      WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
+    } else {
+      WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    }
+    return true;
+  }
+
+  // Back button (except on devices without glance)
+  function onBack() {
+    log(DEBUG, "MainView onBack");
+    // Explicit switch to view to re-create provider list
+    WatchUi.switchToView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    return true;
+  }
+
   // Action menu selected
   function onAction() as Lang.Boolean {
     log(DEBUG, "MainView onAction");
-    // TODO: handle CIQ < 3.4
-    if (WatchUi has :showActionMenu) {
+    // REVIEW: guard needed?
+    if (WatchUi has :ActionMenu) {
       var provider = currentProvider();
       showProviderActionMenu(provider);
     }
