@@ -1,0 +1,8 @@
+<drawables>
+  <bitmap id="LauncherIcon" filename="icon.png" />
+  <bitmap id="TimeBasedRed" filename="time-based-red.png" />
+  <bitmap id="TimeBasedOrange" filename="time-based-orange.png" />
+  <bitmap id="TimeBasedGreen" filename="time-based-green.png" />
+  <bitmap id="CounterBased" filename="counter.png" />
+  <bitmap id="SteamGuard" filename="steam.png" />
+</drawables>

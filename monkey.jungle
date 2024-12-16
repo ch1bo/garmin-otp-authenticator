@@ -3,7 +3,10 @@ base.sourcePath = src;test
 base.excludeAnnotations = isBlackAndWhite;noIcons
 
 # Disable icons on low-memory devices
+# TODO: avoid this using smaller icons / lower memory profile
 vivoactive3.excludeAnnotations = isBlackAndWhite;icons
+fenix5.excludeAnnotations = isBlackAndWhite;icons
+fenix5s.excludeAnnotations = isBlackAndWhite;icons
 
 # Re-use resources-vivoactive3 for the 40x33 icon
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
@@ -24,23 +27,22 @@ venu3.resourcePath = $(venu3.resourcePath);resources-venu
 venu3s.resourcePath = $(venu3s.resourcePath);resources-venu
 
 # Devices that do not support personality classes and need them polyfilled
-# TODO: support these even?
 nopersonality = $(base.personality);nopersonality
-# FIXME: test all below
 vivoactive3.personality = $(nopersonality)
 vivoactive3m.personality = $(nopersonality)
 vivoactive3mlte.personality = $(nopersonality)
+fenix5.personality = $(nopersonality)
+fenix5s.personality = $(nopersonality)
+fenix5x.personality = $(nopersonality)
+# FIXME: test all below
 vivoactive4.personality = $(nopersonality)
 vivoactive4s.personality = $(nopersonality)
 venu.personality = $(nopersonality)
 venud.personality = $(nopersonality)
 venusq.personality = $(nopersonality)
 venusqm.personality = $(nopersonality)
-fenix5.personality = $(nopersonality)
 fenix5plus.personality = $(nopersonality)
-fenix5s.personality = $(nopersonality)
 fenix5splus.personality = $(nopersonality)
-fenix5x.personality = $(nopersonality)
 fenix5xplus.personality = $(nopersonality)
 fr245.personality = $(nopersonality)
 fr245m.personality = $(nopersonality)
