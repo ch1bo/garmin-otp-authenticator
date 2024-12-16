@@ -22,8 +22,6 @@ function loadProviderIcon(resourceId) {
   });
 }
 
-// FIXME: too big for fenix7 and surely other devices
-// FIXME: icons for white background menus
 class ProviderIcon extends WatchUi.Drawable {
   var provider_ as Provider;
 
