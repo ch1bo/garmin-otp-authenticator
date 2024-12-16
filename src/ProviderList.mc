@@ -34,9 +34,7 @@ class ProviderList extends WatchUi.Menu2 {
       for (var i = 0; i < _providers.size(); i++) {
         var p = _providers[i];
         p.update();
-        // FIXME: check memory consumption on vivoactive3
-        // addItem(new WatchUi.MenuItem(p.name_, p.code_, i, {}));
-        addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
+        addItem(mkProviderListItem(p, i));
       }
       addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
 
@@ -56,55 +54,6 @@ class ProviderList extends WatchUi.Menu2 {
       getItem(i).setSubLabel(p.code_);
     }
     WatchUi.requestUpdate();
-  }
-}
-
-function loadProviderIcon(resourceId) {
-  return new WatchUi.Bitmap({
-    :rezId => resourceId,
-    :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-    :locY => WatchUi.LAYOUT_VALIGN_CENTER
-  });
-}
-
-class ProviderIcon extends WatchUi.Drawable {
-  var provider_ as Provider;
-
-  // FIXME: too big for fenix7 and surely other devices
-  // FIXME: icons for white background menus
-  const ICON_TIME_BASED_GREEN = loadProviderIcon($.Rez.Drawables.TimeBasedGreen);
-  const ICON_TIME_BASED_ORANGE = loadProviderIcon($.Rez.Drawables.TimeBasedOrange);
-  const ICON_TIME_BASED_RED = loadProviderIcon($.Rez.Drawables.TimeBasedRed);
-  const ICON_COUNTER_BASED = loadProviderIcon($.Rez.Drawables.CounterBased);
-  const ICON_COUNTER_STEAM = loadProviderIcon($.Rez.Drawables.SteamGuard);
-
-  function initialize(provider as Provider) {
-    WatchUi.Drawable.initialize({});
-    provider_ = provider;
-  }
-
-  function draw(dc) {
-    logf(DEBUG, "ProviderIcon draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
-    // TODO: move icon selection into Provider class?
-    switch (provider_) {
-      case instanceof SteamGuardProvider:
-        // TODO: colored steam icons
-        ICON_COUNTER_STEAM.draw(dc);
-        break;
-      case instanceof TimeBasedProvider:
-        var delta = (provider_ as TimeBasedProvider).next_ - Time.now().value();
-        if (delta < 5) {
-          ICON_TIME_BASED_RED.draw(dc);
-        } else if (delta <= 10) {
-          ICON_TIME_BASED_ORANGE.draw(dc);
-        } else {
-          ICON_TIME_BASED_GREEN.draw(dc);
-        }
-        break;
-      case instanceof CounterBasedProvider:
-        ICON_COUNTER_BASED.draw(dc);
-        break;
-    }
   }
 }
 

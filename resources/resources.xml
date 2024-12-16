@@ -15,7 +15,6 @@
     <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
     <bitmap id="LauncherIcon" filename="icon.png" />
     <!-- https://www.flaticon.com/free-icon/time-left_66163 -->
-    <bitmap id="TimeBased" filename="time-based.png" />
     <bitmap id="TimeBasedRed" filename="time-based-red.png" />
     <bitmap id="TimeBasedOrange" filename="time-based-orange.png" />
     <bitmap id="TimeBasedGreen" filename="time-based-green.png" />

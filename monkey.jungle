@@ -1,8 +1,9 @@
 project.manifest = manifest.xml
 base.sourcePath = src;test
+base.excludeAnnotations = isBlackAndWhite;noIcons
 
-# Exclude black-and-white display code by default
-base.excludeAnnotations = isBlackAndWhite
+# Disable icons on low-memory devices
+vivoactive3.excludeAnnotations = isBlackAndWhite;icons
 
 # Re-use resources-vivoactive3 for the 40x33 icon
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
@@ -24,8 +25,13 @@ venu3s.resourcePath = $(venu3s.resourcePath);resources-venu
 
 # Devices that do not support personality classes and need them polyfilled
 # TODO: support these even?
-# FIXME: test these -> crash on start
 nopersonality = $(base.personality);nopersonality
+# FIXME: test all below
+vivoactive3.personality = $(nopersonality)
+vivoactive3m.personality = $(nopersonality)
+vivoactive3mlte.personality = $(nopersonality)
+vivoactive4.personality = $(nopersonality)
+vivoactive4s.personality = $(nopersonality)
 venu.personality = $(nopersonality)
 venud.personality = $(nopersonality)
 venusq.personality = $(nopersonality)
@@ -45,8 +51,3 @@ fr935.personality = $(nopersonality)
 fr945.personality = $(nopersonality)
 descentmk2.personality = $(nopersonality)
 descentmk2s.personality = $(nopersonality)
-vivoactive3.personality = $(nopersonality)
-vivoactive3m.personality = $(nopersonality)
-vivoactive3mlte.personality = $(nopersonality)
-vivoactive4.personality = $(nopersonality)
-vivoactive4s.personality = $(nopersonality)
