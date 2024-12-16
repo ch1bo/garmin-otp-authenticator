@@ -143,7 +143,6 @@ class App extends Application.AppBase {
   function getInitialView() {
     log(DEBUG, "App getInitialView");
     loadProviders();
-    // FIXME: does this make sense?
     if (WatchUi has :GlanceView) {
       return [new ProviderList(), new ProviderListDelegate()];
     } else {

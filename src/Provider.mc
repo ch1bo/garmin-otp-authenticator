@@ -193,7 +193,7 @@ function providerFromDict(d as ProviderDict) as Provider {
 // Pretty unsafe but simple serialization. Unsafe because strings are not
 // escaped and '=' are dropped, thus padding needs to be re-added (leaks base32
 // knowledge abstraction).
-// TODO(SN): use Dictonary.toString() and make this parsable? -> breaking change
+// XXX: use Dictonary.toString() and make this parsable? -> breaking change
 
 function serializeProviders(ps as Array<Provider>) {
   var s = "";
@@ -220,7 +220,7 @@ function serializeProvider(p) {
     break;
   }
   s += "name=" + p.name_ + ",";
-  // TODO(SN): persist keyBytes_ instead? -> breaking change
+  // XXX: persist keyBytes_ instead? -> breaking change
   s += "key=" + p.key_;
   return s;
 }

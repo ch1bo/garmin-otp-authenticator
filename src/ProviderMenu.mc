@@ -102,6 +102,8 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
         }
         // TODO: handle error?
         if (provider != null) {
+          _enteredName = "";
+          _enteredKey = "";
           if (editIndex_ != null) {
             _providers[editIndex_] = provider;
             _currentIndex = editIndex_;
@@ -131,6 +133,8 @@ class AbortConfirmationDelegate extends WatchUi.ConfirmationDelegate {
   function onResponse(response) {
     switch (response) {
       case WatchUi.CONFIRM_YES:
+        _enteredName = "";
+        _enteredKey = "";
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:
@@ -187,10 +191,22 @@ class KeyInputDelegate extends WatchUi.TextPickerDelegate {
   }
 
   function onTextEntered(text, changed) {
-    // FIXME: validate input
-    // TODO: convert to all caps
-    _enteredKey = text;
-    item_.setSubLabel(text);
+    var upper = text.toUpper();
+    var chars = upper.toCharArray();
+    // Validate input
+    for (var i = 0; i < chars.size(); i++) {
+      var c = chars[i];
+      if (Alphabet.BASE32.indexOf(c) == -1) {
+        var msg = "Illegal character: " + c;
+        var shown = Device.showToast(msg);
+        if (!shown) {
+          item_.setSubLabel(msg);
+        }
+        return false;
+      }
+    }
+    _enteredKey = upper;
+    item_.setSubLabel(upper);
     WatchUi.requestUpdate();
     return true;
   }
