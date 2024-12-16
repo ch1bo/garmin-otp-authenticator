@@ -63,6 +63,9 @@ class ProviderIcon extends WatchUi.Drawable {
 
   function draw(dc) {
     logf(DEBUG, "ProviderIcon draw $1$ $2$", [dc.getWidth(), dc.getHeight()]);
+    if (dc has :setAntiAlias) {
+      dc.setAntiAlias(true);
+    }
     // TODO: move icon selection into Provider class?
     switch (provider_) {
       case instanceof SteamGuardProvider:

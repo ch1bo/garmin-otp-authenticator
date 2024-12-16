@@ -74,7 +74,7 @@ class MainView extends WatchUi.View {
       return;
     } else {
       // Use number font if possible
-      var codeColor = Graphics.COLOR_GREEN;
+      var codeColor = Graphics.COLOR_WHITE;
       var codeFont = getMaxNumberFont(dc, provider.code_);
       var codeHeight = dc.getFontHeight(codeFont);
       var subscreenIsTopRight = Device.subscreenIsTopRight(dc.getWidth());
@@ -85,27 +85,25 @@ class MainView extends WatchUi.View {
         codeHeight = dc.getFontHeight(codeFont);
       case instanceof TimeBasedProvider:
         var delta = (provider as TimeBasedProvider).next_ - Time.now().value();
-        var deltaText = delta < 0 ? "--" : delta.toString();
         delta = delta < 0 ? 0 : delta;
         codeColor = Device.getCountdownColor(delta);
         drawCode(dc, codeColor, codeFont, provider.code_);
         if (subscreenIsTopRight) {
-          // Provider name
           drawBelowCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
-          // Countdown text
-          drawTopLeftOfSubscreen(dc, codeHeight, Graphics.FONT_NUMBER_MILD, deltaText);
         } else {
-          // Provider name
           drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
         }
         drawProgress(dc, delta, 30, codeColor);
         break;
       case instanceof CounterBasedProvider:
-        // Provider name
-        drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
         drawCode(dc, codeColor, codeFont, provider.code_);
-        // Instructions
-        drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "MENU for next code");
+        if (subscreenIsTopRight) {
+          drawBelowCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+          drawTopLeftOfSubscreen(dc, Graphics.FONT_SMALL, "MENU for next");
+        } else {
+          drawAboveCode(dc, codeHeight, Graphics.FONT_MEDIUM, provider.name_);
+          drawBelowCode(dc, codeHeight, Graphics.FONT_SMALL, "MENU for next");
+        }
         break;
       }
     }
@@ -181,24 +179,26 @@ class MainView extends WatchUi.View {
   }
 
   function drawAboveCode(dc, codeHeight, font, text) {
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    // TODO: use TextArea to wrap text?
-    dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - 10,
+    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+    // TODO: use TextArea to position / wrap text?
+    var fh = dc.getFontHeight(font);
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) - codeHeight / 2 - fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
   function drawBelowCode(dc, codeHeight, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-    dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2,
+    var fh = dc.getFontHeight(font);
+    dc.drawText(dc.getWidth() / 2, getCodeY(dc) + codeHeight / 2 + fh / 2,
                 font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 
-  function drawTopLeftOfSubscreen(dc, codeHeight, font, text) {
+  function drawTopLeftOfSubscreen(dc, font, text) {
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
     var subscreen = Device.getSubscreen();
-    // Don't center exactly in the middle because instinct subscreen is round
-    var x = (dc.getWidth() - subscreen.width) / 2.3;
-    dc.drawText(x, subscreen.height / 2,
+    // According to style guide subtitle 9px from left
+    // https://developer.garmin.com/connect-iq/user-experience-guidelines/instinct-2022/
+    dc.drawText(9, subscreen.height / 2,
                 font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 }

@@ -52,6 +52,6 @@ vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
 
 # Re-use resources-instinct2 for the 62x62 bw icon
 instinct2x.resourcePath = $(instinct2.resourcePath)
-instinct2.excludeAnnotations = isColor
-instinct2x.excludeAnnotations = isColor
-instinct2s.excludeAnnotations = isColor
+instinct2.excludeAnnotations = isColor;noIcons
+instinct2x.excludeAnnotations = $(instinct2.excludeAnnotations)
+instinct2s.excludeAnnotations = $(instinct2.excludeAnnotations)
