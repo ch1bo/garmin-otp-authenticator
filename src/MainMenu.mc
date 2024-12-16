@@ -2,7 +2,7 @@ import Toybox.WatchUi;
 
 class MainMenu extends WatchUi.Menu2 {
   function initialize() {
-    Menu2.initialize({ :title => "OTP Authenticator" });
+    Menu2.initialize({ :title => "Configure" });
     addItem(new MenuItem("New provider", null, :new_provider, null));
     if (!(WatchUi has :ActionMenu)) {
       addItem(new MenuItem("Delete provider", null, :delete_provider, null));
@@ -51,12 +51,12 @@ class DeleteMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
-    var provider = currentProvider();
-    if (provider != null && provider == item.getId()) {
-      _currentIndex = 0;
-    }
-    _providers.remove(item.getId() as Provider);
-    saveProviders();
+    log(DEBUG, "DeleteMenuDelegate onSelect");
+    var provider = item.getId() as Provider;
+    logf(DEBUG, "Deleting $1$", [provider.name_]);
+    WatchUi.pushView(new WatchUi.Confirmation("Delete " + provider.name_ + "?"),
+                      new DeleteConfirmationDelegate(provider),
+                      WatchUi.SLIDE_LEFT);
   }
 }
 

@@ -35,8 +35,8 @@ class ProviderList extends WatchUi.Menu2 {
         var p = _providers[i];
         p.update();
         // FIXME: check memory consumption on vivoactive3
-        // addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
-        addItem(new WatchUi.MenuItem(p.name_, p.code_, i, {}));
+        // addItem(new WatchUi.MenuItem(p.name_, p.code_, i, {}));
+        addItem(new WatchUi.IconMenuItem(p.name_, p.code_, i, new ProviderIcon(p), {}));
       }
       addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
 
