@@ -247,15 +247,18 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     return false;
   }
 
-  // Menu for devices without action menu / glance
   function onSelect() {
-    log(DEBUG, "MainView onSelect");
-    if (_providers.size() == 0) {
-      WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
-    } else {
-      WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    // Menu for devices without action menu / glance
+    if (!(WatchUi has :ActionMenu)) {
+      log(DEBUG, "MainView onSelect");
+      if (_providers.size() == 0) {
+        WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
+      } else {
+        WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+      }
+      return true;
     }
-    return true;
+    return false;
   }
 
   // Back button (except on devices without glance)

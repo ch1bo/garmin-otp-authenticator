@@ -45,11 +45,6 @@ descentmk2.personality = $(nopersonality)
 descentmk2s.personality = $(nopersonality)
 # The following devices seem to have personality, but no action view, so disable nontheless
 fr55.personality = $(nopersonality)
-fenix6.personality = $(nopersonality)
-fenix6pro.personality = $(nopersonality)
-fenix6s.personality = $(nopersonality)
-fenix6spro.personality = $(nopersonality)
-fenix6xpro.personality = $(nopersonality)
 
 # Re-use resources-vivoactive3 for the 40x33 icon
 vivoactive3m.resourcePath = $(vivoactive3.resourcePath)
