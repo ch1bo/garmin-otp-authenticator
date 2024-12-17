@@ -25,25 +25,19 @@ class ProviderList extends WatchUi.Menu2 {
   function onShow() {
     log(DEBUG, "ProviderList onShow");
     WatchUi.Menu2.onShow();
-    // TODO: Test this
-    if (canImportFromSettings()) {
-      log(DEBUG, "ProviderList can import");
-      askImportConfirmation();
-    } else {
-      log(DEBUG, "ProviderList creating menu items");
-      for (var i = 0; i < _providers.size(); i++) {
-        var p = _providers[i];
-        p.update();
-        addItem(mkProviderListItem(p, i));
-      }
-      addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
+    log(DEBUG, "ProviderList creating menu items");
+    for (var i = 0; i < _providers.size(); i++) {
+      var p = _providers[i];
+      p.update();
+      addItem(mkProviderListItem(p, i));
+    }
+    addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
 
-      var updateRate = Application.Properties.getValue("glanceRate");
-      logf(DEBUG, "ProviderList update rate: $1$", [updateRate]);
-      if (updateRate > 0) {
-        var period = 60.0 / updateRate * 1000;
-        timer_.start(method(:onTimer), period, true);
-      }
+    var updateRate = Application.Properties.getValue("glanceRate");
+    logf(DEBUG, "ProviderList update rate: $1$", [updateRate]);
+    if (updateRate > 0) {
+      var period = 60.0 / updateRate * 1000;
+      timer_.start(method(:onTimer), period, true);
     }
   }
 

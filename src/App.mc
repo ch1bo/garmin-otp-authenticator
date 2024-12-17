@@ -56,10 +56,11 @@ function saveProviders() {
   Application.Storage.setValue("currentIndex", _currentIndex);
 }
 
-function exportToSettings() {
-  // TODO(SN): encrypt with AES
+function exportToSettings() as Number {
+  // XXX: encrypt with AES?
   Application.Properties.setValue("exportData", serializeProviders(_providers));
   log(INFO, "exported");
+  return _providers.size();
 }
 
 // Returns true if we could add/import entries using importFromSettings
@@ -103,15 +104,19 @@ function importFromSettings() {
     }
   }
 
-  // TODO(SN): decrypt with AES
+  // XXX: decrypt with AES?
   var exportData = Application.Properties.getValue("exportData");
   if (exportData != null && !exportData.equals("")) {
     try {
       var ps = parseProviders(exportData);
       for (var i = 0; i < ps.size(); i++) {
-        if(_providers.indexOf(ps[i]) < 0) {
+        var index = findProviderByName(_providers, ps[i].name_);
+        if (index >= 0 && index < _providers.size()) {
+          _providers[index] = ps[i];
+          log(INFO, "updated: " + ps[i].name_);
+        } else {
           _providers.add(ps[i]);
-          log(INFO, "imported: " + ps[i].name_);
+          log(INFO, "added: " + ps[i].name_);
         }
       }
       Application.Properties.setValue("exportData", "");
@@ -125,9 +130,17 @@ function importFromSettings() {
   }
 }
 
+function findProviderByName(providers as Array<Provider>, name as String) as Number {
+  for (var i = 0; i < providers.size(); i++) {
+    if (providers[i].name_.equals(name)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 (:glance)
 class App extends Application.AppBase {
-
   function initialize() {
     AppBase.initialize();
   }
@@ -158,7 +171,6 @@ class App extends Application.AppBase {
 
   function onSettingsChanged() {
     log(DEBUG, "App onSettingsChanged");
-    // TODO: Test this
     if (canImportFromSettings()) {
       askImportConfirmation();
     }
@@ -180,7 +192,6 @@ class ImportConfirmationDelegate extends WatchUi.ConfirmationDelegate {
       case WatchUi.CONFIRM_YES:
         importFromSettings();
         saveProviders();
-        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
         break;
       case WatchUi.CONFIRM_NO:
         break;

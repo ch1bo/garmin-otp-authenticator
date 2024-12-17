@@ -36,7 +36,7 @@ class WidgetGlanceView extends WatchUi.GlanceView {
 
   function onUpdate(dc) {
     log(DEBUG, "GlanceView onUpdate");
-    var mainColor = Graphics.COLOR_LT_GRAY;
+    var mainColor = Graphics.COLOR_WHITE;
     var mainFont = Graphics.FONT_GLANCE;
 
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);

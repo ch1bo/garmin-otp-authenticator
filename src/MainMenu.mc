@@ -9,7 +9,7 @@ class MainMenu extends WatchUi.Menu2 {
     }
     addItem(new MenuItem("Delete all", null, :delete_all, null));
     addItem(new MenuItem("Export to settings", null, :export_providers, null));
-    // TODO: Add "Import from settings" screen with instructions
+    addItem(new MenuItem("Import from settings", null, :import_providers, null));
   }
 }
 
@@ -35,7 +35,19 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
                        new DeleteAllConfirmationDelegate(), WatchUi.SLIDE_LEFT);
       return;
     case :export_providers:
-      exportToSettings();
+      var count = exportToSettings();
+      if (!Device.showToast("Exported " + count + " entries")) {
+        item.setSubLabel("Exported " + count + " entries");
+      }
+      return;
+    case :import_providers:
+      if (canImportFromSettings()) {
+        askImportConfirmation();
+      } else {
+        if (!Device.showToast("Nothing to import")) {
+          item.setSubLabel("Nothing to import");
+        }
+      }
       return;
     }
   }
@@ -71,7 +83,6 @@ class DeleteAllConfirmationDelegate extends WatchUi.ConfirmationDelegate {
         _providers = [];
         _currentIndex = 0;
         saveProviders();
-        WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:
         break;
