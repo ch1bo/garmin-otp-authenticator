@@ -1,13 +1,15 @@
 # Changelog
 
-## 2.0.0 - UNRELEASED
+## 2.0.0 - 2024-12-17
 
 - New UX flow including full list of providers with otp codes.
-- Native text input, menus and action menus.
+  - Native text picker, menus and action menus where available.
+  - Edit OTP providers via action menu.
+  - New setting to keep using the legacy text input method.
 - **BREAKING** Dropped support of old devices (CIQ < 3.0.0):
   - Vivoactive HR
   - Forerunner 735xt
-- Add possibility to edit OTP providers.
+- Add support for Venu Sq 2.
 
 ## 1.8.0 - 2024-09-05
 
