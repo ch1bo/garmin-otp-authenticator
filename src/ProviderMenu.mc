@@ -43,23 +43,22 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
+    var useLegacyTextInput = Application.Properties.getValue("legacyTextInput");
     switch (item.getId()) {
       case :name:
-        // TODO: Opt-in to old txt input
-        if (WatchUi has :TextPicker) {
-          WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameTextPickerDelegate(item), WatchUi.SLIDE_LEFT);
-        } else {
+        if (!(WatchUi has :TextPicker) || useLegacyTextInput) {
           var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, _enteredName);
           WatchUi.pushView(view, new NameTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
+        } else {
+          WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameTextPickerDelegate(item), WatchUi.SLIDE_LEFT);
         }
         break;
       case :key:
-        // TODO: Opt-in to old txt input
-        if (WatchUi has :TextPicker) {
-          WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_LEFT);
-        } else {
+        if (!(WatchUi has :TextPicker) || useLegacyTextInput) {
           var view = new TextInput.TextInputView("Enter Key", Alphabet.BASE32, _enteredKey);
           WatchUi.pushView(view, new KeyTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
+        } else {
+          WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_LEFT);
         }
         break;
       case :type:

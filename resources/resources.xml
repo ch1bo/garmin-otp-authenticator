@@ -1,16 +1,4 @@
 <resources>
-  <string id="appName">OTP Authenticator</string>
-  <string id="mainRate">Refresh rate in widget (per minute)</string>
-  <string id="glanceRate">Refresh rate at glance (per minute)</string>
-  <string id="ratePrompt">Higher rates might have an impact on battery drain</string>
-  <string id="addType">Add provider: type</string>
-  <string id="addName">Add provider: name</string>
-  <string id="addKey">Add provider: key</string>
-  <string id="TimeBasedProvider">Time based</string>
-  <string id="CounterBasedProvider">Counter based</string>
-  <string id="SteamGuardProvider">Steam guard</string>
-  <string id="exportData">Exported data</string>
-
   <drawables>
     <!-- https://www.flaticon.com/free-icon/padlock_188095 -->
     <bitmap id="LauncherIcon" filename="icon.png" />
@@ -50,6 +38,7 @@
   <properties>
     <property id="mainRate" type="number">60</property>
     <property id="glanceRate" type="number">12</property>
+    <property id="legacyTextInput" type="boolean">false</property>
     <property id="addType" type="number">1</property>
     <property id="addName" type="string"></property>
     <property id="addKey" type="string"></property>
@@ -57,27 +46,50 @@
   </properties>
 
   <settings>
-    <setting propertyKey="@Properties.mainRate" title="@Strings.mainRate" prompt="@Strings.ratePrompt">
-      <settingConfig type="numeric" min="0" max="600" />
-    </setting>
-    <setting propertyKey="@Properties.glanceRate" title="@Strings.glanceRate" prompt="@Strings.ratePrompt">
-      <settingConfig type="numeric" min="0" max="60" />
-    </setting>
-    <setting propertyKey="@Properties.addType" title="@Strings.addType">
-      <settingConfig type="list">
-        <listEntry value="0">@Strings.CounterBasedProvider</listEntry>
-        <listEntry value="1">@Strings.TimeBasedProvider</listEntry>
-        <listEntry value="2">@Strings.SteamGuardProvider</listEntry>
-      </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.addName" title="@Strings.addName">
-      <settingConfig type="alphaNumeric" />
-    </setting>
-    <setting propertyKey="@Properties.addKey" title="@Strings.addKey">
-      <settingConfig type="alphaNumeric" />
-    </setting>
+    <group id="general" title="@Strings.groupGeneralTitle">
+      <setting propertyKey="@Properties.mainRate" title="@Strings.mainRate" prompt="@Strings.ratePrompt">
+        <settingConfig type="numeric" min="0" max="600" />
+      </setting>
+      <setting propertyKey="@Properties.glanceRate" title="@Strings.glanceRate" prompt="@Strings.ratePrompt">
+        <settingConfig type="numeric" min="0" max="60" />
+      </setting>
+      <setting propertyKey="@Properties.legacyTextInput" title="@Strings.legacyTextInput">
+        <settingConfig type="boolean" />
+      </setting>
+    </group>
+    <group id="add" title="@Strings.groupAddTitle" description="@Strings.groupAddDescription">
+      <setting propertyKey="@Properties.addType" title="@Strings.addType">
+        <settingConfig type="list">
+          <listEntry value="0">@Strings.CounterBasedProvider</listEntry>
+          <listEntry value="1">@Strings.TimeBasedProvider</listEntry>
+          <listEntry value="2">@Strings.SteamGuardProvider</listEntry>
+        </settingConfig>
+      </setting>
+      <setting propertyKey="@Properties.addName" title="@Strings.addName">
+        <settingConfig type="alphaNumeric" />
+      </setting>
+      <setting propertyKey="@Properties.addKey" title="@Strings.addKey">
+        <settingConfig type="alphaNumeric" />
+      </setting>
+    </group>
     <setting propertyKey="@Properties.exportData" title="@Strings.exportData">
       <settingConfig type="alphaNumeric" />
     </setting>
   </settings>
+
+  <string id="appName">OTP Authenticator</string>
+  <string id="groupGeneralTitle">General app settings</string>
+  <string id="groupAddTitle">Add a new OTP provider</string>
+  <string id="groupAddDescription">Use "Import from settings" after filling these</string>
+  <string id="mainRate">Refresh rate in widget (per minute)</string>
+  <string id="glanceRate">Refresh rate at glance (per minute)</string>
+  <string id="ratePrompt">Higher rates might have an impact on battery drain</string>
+  <string id="legacyTextInput">Use legacy text input</string>
+  <string id="addType">Add provider: type</string>
+  <string id="addName">Add provider: name</string>
+  <string id="addKey">Add provider: key</string>
+  <string id="TimeBasedProvider">Time based</string>
+  <string id="CounterBasedProvider">Counter based</string>
+  <string id="SteamGuardProvider">Steam guard</string>
+  <string id="exportData">Exported data</string>
 </resources>

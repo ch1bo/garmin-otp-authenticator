@@ -5,9 +5,6 @@ import Toybox.Lang;
 
 using Device;
 
-// FIXME: make this available through settings again
-using TextInput;
-
 class MainView extends WatchUi.View {
   var screenShape_;
   var timer_;
