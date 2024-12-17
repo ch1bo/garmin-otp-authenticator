@@ -2,28 +2,33 @@
 
 [Garmin ConnectIQ Store Link](https://apps.garmin.com/en-US/apps/c601e351-9fa8-4303-aead-441251559064)
 
-Garmin ConnectIQ Widget for One-Time Passwords as Second Factor Authentication (2FA) similar to Google Authenticator. Multiple OTP formats are supported.
+Most popular (by reviews) ConnectIQ Widget for One-Time Passwords as Second Factor Authentication (2FA) similar to Google Authenticator, Authy and the likes.
 
 Keys can be entered directly and are stored encrypted using Garmin's application storage. This way, the secret keys will never leave your device and can provide a truly secure second factor!
 
 Less secure, but more convenient: key data can be also added, exported and imported via widget settings.
 
+Feedback via reviews appreciated and if you like this app, consider buying me a coffee: https://ko-fi.com/ch1bo
+
 ## Features
 
-* Timed One-Time Passwords (TOTP) using SHA1 with 30 sec interval and 6 digit codes (not configurable)
-* Counter-based One-Time Passwords (HOTP) using SHA1 with 6 digit codes (not configurable)
-* Steam Guard compatible One-Time Passwords
+* Instant preview of all One-Time Passwords
 * Standalone, offline and no companion Smartphone App required
-* Direct input of names and keys
 * Encrypted storage of keys, can be backed up and restored
-* Add provider entries via settings
-* Import/export entries via settings
-* Uses native cryptography when available (since Connect IQ 3.0.0)
+* Direct input of names and keys on device
+* Import/export and add new entries via settings
+* Edit provider name, key and type from action menu
+* Supported types
+  - Timed One-Time Passwords (TOTP) using SHA1 with 30 sec interval and 6 digit codes (not configurable)
+  - Counter-based One-Time Passwords (HOTP) using SHA1 with 6 digit codes (not configurable)
+  - Steam Guard compatible One-Time Passwords
+* Supports 146 Garmin devices (touch, button, round, square, etc.)
+* Supports 50+ entries (bound by device memory)
 
 ## Getting started
 
 1. Add widget to your device and access it
-2. Tap the screen or use the select button to start
+2. Start via Configure, New provider
 3. Pick a name for your first provider entry
 4. Enter the secret key of your first provider key
   - This step highly depends on the service use like to authenticate
@@ -32,13 +37,6 @@ Less secure, but more convenient: key data can be also added, exported and impor
   - Or you can use a QR Code Reader APP to decode the QR Code
   - The secret key looks like: "32QXEKZZXO2ZVJJDWU2KTTDUZ52Q4USN"
 5. Pick the provider type, most likely its a time-based (TOTP) code
-
-### Text input controls
-
-* Use up/down or swipe to switch characters
-* Tap or the select button picks a character
-* Swipe back or back button deletes a character
-* Long press the screen or the select button first asks confirmation, and if long pressed again, continues
 
 ## Backup / Restore
 
@@ -56,6 +54,16 @@ To export keys from the encrypted application storage, open the menu in the "OTP
 
 Using the same approach as above, previously exported key data can be imported again via the Widget settings. On every widget start, all available data is loaded and cleared from the corresponding settings entry.
 
+## Text input
+
+* If available the native text picker is used as it allows for most convenient text entry, even via remote typing from smartphone.
+* To use the builtin text input, opt-in via app settings ("Use legacy text input")
+* Controls of legacy text input
+  - Use up/down or swipe to switch characters
+  - Tap or the select button picks a character
+  - Swipe back or back button deletes a character
+  - Long press the screen or the select button first asks confirmation, and if long pressed again, continues
+
 ## Steam guard
 
 This app does support the steam guard authentication code scheme. However,
@@ -68,6 +76,17 @@ The secret is located in a file at path
 `/data/data/com.valvesoftware.android.steam.community/files/Steamguard*` and can
 be read using `adb` or a local shell and `su` (thus the rooted phone
 requirement).
+
+## Future work / feature ideas
+
+* Rotating code colors for counter-based OTP.
+* Sort entries on demand
+* Encrypt on export with AES
+* Other device support - on demand
+* Choosable interval and code length for Time-based
+* Bigger font for Steam-Guard codes (requires custom font)
+* Optional master password/PIN
+* Other UI/UX improvements - feedback welcome!
 
 ## Development
 
@@ -116,17 +135,6 @@ gracefully, e.g. using the back button.
 
 [Full list](https://developer.garmin.com/connect-iq/compatible-devices/) of
 devices and their capabilities
-
-## Future work / feature ideas
-
-* Rotating code colors for counter-based OTP.
-* Sort entries on demand
-* Encrypt on export with AES
-* Other device support - on demand
-* Choosable interval and code length for Time-based
-* Bigger font for Steam-Guard codes (requires custom font)
-* Optional master password/PIN
-* Other UI/UX improvements - feedback welcome!
 
 ## License
 
