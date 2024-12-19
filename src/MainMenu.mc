@@ -10,6 +10,7 @@ class MainMenu extends WatchUi.Menu2 {
     addItem(new MenuItem("Delete all", null, :delete_all, null));
     addItem(new MenuItem("Export to settings", null, :export_providers, null));
     addItem(new MenuItem("Import from settings", null, :import_providers, null));
+    // TODO: configure pin here
   }
 }
 

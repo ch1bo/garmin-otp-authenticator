@@ -8,6 +8,12 @@ vivoactive3.excludeAnnotations = isBlackAndWhite;icons
 fenix5.excludeAnnotations = isBlackAndWhite;icons
 fenix5s.excludeAnnotations = isBlackAndWhite;icons
 fr55.excludeAnnotations = isBlackAndWhite;icons
+fr245.excludeAnnotations = isBlackAndWhite;icons
+fr935.excludeAnnotations = isBlackAndWhite;icons
+instinct2.excludeAnnotations = isBlackAndWhite;icons
+instinct2s.excludeAnnotations = isBlackAndWhite;icons
+instinct2x.excludeAnnotations = isBlackAndWhite;icons
+instinctcrossover.excludeAnnotations = isBlackAndWhite;icons
 
 # Venu needs a special layout (menu on top right)
 venu2.resourcePath = $(venu2.resourcePath);resources-venu

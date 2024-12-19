@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0 - 2024-12-19
+
+- Fix out of memory errors on Forerunner 245 / 935 and Instinct 2 devices by disabling provider list icons.
+- Add support for Instinct Crossover.
+
 ## 2.0.0 - 2024-12-17
 
 - New UX flow including full list of providers with otp codes.

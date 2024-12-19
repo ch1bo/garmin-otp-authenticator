@@ -131,11 +131,11 @@ function importFromSettings() {
 }
 
 function findProviderByName(providers as Array<Provider>, name as String) as Number {
-  for (var i = 0; i < providers.size(); i++) {
-    if (providers[i].name_.equals(name)) {
-      return i;
-    }
-  }
+  // for (var i = 0; i < providers.size(); i++) {
+  //   if (providers[i].name_.equals(name)) {
+  //     return i;
+  //   }
+  // }
   return -1;
 }
 
@@ -156,6 +156,7 @@ class App extends Application.AppBase {
   function getInitialView() {
     log(DEBUG, "App getInitialView");
     loadProviders();
+    // TODO: optional pin entry
     if (WatchUi has :GlanceView) {
       return [new ProviderList(), new ProviderListDelegate()];
     } else {

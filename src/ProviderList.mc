@@ -67,6 +67,7 @@ class ProviderListDelegate extends WatchUi.Menu2InputDelegate {
         saveProviders();
         // TODO: check whether we are not creating an infinitely growing view
         // stack in case we enter ProviderList from MainView already
+        // TODO: use a ViewLoop here
         WatchUi.switchToView(new MainView(), new MainViewDelegate(), WatchUi.SLIDE_LEFT);
         break;
     }
