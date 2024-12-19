@@ -22,8 +22,8 @@ Feedback via reviews appreciated and if you like this app, consider buying me a 
   - Timed One-Time Passwords (TOTP) using SHA1 with 30 sec interval and 6 digit codes (not configurable)
   - Counter-based One-Time Passwords (HOTP) using SHA1 with 6 digit codes (not configurable)
   - Steam Guard compatible One-Time Passwords
-* Supports 146 Garmin devices (touch, button, round, square, etc.)
-* Supports 50+ entries (bound by device memory)
+* Supports 147 Garmin devices (touch, button, round, square, etc.)
+* Supports 50+ entries (bounded by device memory)
 
 ## Getting started
 
