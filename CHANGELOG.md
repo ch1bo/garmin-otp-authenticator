@@ -6,7 +6,7 @@
   - The new / edit provider menu now adds "Key" menu items when hitting maximum text input length (31 characters).
   - All key entry fields are combined into the full key on confirming with "Done".
   - Allow spaces in key text pickers for a way to exit the native text picker.
-- Add support for Enduro and Enduro 3 devices.
+- Add support for Enduro, Enduro 3 and Forerunner 165 (+ Music) devices.
 
 ## 2.1.0 - 2024-12-19
 
