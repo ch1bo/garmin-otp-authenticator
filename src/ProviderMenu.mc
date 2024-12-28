@@ -27,7 +27,9 @@ class ProviderMenu extends WatchUi.Menu2 {
       type = provider.getTypeString();
     }
     addItem(new MenuItem("Name", name, :name, {}));
-    if (key.equals("")) {
+    var useLegacyTextInput = !(WatchUi has :TextPicker) || Application.Properties.getValue("legacyTextInput");
+    // Never split on first load or when using legacy input
+    if (key.equals("") || useLegacyTextInput) {
       addItem(new MenuItem("Key", "", 0, {}));
     } else {
       // Create menu items for each key part

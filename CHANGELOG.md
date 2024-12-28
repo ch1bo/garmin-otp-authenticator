@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1 - UNRELEASED
+
+- Don't split keys in provider menu splitting when using legacy text input.
+
 ## 2.2.0 - 2024-12-28
 
 - Support OTP keys with 32+ character length (e.g. Amazon which uses 64):
