@@ -261,6 +261,8 @@ class KeyTextPickerDelegate extends WatchUi.TextPickerDelegate {
   function onTextEntered(text, changed) {
     var upper = text.toUpper();
     var chars = upper.toCharArray();
+    // Remove spaces - allow entering spaces to exit text picker
+    chars.removeAll(' ');
     // Validate input
     for (var i = 0; i < chars.size(); i++) {
       var c = chars[i];
@@ -273,15 +275,16 @@ class KeyTextPickerDelegate extends WatchUi.TextPickerDelegate {
         return false;
       }
     }
-    _enteredKey[keyIndex_] = upper;
-    logf(DEBUG, "Length $1$: $2$", [upper.length(), upper]);
+    var validated = StringUtil.charArrayToString(chars);
+    _enteredKey[keyIndex_] = validated;
+    logf(DEBUG, "Length $1$: $2$", [validated.length(), validated]);
 
     var start = keyIndex_ * MAX_TEXT_PICKER_LENGTH + 1;
-    var end = start + upper.length() - 1;
+    var end = start + validated.length() - 1;
     item_.setLabel("Key   " + start.toString() + "..." + end.toString());
-    item_.setSubLabel(ellipsizeMiddle(upper, 12));
+    item_.setSubLabel(ellipsizeMiddle(validated, 12));
 
-    if (upper.length() >= MAX_TEXT_PICKER_LENGTH) {
+    if (validated.length() >= MAX_TEXT_PICKER_LENGTH) {
       logf(DEBUG, "Max length used add/use menu item for key index $1$", [keyIndex_ + 1]);
       menu_.ensureKeyItem(keyIndex_ + 1);
     }
