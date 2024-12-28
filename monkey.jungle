@@ -7,6 +7,7 @@ base.excludeAnnotations = isBlackAndWhite;noIcons
 vivoactive3.excludeAnnotations = isBlackAndWhite;icons
 fenix5.excludeAnnotations = isBlackAndWhite;icons
 fenix5s.excludeAnnotations = isBlackAndWhite;icons
+enduro.excludeAnnotations = isBlackAndWhite;icons
 fr55.excludeAnnotations = isBlackAndWhite;icons
 fr245.excludeAnnotations = isBlackAndWhite;icons
 fr935.excludeAnnotations = isBlackAndWhite;icons
