@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.0 - UNRELEASED
+## 2.2.0 - 2024-12-28
 
 - Support OTP keys with 32+ character length (e.g. Amazon which uses 64):
   - The new / edit provider menu now adds "Key" menu items when hitting maximum text input length (31 characters).
