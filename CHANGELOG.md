@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.1 - UNRELEASED
+
+- Support OTP keys with 32+ character length (e.g. Amazon which uses 64):
+  - The new / edit provider menu now adds "Key" menu items when hitting maximum text input length (31 characters).
+  - All key entry fields are combined into the full key on confirming with "Done".
+  - Allow spaces in key text pickers for a way to exit the native text picker.
+
 ## 2.1.0 - 2024-12-19
 
 - Fix out of memory errors on Forerunner 245 / 935 and Instinct 2 devices by disabling provider list icons.

@@ -57,6 +57,8 @@ Using the same approach as above, previously exported key data can be imported a
 ## Text input
 
 * If available the native text picker is used as it allows for most convenient text entry, even via remote typing from smartphone.
+  - While often more comfortable, the native picker is limited to enter 31 characters at once.
+  - Whenever hitting the maximum input length on secret keys, an additional text input item is added to enter the key in chunks of 31 characters.
 * To use the builtin text input, opt-in via app settings ("Use legacy text input")
 * Controls of legacy text input
   - Use up/down or swipe to switch characters
