@@ -22,7 +22,8 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
   function onSelect(item) {
     switch (item.getId()) {
     case :new_provider:
-      WatchUi.pushView(new ProviderMenu("New provider", null), new ProviderMenuDelegate(null), WatchUi.SLIDE_LEFT);
+      var menu = new ProviderMenu("New provider", null);
+      WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
       return;
     case :delete_provider:
       var deleteMenu = new WatchUi.Menu2({ :title => "Delete" });

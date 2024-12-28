@@ -21,7 +21,8 @@ class ProviderActionMenuDelegate extends WatchUi.ActionMenuDelegate {
     case :edit:
       var index = _providers.indexOf(provider_);
       if (index >= 0) {
-        WatchUi.pushView(new ProviderMenu("Edit provider", index), new ProviderMenuDelegate(index), WatchUi.SLIDE_LEFT);
+        var menu = new ProviderMenu("Edit provider", index);
+        WatchUi.pushView(menu, new ProviderMenuDelegate(menu, index), WatchUi.SLIDE_LEFT);
       }
       return;
     case :delete:

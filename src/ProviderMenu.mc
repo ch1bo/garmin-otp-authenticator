@@ -1,8 +1,20 @@
 import Toybox.WatchUi;
 import Toybox.Lang;
 
+// Maximum number of characters allowed in the native text picker. This is
+// relevant when entering keys which are longer than this.
+const MAX_TEXT_PICKER_LENGTH as Number = 31;
+
+var _enteredName as String = "";
+var _enteredKey as Array<String> = [""];
+// XXX: Should use an enum with string mapping
+var _enteredType as String or Null = "Time based";
+
 // Menu to create or edit a provider entry
 class ProviderMenu extends WatchUi.Menu2 {
+  var typeItem_;
+  var doneItem_;
+
   function initialize(title as String, editIndex as Number or Null) {
     Menu2.initialize({:title => title});
     var name = "";
@@ -15,23 +27,70 @@ class ProviderMenu extends WatchUi.Menu2 {
       type = provider.getTypeString();
     }
     addItem(new MenuItem("Name", name, :name, {}));
-    addItem(new MenuItem("Key", key, :key, {}));
-    addItem(new MenuItem("Type", type, :type, {}));
-    addItem(new MenuItem("Done", "", :done, {}));
+    if (key.equals("")) {
+      addItem(new MenuItem("Key", "", 0, {}));
+    } else {
+      // Create menu items for each key part
+      var keyParts = splitIntoChunks(key, MAX_TEXT_PICKER_LENGTH);
+      for (var i = 0; i < keyParts.size(); i++) {
+        var part = keyParts[i];
+        var start = i * MAX_TEXT_PICKER_LENGTH + 1;
+        var end = start + part.length() - 1;
+        addItem(new MenuItem("Key   " + start.toString() + "..." + end.toString(), ellipsizeMiddle(part, 12), i, {}));
+      }
+    }
+    typeItem_ = new MenuItem("Type", type, :type, {});
+    addItem(typeItem_);
+    doneItem_ = new MenuItem("Done", "", :done, {});
+    addItem(doneItem_);
+  }
+
+  function deleteItem_(item as WatchUi.MenuItem) {
+    var idx = findItemById(item.getId());
+    if (idx > -1) {
+      deleteItem(idx);
+    }
+  }
+
+  // Ensure a menu item for given key index is in the menu. This only adds one
+  // item if the key index is not found. By repeatedly calling this, one can
+  // ensure there are enough entries.
+  function ensureKeyItem(keyIndex as Number) {
+    // Key menu items use key index as identifier
+    if (self.findItemById(keyIndex) == -1) {
+      // Delete type and done items
+      deleteItem_(typeItem_);
+      deleteItem_(doneItem_);
+      // Add an empty key item
+      var start = keyIndex * MAX_TEXT_PICKER_LENGTH + 1;
+      addItem(new MenuItem("Key   " + start.toString() + "...", "", keyIndex, {}));
+      _enteredKey.add("");
+      // Re-add type and done items
+      addItem(typeItem_);
+      addItem(doneItem_);
+    }
   }
 }
 
 class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
+  var menu_;
   var doneItem_ = null;
   var editIndex_ = null;
 
-  function initialize(editIndex as Number or Null) {
+  function initialize(menu as ProviderMenu, editIndex as Number or Null) {
     Menu2InputDelegate.initialize();
+    menu_ = menu;
     if (editIndex != null && editIndex < _providers.size()) {
       editIndex_ = editIndex;
       var provider = _providers[editIndex];
       _enteredName = provider.name_;
-      _enteredKey = provider.key_;
+      // Split key into parts for native text picker
+      var useLegacyTextInput = !(WatchUi has :TextPicker) || Application.Properties.getValue("legacyTextInput");
+      if (useLegacyTextInput) {
+        _enteredKey = [provider.key_];
+      } else {
+        _enteredKey = splitIntoChunks(provider.key_, MAX_TEXT_PICKER_LENGTH);
+      }
     }
   }
 
@@ -43,22 +102,24 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
-    var useLegacyTextInput = Application.Properties.getValue("legacyTextInput");
+    var useLegacyTextInput = !(WatchUi has :TextPicker) || Application.Properties.getValue("legacyTextInput");
     switch (item.getId()) {
       case :name:
-        if (!(WatchUi has :TextPicker) || useLegacyTextInput) {
+        if (useLegacyTextInput) {
           var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, _enteredName);
           WatchUi.pushView(view, new NameTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
         } else {
           WatchUi.pushView(new WatchUi.TextPicker(_enteredName), new NameTextPickerDelegate(item), WatchUi.SLIDE_LEFT);
         }
         break;
-      case :key:
-        if (!(WatchUi has :TextPicker) || useLegacyTextInput) {
-          var view = new TextInput.TextInputView("Enter Key", Alphabet.BASE32, _enteredKey);
+      case instanceof Number:
+        // NOTE: Key menu items use key index as identifier.
+        if (useLegacyTextInput) {
+          var view = new TextInput.TextInputView("Enter Key", Alphabet.BASE32, _enteredKey[0]);
           WatchUi.pushView(view, new KeyTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
         } else {
-          WatchUi.pushView(new WatchUi.TextPicker(_enteredKey), new KeyInputDelegate(item), WatchUi.SLIDE_LEFT);
+          var keyIndex = item.getId() as Number;
+          WatchUi.pushView(new WatchUi.TextPicker(_enteredKey[keyIndex]), new KeyTextPickerDelegate(menu_, item, keyIndex), WatchUi.SLIDE_LEFT);
         }
         break;
       case :type:
@@ -74,7 +135,12 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
           }
           return;
         }
-        if (_enteredKey.equals("")) {
+        var combinedKey = "";
+        for (var i = 0; i < _enteredKey.size(); i++) {
+          combinedKey = combinedKey + _enteredKey[i];
+        }
+        logf(DEBUG, "Combined key: $1$ $1$", [combinedKey.length(), combinedKey]);
+        if (combinedKey.equals("")) {
           var shown = Device.showToast("Key required");
           if (!shown) {
             doneItem_.setSubLabel("Key required");
@@ -90,19 +156,19 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
         var provider = null;
         switch (_enteredType) {
         case "Time based":
-          provider = new TimeBasedProvider(_enteredName, _enteredKey, 30);
+          provider = new TimeBasedProvider(_enteredName, combinedKey, 30);
           break;
         case "Counter based":
-          provider = new CounterBasedProvider(_enteredName, _enteredKey, 0);
+          provider = new CounterBasedProvider(_enteredName, combinedKey, 0);
           break;
         case "Steam guard":
-          provider = new SteamGuardProvider(_enteredName, _enteredKey, 30);
+          provider = new SteamGuardProvider(_enteredName, combinedKey, 30);
           break;
         }
         // TODO: handle error?
         if (provider != null) {
           _enteredName = "";
-          _enteredKey = "";
+          _enteredKey = [""];
           if (editIndex_ != null) {
             _providers[editIndex_] = provider;
             _currentIndex = editIndex_;
@@ -133,7 +199,7 @@ class AbortConfirmationDelegate extends WatchUi.ConfirmationDelegate {
     switch (response) {
       case WatchUi.CONFIRM_YES:
         _enteredName = "";
-        _enteredKey = "";
+        _enteredKey = [""];
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         break;
       case WatchUi.CONFIRM_NO:
@@ -144,8 +210,6 @@ class AbortConfirmationDelegate extends WatchUi.ConfirmationDelegate {
 }
 
 // Name, key and type input view stack
-
-var _enteredName = "";
 
 class NameTextPickerDelegate extends WatchUi.TextPickerDelegate {
   var item_;
@@ -179,14 +243,19 @@ class NameTextInputDelegate extends TextInput.TextInputDelegate {
   }
 }
 
-var _enteredKey = "";
-
-class KeyInputDelegate extends WatchUi.TextPickerDelegate {
+class KeyTextPickerDelegate extends WatchUi.TextPickerDelegate {
+  var menu_;
   var item_;
+  var keyIndex_;
 
-  function initialize(item) {
+  function initialize(menu as ProviderMenu, item as WatchUi.MenuItem, keyIndex as Number) {
     WatchUi.TextPickerDelegate.initialize();
+    menu_ = menu;
     item_ = item;
+    keyIndex_ = keyIndex;
+    if (keyIndex >= _enteredKey.size()) {
+      logf(ERROR, "KeyTextPickerDelegate: keyIndex $1$ out of range $2$", [keyIndex, _enteredKey.size()]);
+    }
   }
 
   function onTextEntered(text, changed) {
@@ -204,8 +273,19 @@ class KeyInputDelegate extends WatchUi.TextPickerDelegate {
         return false;
       }
     }
-    _enteredKey = upper;
-    item_.setSubLabel(upper);
+    _enteredKey[keyIndex_] = upper;
+    logf(DEBUG, "Length $1$: $2$", [upper.length(), upper]);
+
+    var start = keyIndex_ * MAX_TEXT_PICKER_LENGTH + 1;
+    var end = start + upper.length() - 1;
+    item_.setLabel("Key   " + start.toString() + "..." + end.toString());
+    item_.setSubLabel(ellipsizeMiddle(upper, 12));
+
+    if (upper.length() >= MAX_TEXT_PICKER_LENGTH) {
+      logf(DEBUG, "Max length used add/use menu item for key index $1$", [keyIndex_ + 1]);
+      menu_.ensureKeyItem(keyIndex_ + 1);
+    }
+
     WatchUi.requestUpdate();
     return true;
   }
@@ -220,7 +300,7 @@ class KeyTextInputDelegate extends TextInput.TextInputDelegate {
   }
 
   function onTextEntered(text) {
-    _enteredKey = text;
+    _enteredKey[0] = text;
     item_.setSubLabel(text);
     WatchUi.requestUpdate();
     return true;
@@ -237,8 +317,6 @@ class TypeMenu extends WatchUi.Menu2 {
   }
 }
 
-var _enteredType = "Time based";
-
 class TypeMenuDelegate extends WatchUi.Menu2InputDelegate {
   var item_;
 
@@ -252,4 +330,29 @@ class TypeMenuDelegate extends WatchUi.Menu2InputDelegate {
     item_.setSubLabel(item.getLabel());
     WatchUi.popView(WatchUi.SLIDE_RIGHT);
   }
+}
+
+// Helpers
+
+// Ellipsize a string in the middle, such that its overall not longer than given length.
+function ellipsizeMiddle(text as String, length as Number) as String {
+  if (text.length() > length) {
+    return text.substring(0, length/2) + "..." + text.substring(-length/2, null);
+  }
+  return text;
+}
+
+// Split a string into chunks of given length.
+function splitIntoChunks(str as String, chunkLength as Number) as Array<String> {
+  var chunks = [];
+  var i = 0;
+  while (i < str.length()) {
+    var end = i + chunkLength;
+    if (end > str.length()) {
+      end = str.length();
+    }
+    chunks.add(str.substring(i, end));
+    i = end;
+  }
+  return chunks;
 }
