@@ -3,6 +3,7 @@
 ## 2.2.1 - UNRELEASED
 
 - Don't split keys in provider menu splitting when using legacy text input.
+- Detect duplicates by provider name on import.
 
 ## 2.2.0 - 2024-12-28
 
