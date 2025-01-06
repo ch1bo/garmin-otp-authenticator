@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.1 - UNRELEASED
+## 2.3.0 - 2025-01-06
 
 - Fix out of memory errors of glance view by only deserializing current provider.
 - Don't split keys in provider menu splitting when using legacy text input.
