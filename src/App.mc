@@ -43,7 +43,8 @@ function loadProviders() {
     switch (ps) {
       case instanceof Array:
         _providers = [];
-        for (var i = 0; i < ps.size(); i++) {
+        var maxEntries = Application.Properties.getValue("maxEntries");
+        for (var i = 0; i < ps.size() && i < maxEntries; i++) {
           try {
             _providers.add(providerFromDict(ps[i]));
           } catch (exception) {

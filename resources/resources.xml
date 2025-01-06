@@ -39,6 +39,7 @@
     <property id="mainRate" type="number">60</property>
     <property id="glanceRate" type="number">12</property>
     <property id="legacyTextInput" type="boolean">false</property>
+    <property id="maxEntries" type="number">128</property>
     <property id="addType" type="number">1</property>
     <property id="addName" type="string"></property>
     <property id="addKey" type="string"></property>
@@ -46,17 +47,18 @@
   </properties>
 
   <settings>
-    <group id="general" title="@Strings.groupGeneralTitle">
-      <setting propertyKey="@Properties.mainRate" title="@Strings.mainRate" prompt="@Strings.ratePrompt">
-        <settingConfig type="numeric" min="0" max="600" />
-      </setting>
-      <setting propertyKey="@Properties.glanceRate" title="@Strings.glanceRate" prompt="@Strings.ratePrompt">
-        <settingConfig type="numeric" min="0" max="60" />
-      </setting>
-      <setting propertyKey="@Properties.legacyTextInput" title="@Strings.legacyTextInput">
-        <settingConfig type="boolean" />
-      </setting>
-    </group>
+    <setting propertyKey="@Properties.mainRate" title="@Strings.mainRate" prompt="@Strings.ratePrompt">
+      <settingConfig type="numeric" min="0" max="600" />
+    </setting>
+    <setting propertyKey="@Properties.glanceRate" title="@Strings.glanceRate" prompt="@Strings.ratePrompt">
+      <settingConfig type="numeric" min="0" max="60" />
+    </setting>
+    <setting propertyKey="@Properties.legacyTextInput" title="@Strings.legacyTextInput">
+      <settingConfig type="boolean" />
+    </setting>
+    <setting propertyKey="@Properties.maxEntries" title="@Strings.maxEntries" prompt="@Strings.maxEntriesPrompt">
+      <settingConfig type="numeric" min="0" max="128" />
+    </setting>
     <group id="add" title="@Strings.groupAddTitle" description="@Strings.groupAddDescription">
       <setting propertyKey="@Properties.addType" title="@Strings.addType">
         <settingConfig type="list">
@@ -78,13 +80,14 @@
   </settings>
 
   <string id="appName">OTP Authenticator</string>
-  <string id="groupGeneralTitle">General app settings</string>
   <string id="groupAddTitle">Add a new OTP provider</string>
   <string id="groupAddDescription">Use "Import from settings" after filling these</string>
   <string id="mainRate">Refresh rate in widget (per minute)</string>
   <string id="glanceRate">Refresh rate at glance (per minute)</string>
   <string id="ratePrompt">Higher rates might have an impact on battery drain</string>
   <string id="legacyTextInput">Use legacy text input</string>
+  <string id="maxEntries">Maximum number of entries</string>
+  <string id="maxEntriesPrompt">Limit the number of entries to load from storage</string>
   <string id="addType">Add provider: type</string>
   <string id="addName">Add provider: name</string>
   <string id="addKey">Add provider: key</string>

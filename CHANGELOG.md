@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1 - 2025-01-06
+
+- Add a max entries setting to workaround too many entries and out of memory errors.
+
 ## 2.3.0 - 2025-01-06
 
 - Fix out of memory errors of glance view by only deserializing current provider.
