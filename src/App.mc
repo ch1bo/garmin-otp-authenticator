@@ -15,11 +15,34 @@ function currentProvider() as Provider? {
 }
 
 (:glance)
-function loadProviders() {
+function loadCurrentProvider() as Provider? {
+  var ci = Application.Storage.getValue("currentIndex");
+  if (ci != null) {
+    _currentIndex = ci;
+  }
   var ps = Application.Storage.getValue("providers") as Array<ProviderDict>;
   if (ps != null) {
     switch (ps) {
       case instanceof Array:
+        if (_currentIndex >= 0 && _currentIndex < ps.size()) {
+          return providerFromDict(ps[_currentIndex]);
+        }
+        break;
+    }
+  }
+  return null;
+}
+
+function loadProviders() {
+  var ci = Application.Storage.getValue("currentIndex");
+  if (ci != null) {
+    _currentIndex = ci;
+  }
+  var ps = Application.Storage.getValue("providers") as Array<ProviderDict>;
+  if (ps != null) {
+    switch (ps) {
+      case instanceof Array:
+        _providers = [];
         for (var i = 0; i < ps.size(); i++) {
           try {
             _providers.add(providerFromDict(ps[i]));
@@ -40,10 +63,6 @@ function loadProviders() {
         logf(ERROR, "loadProviders loaded $1", [ps]);
         throw new Lang.InvalidValueException("loadProviders() loaded not an array");
     }
-  }
-  var ci = Application.Storage.getValue("currentIndex");
-  if (ci != null) {
-    _currentIndex = ci;
   }
 }
 
@@ -166,8 +185,8 @@ class App extends Application.AppBase {
 
   function getGlanceView() {
     log(DEBUG, "App getGlanceView");
-    loadProviders();
-    return [new WidgetGlanceView()];
+    var p = loadCurrentProvider();
+    return [new WidgetGlanceView(p)];
   }
 
   function onSettingsChanged() {

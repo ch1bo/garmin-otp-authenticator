@@ -2,6 +2,7 @@
 
 ## 2.2.1 - UNRELEASED
 
+- Fix out of memory errors of glance view by only deserializing current provider.
 - Don't split keys in provider menu splitting when using legacy text input.
 - Detect duplicates by provider name on import.
 

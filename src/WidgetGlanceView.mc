@@ -5,10 +5,12 @@ import Toybox.WatchUi;
 (:glance)
 class WidgetGlanceView extends WatchUi.GlanceView {
   var timer_;
+  var provider_;
 
-  function initialize() {
+  function initialize(provider as Provider or Null) {
     GlanceView.initialize();
     timer_ = new Timer.Timer();
+    provider_ = provider;
   }
 
   function onShow() {
@@ -27,9 +29,8 @@ class WidgetGlanceView extends WatchUi.GlanceView {
   }
 
   function onTimer() {
-    var provider = currentProvider();
-    if (provider != null) {
-      provider.update();
+    if (provider_ != null) {
+      provider_.update();
     }
     WatchUi.requestUpdate();
   }
@@ -42,27 +43,26 @@ class WidgetGlanceView extends WatchUi.GlanceView {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     dc.clear();
 
-    var provider = currentProvider();
-    if (provider == null) {
+    if (provider_ == null) {
       drawMain(dc, "OTP Authenticator", mainFont, mainColor, 0);
       drawSub(dc, "Open to start", Graphics.FONT_GLANCE, Graphics.COLOR_WHITE, 0);
       return;
-    }
-
-    var subFont = Graphics.FONT_GLANCE_NUMBER;
-    var subColor = Graphics.COLOR_WHITE;
-    switch (provider) {
-    case instanceof SteamGuardProvider:
-      subFont = Graphics.FONT_GLANCE;
-    case instanceof TimeBasedProvider:
-      // Colored OTP code depending on countdown
-      var delta = (provider as TimeBasedProvider).next_ - Time.now().value();
-      subColor = Device.getCountdownColor(delta);
-      drawProgress(dc, delta, 30, subColor);
-    case instanceof CounterBasedProvider:
-      drawMain(dc, provider.name_, mainFont, mainColor, 4);
-      drawSub(dc, provider.code_, subFont, subColor, 4);
-      break;
+    } else {
+      var subFont = Graphics.FONT_GLANCE_NUMBER;
+      var subColor = Graphics.COLOR_WHITE;
+      switch (provider_) {
+      case instanceof SteamGuardProvider:
+        subFont = Graphics.FONT_GLANCE;
+      case instanceof TimeBasedProvider:
+        // Colored OTP code depending on countdown
+        var delta = (provider_ as TimeBasedProvider).next_ - Time.now().value();
+        subColor = Device.getCountdownColor(delta);
+        drawProgress(dc, delta, 30, subColor);
+      case instanceof CounterBasedProvider:
+        drawMain(dc, provider_.name_, mainFont, mainColor, 4);
+        drawSub(dc, provider_.code_, subFont, subColor, 4);
+        break;
+      }
     }
   }
 
