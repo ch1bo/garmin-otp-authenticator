@@ -5,6 +5,7 @@
 - Fix out of memory errors of glance view by only deserializing current provider.
 - Don't split keys in provider menu splitting when using legacy text input.
 - Detect duplicates by provider name on import.
+- Add support for Forerunner 265 and 265s.
 
 ## 2.2.0 - 2024-12-28
 
