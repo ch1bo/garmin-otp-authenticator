@@ -73,6 +73,10 @@ function saveProviders() {
     ps[i] = providerToDict(_providers[i]);
   }
   Application.Storage.setValue("providers", ps);
+  saveCurrentIndex();
+}
+
+function saveCurrentIndex() {
   Application.Storage.setValue("currentIndex", _currentIndex);
 }
 
