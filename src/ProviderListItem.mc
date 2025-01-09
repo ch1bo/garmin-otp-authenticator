@@ -33,6 +33,7 @@ class ProviderIcon extends WatchUi.Drawable {
 
   function initialize(provider as Provider) {
     WatchUi.Drawable.initialize({});
+    // XXX: This keeps the full provider as a copy?
     provider_ = provider;
 
     // Lazy load icons

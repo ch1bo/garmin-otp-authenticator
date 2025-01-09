@@ -15,6 +15,7 @@ class Provider {
   function initialize(name, key) {
     name_ = name;
     key_ = key;
+    // TODO: not store this separate to key_ to reduce memory footprint?
     keyBytes_ = base32ToBytes(key);
   }
 
