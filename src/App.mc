@@ -44,6 +44,9 @@ function loadProviders() {
       case instanceof Array:
         _providers = [];
         var maxEntries = Application.Properties.getValue("maxEntries");
+        if (maxEntries == null) {
+          maxEntries = ps.size();
+        }
         for (var i = 0; i < ps.size() && i < maxEntries; i++) {
           try {
             _providers.add(providerFromDict(ps[i]));

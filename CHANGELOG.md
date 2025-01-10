@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.2 - UNRELEASED
+
+- Compile with more optimization to reduce memory footprint of code slightly.
+- Do less serialization in provider list menu selection for smaller memory usage.
+- More defensive access on settings to avoid type errors.
+
 ## 2.3.1 - 2025-01-06
 
 - Add a max entries setting to workaround too many entries and out of memory errors.

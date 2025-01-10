@@ -27,9 +27,8 @@ class ProviderMenu extends WatchUi.Menu2 {
       type = provider.getTypeString();
     }
     addItem(new MenuItem("Name", name, :name, {}));
-    var useLegacyTextInput = !(WatchUi has :TextPicker) || Application.Properties.getValue("legacyTextInput");
     // Never split on first load or when using legacy input
-    if (key.equals("") || useLegacyTextInput) {
+    if (key.equals("") || useLegacyTextInput(Application.Properties)) {
       addItem(new MenuItem("Key", "", 0, {}));
     } else {
       // Create menu items for each key part
@@ -87,8 +86,7 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
       var provider = _providers[editIndex];
       _enteredName = provider.name_;
       // Split key into parts for native text picker
-      var useLegacyTextInput = !(WatchUi has :TextPicker) || Application.Properties.getValue("legacyTextInput");
-      if (useLegacyTextInput) {
+      if (useLegacyTextInput(Application.Properties)) {
         _enteredKey = [provider.key_];
       } else {
         _enteredKey = splitIntoChunks(provider.key_, MAX_TEXT_PICKER_LENGTH);
@@ -104,10 +102,9 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
-    var useLegacyTextInput = !(WatchUi has :TextPicker) || Application.Properties.getValue("legacyTextInput");
     switch (item.getId()) {
       case :name:
-        if (useLegacyTextInput) {
+        if (useLegacyTextInput(Application.Properties)) {
           var view = new TextInput.TextInputView("Enter name", Alphabet.ALPHANUM, _enteredName);
           WatchUi.pushView(view, new NameTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
         } else {
@@ -116,7 +113,7 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
         break;
       case instanceof Number:
         // NOTE: Key menu items use key index as identifier.
-        if (useLegacyTextInput) {
+        if (useLegacyTextInput(Application.Properties)) {
           var view = new TextInput.TextInputView("Enter Key", Alphabet.BASE32, _enteredKey[0]);
           WatchUi.pushView(view, new KeyTextInputDelegate(view, item), WatchUi.SLIDE_LEFT);
         } else {
@@ -360,4 +357,10 @@ function splitIntoChunks(str as String, chunkLength as Number) as Array<String> 
     i = end;
   }
   return chunks;
+}
+
+// Determine whether to use legacy text input using settings and feature availability.
+function useLegacyTextInput(props) as Boolean {
+  var legacySetting = props.getValue("legacyTextInput");
+  return !(WatchUi has :TextPicker) || (legacySetting != null && legacySetting);
 }
