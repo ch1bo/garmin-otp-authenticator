@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.2 - UNRELEASED
+## 2.3.2 - 2025-01-10
 
 - Compile with more optimization to reduce memory footprint of code slightly.
 - Do less serialization in provider list menu selection for smaller memory usage.
