@@ -79,7 +79,7 @@
     </setting>
   </settings>
 
-  <string id="appName">OTP Authenticator</string>
+  <string id="appName">DEV OTP Authenticator</string>
   <string id="groupAddTitle">Add a new OTP provider</string>
   <string id="groupAddDescription">Use "Import from settings" after filling these</string>
   <string id="mainRate">Refresh rate in widget (per minute)</string>
