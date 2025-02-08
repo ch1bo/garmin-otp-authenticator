@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.0 - UNRELEASED
+
+- Change navigation to avoid menu on first view (which creates problems on some devices).
+
 ## 2.3.2 - 2025-01-10
 
 - Compile with more optimization to reduce memory footprint of code slightly.

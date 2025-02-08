@@ -184,11 +184,7 @@ class App extends Application.AppBase {
     log(DEBUG, "App getInitialView");
     loadProviders();
     // TODO: optional pin entry
-    if (WatchUi has :GlanceView) {
-      return [new ProviderList(), new ProviderListDelegate()];
-    } else {
-      return [new MainView(), new MainViewDelegate()];
-    }
+    return [new MainView(), new MainViewDelegate()];
   }
 
   function getGlanceView() {

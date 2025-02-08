@@ -66,7 +66,7 @@ class MainView extends WatchUi.View {
     var provider = currentProvider();
     if (provider == null) {
       dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_MEDIUM,
-                  "Press MENU to start",
+                  "Press to start",
                   Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       return;
     } else {
@@ -210,28 +210,6 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     logf(DEBUG, "MainView onKey $1$", [key]);
     if (isActionButton(key)) {
       return onAction();
-    } else if (key == KEY_MENU || key == KEY_ENTER) {
-      var provider = currentProvider();
-      switch (provider) {
-      case instanceof CounterBasedProvider:
-        (provider as CounterBasedProvider).next();
-        WatchUi.requestUpdate();
-        return true;
-      }
-    } else if (key == KEY_DOWN || key == KEY_UP) {
-      // TODO: why not use behavior onNextMode/onPreviousMode callbacks?
-      // TODO: or use a page loop?
-      var delta = key == KEY_DOWN ? 1 : -1;
-      _currentIndex += delta;
-      if (_currentIndex < 0) {
-        _currentIndex = _providers.size() - 1;
-      } else if (_currentIndex >= _providers.size()) {
-        _currentIndex = 0;
-      }
-      logf(DEBUG, "quick switch to index $1$", [_currentIndex]);
-      saveProviders();
-      WatchUi.requestUpdate();
-      return true;
     }
     return false;
   }
@@ -240,14 +218,17 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     logf(DEBUG, "MainView onTap $1$", [event.getCoordinates()]);
     if (isInActionArea(event.getCoordinates())) {
       return onAction();
+    } else if (_providers.size() == 0) {
+      var menu = new ProviderMenu("New provider", null);
+      WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
     }
     return false;
   }
 
   function onSelect() {
+    log(DEBUG, "MainView onSelect");
     // Menu for devices without action menu / glance
     if (!(WatchUi has :ActionMenu)) {
-      log(DEBUG, "MainView onSelect");
       if (_providers.size() == 0) {
         var menu = new ProviderMenu("New provider", null);
         WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
@@ -259,19 +240,59 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     return false;
   }
 
-  // Back button (except on devices without glance)
-  function onBack() {
-    log(DEBUG, "MainView onBack");
-    // Explicit switch to view to re-create provider list
-    WatchUi.switchToView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+  // Next mode to open provider list
+  function onNext() {
+    log(DEBUG, "MainView onNext");
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
     return true;
+  }
+
+  // Next page to open provider list
+  function onNextPage() {
+    log(DEBUG, "MainView onNextPage");
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    return true;
+  }
+
+  // Previous mode to open provider list
+  function onPrevious() {
+    log(DEBUG, "MainView onPrevious");
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    return true;
+  }
+
+  // Previous page to open provider list
+  function onPreviousPage() {
+    log(DEBUG, "MainView onPreviousPage");
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    return true;
+  }
+
+  // Menu or enter button
+  function onMenu() {
+    log(DEBUG, "MainView onMenu");
+    if (_providers.size() == 0) {
+      var menu = new ProviderMenu("New provider", null);
+      WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
+    } else {
+      var provider = currentProvider();
+      switch (provider) {
+      case instanceof CounterBasedProvider:
+        (provider as CounterBasedProvider).next();
+        WatchUi.requestUpdate();
+        return true;
+      }
+    }
+    return false;
   }
 
   // Action menu selected
   function onAction() as Lang.Boolean {
     log(DEBUG, "MainView onAction");
-    // REVIEW: guard needed?
-    if (WatchUi has :ActionMenu) {
+    if (_providers.size() == 0) {
+      var menu = new ProviderMenu("New provider", null);
+      WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
+    } else {
       var provider = currentProvider();
       showProviderActionMenu(provider);
     }
