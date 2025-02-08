@@ -185,7 +185,7 @@ class ProviderMenuDelegate extends WatchUi.Menu2InputDelegate {
   function onBack() {
     WatchUi.pushView(new WatchUi.Confirmation("Abort?"),
                      new AbortConfirmationDelegate(),
-                     WatchUi.SLIDE_LEFT);
+                     WatchUi.SLIDE_RIGHT);
   }
 }
 
