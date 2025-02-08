@@ -3,7 +3,8 @@ import Toybox.WatchUi;
 function showProviderActionMenu(provider as Provider) {
   log(DEBUG, "showProviderActionMenu");
   var menu = new WatchUi.ActionMenu({});
-  menu.addItem(new ActionMenuItem({ :label => "Menu" }, :menu));
+  menu.addItem(new ActionMenuItem({ :label => "Select" }, :select));
+  menu.addItem(new ActionMenuItem({ :label => "Configure" }, :configure));
   if (provider instanceof CounterBasedProvider) {
     menu.addItem(new ActionMenuItem({ :label => "Next" }, :next));
   }
@@ -22,7 +23,10 @@ class ProviderActionMenuDelegate extends WatchUi.ActionMenuDelegate {
 
   function onSelect(item) {
     switch (item.getId()) {
-    case :menu:
+    case :select:
+      WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
+      return;
+    case :configure:
       WatchUi.pushView(new MainMenu(), new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
       return;
     case :next:

@@ -210,6 +210,15 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     logf(DEBUG, "MainView onKey $1$", [key]);
     if (isActionButton(key)) {
       return onAction();
+    } else if (key == KEY_MENU || key == KEY_ENTER) {
+      var provider = currentProvider();
+      if (provider instanceof CounterBasedProvider) {
+        provider.next();
+        WatchUi.requestUpdate();
+      } else {
+        WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
+      }
+      return true;
     }
     return false;
   }
