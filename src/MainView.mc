@@ -221,6 +221,8 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
     } else if (_providers.size() == 0) {
       var menu = new ProviderMenu("New provider", null);
       WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
+    } else {
+      WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
     }
     return false;
   }
