@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.4.0 - UNRELEASED
+## 2.4.0 - 2025-02-09
 
 - Change navigation to avoid menu on first view (which creates problems on some devices).
 
