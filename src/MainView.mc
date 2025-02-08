@@ -222,7 +222,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
       var menu = new ProviderMenu("New provider", null);
       WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
     } else {
-      WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+      WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
     }
     return false;
   }
@@ -235,7 +235,7 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
         var menu = new ProviderMenu("New provider", null);
         WatchUi.pushView(menu, new ProviderMenuDelegate(menu, null), WatchUi.SLIDE_LEFT);
       } else {
-        WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+        WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
       }
       return true;
     }
@@ -245,28 +245,28 @@ class MainViewDelegate extends WatchUi.BehaviorDelegate {
   // Next mode to open provider list
   function onNext() {
     log(DEBUG, "MainView onNext");
-    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
     return true;
   }
 
   // Next page to open provider list
   function onNextPage() {
     log(DEBUG, "MainView onNextPage");
-    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
     return true;
   }
 
   // Previous mode to open provider list
   function onPrevious() {
     log(DEBUG, "MainView onPrevious");
-    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
     return true;
   }
 
   // Previous page to open provider list
   function onPreviousPage() {
     log(DEBUG, "MainView onPreviousPage");
-    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_RIGHT);
+    WatchUi.pushView(new ProviderList(), new ProviderListDelegate(), WatchUi.SLIDE_LEFT);
     return true;
   }
 
