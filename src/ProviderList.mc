@@ -71,9 +71,4 @@ class ProviderListDelegate extends WatchUi.Menu2InputDelegate {
         break;
     }
   }
-
-  function onBack() {
-    // Just hide menu
-    WatchUi.popView(WatchUi.SLIDE_RIGHT);
-  }
 }
