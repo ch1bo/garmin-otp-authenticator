@@ -31,6 +31,7 @@ class ProviderList extends WatchUi.Menu2 {
       p.update();
       addItem(mkProviderListItem(p, i));
     }
+    setFocus(_currentIndex);
     addItem(new WatchUi.MenuItem("Configure", null, :configure, {}));
 
     var updateRate = Application.Properties.getValue("glanceRate");
