@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.0 - 2025-03-07
+
+- Add support for Instinct 3 and Instinct E watches.
+- Add support for Descent Mk3 and Fenix E watches.
+- Build with SDK 8.1 (broader device support)
+
 ## 2.4.0 - 2025-02-09
 
 - Change navigation to avoid menu on first view (which creates problems on some devices).

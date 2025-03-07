@@ -6,6 +6,8 @@
             <iq:product id="approachs7047mm"/>
             <iq:product id="descentmk2"/>
             <iq:product id="descentmk2s"/>
+            <iq:product id="descentmk343mm"/>
+            <iq:product id="descentmk351mm"/>
             <iq:product id="enduro"/>
             <iq:product id="enduro3"/>
             <iq:product id="epix2"/>
@@ -25,14 +27,17 @@
             <iq:product id="fenix6xpro"/>
             <iq:product id="fenix7"/>
             <iq:product id="fenix7pro"/>
+            <iq:product id="fenix7pronowifi"/>
             <iq:product id="fenix7s"/>
             <iq:product id="fenix7spro"/>
             <iq:product id="fenix7x"/>
             <iq:product id="fenix7xpro"/>
+            <iq:product id="fenix7xpronowifi"/>
             <iq:product id="fenix843mm"/>
             <iq:product id="fenix847mm"/>
             <iq:product id="fenix8solar47mm"/>
             <iq:product id="fenix8solar51mm"/>
+            <iq:product id="fenixe"/>
             <iq:product id="fr165"/>
             <iq:product id="fr165m"/>
             <iq:product id="fr245"/>
@@ -54,7 +59,12 @@
             <iq:product id="instinct2"/>
             <iq:product id="instinct2s"/>
             <iq:product id="instinct2x"/>
+            <iq:product id="instinct3amoled45mm"/>
+            <iq:product id="instinct3amoled50mm"/>
+            <iq:product id="instinct3solar45mm"/>
             <iq:product id="instinctcrossover"/>
+            <iq:product id="instincte40mm"/>
+            <iq:product id="instincte45mm"/>
             <iq:product id="marq2"/>
             <iq:product id="marq2aviator"/>
             <iq:product id="marqadventurer"/>
@@ -82,7 +92,9 @@
             <iq:product id="vivoactive4s"/>
             <iq:product id="vivoactive5"/>
         </iq:products>
-        <iq:permissions/>
+        <iq:permissions>
+            <iq:uses-permission id="BluetoothLowEnergy"/>
+        </iq:permissions>
         <iq:languages>
             <iq:language>eng</iq:language>
         </iq:languages>

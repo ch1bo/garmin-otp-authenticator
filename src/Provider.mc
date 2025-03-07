@@ -6,8 +6,8 @@ const EMPTY_CODE = "------";
 
 (:glance)
 class Provider {
-  var name_;
-  var key_;
+  var name_ as Lang.String;
+  var key_ as Lang.String;
 
   var keyBytes_;
   var code_ = EMPTY_CODE;
@@ -174,8 +174,8 @@ function providerFromDict(d as ProviderDict) as Provider {
     interval = 30;
   }
   // Strip and pad if necessary to be more liberal in what keys we accept.
-  var key = strip(d.get("key"));
-  switch (d.get("type")) {
+  var key = strip(d.get("key") as Lang.String);
+  switch (d.get("type") as Lang.String) {
   case "CounterBasedProvider":
     p = new CounterBasedProvider(d.get("name"), key, counter);
     break;

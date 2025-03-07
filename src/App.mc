@@ -93,9 +93,9 @@ function exportToSettings() as Number {
 // Returns true if we could add/import entries using importFromSettings
 function canImportFromSettings() as Boolean {
   var addType = Application.Properties.getValue("addType");
-  var addName = Application.Properties.getValue("addName");
-  var addKey = Application.Properties.getValue("addKey");
-  var exportData = Application.Properties.getValue("exportData");
+  var addName = Application.Properties.getValue("addName") as Lang.String;
+  var addKey = Application.Properties.getValue("addKey") as Lang.String;
+  var exportData = Application.Properties.getValue("exportData") as Lang.String;
   var canAdd =
     addType != null &&
     addName != null && !addName.equals("") &&
@@ -106,8 +106,8 @@ function canImportFromSettings() as Boolean {
 
 function importFromSettings() {
   var addType = Application.Properties.getValue("addType");
-  var addName = Application.Properties.getValue("addName");
-  var addKey = Application.Properties.getValue("addKey");
+  var addName = Application.Properties.getValue("addName") as Lang.String;
+  var addKey = Application.Properties.getValue("addKey") as Lang.String;
   if (addType != null &&
       addName != null && !addName.equals("") &&
       addKey != null && !addKey.equals("")) {
@@ -132,7 +132,7 @@ function importFromSettings() {
   }
 
   // XXX: decrypt with AES?
-  var exportData = Application.Properties.getValue("exportData");
+  var exportData = Application.Properties.getValue("exportData") as Lang.String;
   if (exportData != null && !exportData.equals("")) {
     try {
       var ps = parseProviders(exportData);

@@ -11,10 +11,15 @@ enduro.excludeAnnotations = isBlackAndWhite;icons
 fr55.excludeAnnotations = isBlackAndWhite;icons
 fr245.excludeAnnotations = isBlackAndWhite;icons
 fr935.excludeAnnotations = isBlackAndWhite;icons
-instinct2.excludeAnnotations = isBlackAndWhite;icons
-instinct2s.excludeAnnotations = isBlackAndWhite;icons
-instinct2x.excludeAnnotations = isBlackAndWhite;icons
-instinctcrossover.excludeAnnotations = isBlackAndWhite;icons
+
+# Black and white display (and no menu icons)
+instinct2.excludeAnnotations = isColor;icons
+instinct2s.excludeAnnotations = isColor;icons
+instinct2x.excludeAnnotations = isColor;icons
+instinct3solar45mm.excludeAnnotations = isColor;icons
+instinctcrossover.excludeAnnotations = isColor;icons
+instincte40mm.excludeAnnotations = isColor;icons
+instincte45mm.excludeAnnotations = isColor;icons
 
 # Venu needs a special layout (menu on top right)
 venu2.resourcePath = $(venu2.resourcePath);resources-venu
@@ -59,6 +64,3 @@ vivoactive3mlte.resourcePath = $(vivoactive3.resourcePath)
 
 # Re-use resources-instinct2 for the 62x62 bw icon
 instinct2x.resourcePath = $(instinct2.resourcePath)
-instinct2.excludeAnnotations = isColor;noIcons
-instinct2x.excludeAnnotations = $(instinct2.excludeAnnotations)
-instinct2s.excludeAnnotations = $(instinct2.excludeAnnotations)
