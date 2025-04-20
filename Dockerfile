@@ -17,6 +17,7 @@ ENV CONNECT_IQ_SDK_URL https://developer.garmin.com/downloads/connect-iq
 RUN apt-get update -y \
     && apt-get install --no-install-recommends -qqy openjdk-11-jdk \
     && apt-get install --no-install-recommends -qqy unzip wget curl git ssh tar gzip make tzdata ca-certificates gnupg2 libsm6 libpng16-16 libwebkit2gtk-4.0-37 libusb-1.0\
+    && apt-get install --no-install-recommends -qqy libxkbfile1 xdg-utils \
     && apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -25,6 +26,10 @@ RUN echo "Downloading Connect IQ SDK Manager:" \
     && curl -LsS -o ciq-sdk-manager.zip ${CONNECT_IQ_SDK_URL}/sdk-manager/connectiq-sdk-manager-linux.zip \
     && unzip ciq-sdk-manager.zip -d ciq \
     && rm -f ciq-sdk-manager.zip
+
+RUN curl -L https://go.microsoft.com/fwlink/?LinkID=760868 -o vscode.deb \
+    && dpkg -i vscode.deb \
+    && rm vscode.deb
 
 # Set user=1000 and group=100 as the owner of all files under /home/developer and /opt
 RUN mkdir -p /home/developer \
