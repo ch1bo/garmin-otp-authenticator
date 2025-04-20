@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.1 - UNRELEASED
+
+- Add a warning toast when max key length reached.
+
 ## 2.6.0 - 2025-04-20
 
 - Add support for Vivoactive 6 watches.

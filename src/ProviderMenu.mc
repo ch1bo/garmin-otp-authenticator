@@ -285,6 +285,7 @@ class KeyTextPickerDelegate extends WatchUi.TextPickerDelegate {
 
     if (validated.length() >= MAX_TEXT_PICKER_LENGTH) {
       logf(DEBUG, "Max length used add/use menu item for key index $1$", [keyIndex_ + 1]);
+      Device.showToast("Key incomplete, use next field");
       menu_.ensureKeyItem(keyIndex_ + 1);
     }
 
