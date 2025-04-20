@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.6.0 - UNRELEASED
+## 2.6.0 - 2025-04-20
 
 - Add support for Vivoactive 6 watches.
 
