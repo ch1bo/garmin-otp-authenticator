@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.0 - UNRELEASED
+
+- Add support for Vivoactive 6 watches.
+
 ## 2.5.0 - 2025-03-07
 
 - Add support for Instinct 3 and Instinct E watches.
