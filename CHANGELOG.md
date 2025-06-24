@@ -1,7 +1,9 @@
 # Changelog
 
-## 2.6.1 - UNRELEASED
+## 2.7.0 - UNRELEASED
 
+- Add support for Venu X1.
+- Add support for Forerunner 970 and 570.
 - Add a warning toast when max key length reached.
 
 ## 2.6.0 - 2025-04-20

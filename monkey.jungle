@@ -28,6 +28,7 @@ venu2s.resourcePath = $(venu2s.resourcePath);resources-venu
 venusq2m.resourcePath = $(venusq2m.resourcePath);resources-venu
 venu3.resourcePath = $(venu3.resourcePath);resources-venu
 venu3s.resourcePath = $(venu3s.resourcePath);resources-venu
+venux1.resourcePath = $(venux1.resourcePath);resources-venu
 
 # Devices that do not support personality classes and need them polyfilled
 nopersonality = $(base.personality);nopersonality
