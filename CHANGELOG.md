@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.7.0 - UNRELEASED
+## 2.7.0 - 2025-06-24
 
 - Add support for Venu X1.
 - Add support for Forerunner 970 and 570.
